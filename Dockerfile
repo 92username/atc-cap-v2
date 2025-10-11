@@ -1,59 +1,37 @@
-# Multi-stage Docker build for TATIC Web App
+FROM python:3.11-slim
 
-# Stage 1: Build React Frontend
-FROM node:18-alpine AS frontend-builder
-
-WORKDIR /app/frontend
-COPY frontend/package*.json ./
-RUN npm ci --only=production
-
-COPY frontend/ ./
-RUN npm run build
-
-# Stage 2: Python Backend
-FROM python:3.11-slim AS backend
+ENV DEBIAN_FRONTEND=noninteractive \
+    PYTHONUNBUFFERED=1
 
 WORKDIR /app
 
-# Install system dependencies
-RUN apt-get update && apt-get install -y \
-    gcc \
-    g++ \
-    && rm -rf /var/lib/apt/lists/*
+# Install system dependencies and Python packages
+RUN apt-get update && \
+    apt-get install -y --no-install-recommends \
+        gcc \
+        g++ \
+        && apt-get clean && \
+        rm -rf /var/lib/apt/lists/*
 
-# Install Python dependencies
-COPY backend/requirements.txt ./
+# Copy requirements and install dependencies
+COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 
-# Copy backend code
-COPY backend/ ./
+# Copy application code
+COPY . .
 
-# Create directories
-RUN mkdir -p uploads outputs
+# Create directories for uploads and outputs
+RUN mkdir -p uploads outputs && \
+    chmod 777 uploads outputs
 
-# Stage 3: Nginx + Production
-FROM nginx:alpine
+# Expose Streamlit port
+EXPOSE 8501
 
-# Install Python and dependencies in nginx container
-RUN apk add --no-cache python3 py3-pip gcc python3-dev musl-dev linux-headers
-COPY backend/requirements.txt /tmp/
-RUN pip3 install --no-cache-dir -r /tmp/requirements.txt
+# Configure Streamlit
+ENV STREAMLIT_BROWSER_GATHER_USAGE_STATS=false \
+    STREAMLIT_SERVER_ENABLECORS=false \
+    STREAMLIT_SERVER_PORT=8501 \
+    STREAMLIT_SERVER_HEADLESS=true
 
-# Copy Python app
-COPY --from=backend /app /app
-WORKDIR /app
-
-# Copy built frontend
-COPY --from=frontend-builder /app/frontend/build /usr/share/nginx/html
-
-# Copy nginx configuration
-COPY nginx.conf /etc/nginx/nginx.conf
-
-# Copy startup script
-COPY start.sh /start.sh
-RUN chmod +x /start.sh
-
-# Expose port
-EXPOSE 80
-
-CMD ["/start.sh"]
+# Run Streamlit
+CMD ["streamlit", "run", "app.py", "--server.port=8501", "--server.address=0.0.0.0"]

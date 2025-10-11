@@ -8,7 +8,7 @@ Aplicação web para processamento e análise de dados TATIC  com interface Stre
 
 - **Interface**: Streamlit - Interface web responsiva
 - **Processamento**: Python + Pandas - Motor de análise de dados
-- **Deploy**: Docker + Nginx - Deploy containerizado para produção
+- **Deploy**: Docker - Deploy containerizado para produção
 - **Dados**: Excel (.xlsx) → CSV → Relatórios ZIP
 
 ## 🎯 Funcionalidades Principais
@@ -67,11 +67,14 @@ streamlit run app.py
 ### Docker (Produção)
 ```bash
 # Build e execução
+docker build -t atc-cap-v2:0.0.1 .
+docker run -p 8501:8501 atc-cap-v2:0.0.1
+
+# Ou usando docker-compose
 docker-compose up --build
 
 # Acesso
-# http://localhost (produção)
-# http://localhost:8502 (desenvolvimento)
+# http://localhost:8501
 ```
 
 ## 📋 Formato de Dados TATIC
