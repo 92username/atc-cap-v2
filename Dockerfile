@@ -1,7 +1,7 @@
 # Multi-stage Docker build for TATIC Web App
 
 # Stage 1: Build React Frontend
-FROM node:18-alpine as frontend-builder
+FROM node:18-alpine AS frontend-builder
 
 WORKDIR /app/frontend
 COPY frontend/package*.json ./
@@ -11,7 +11,7 @@ COPY frontend/ ./
 RUN npm run build
 
 # Stage 2: Python Backend
-FROM python:3.11-slim as backend
+FROM python:3.11-slim AS backend
 
 WORKDIR /app
 
