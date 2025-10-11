@@ -372,53 +372,48 @@ class TATICProcessor:
             d_total["ano"] = d_total["timestamp_utc"].dt.year  
             d_total["mes"] = d_total["timestamp_utc"].dt.month
             
-            # 9. Gerar tabelas
+            # 9. Gerar tabelas conforme Anexo II – MCA 100-26-2 (2025)
             results = {}
             
             # Garantir que o diretório de saída existe
             os.makedirs(output_dir, exist_ok=True)
 
-            # Tabela 1: Movimentos ATC Total
-            table1 = self.generate_table1(d_total)
-            table1_path = output_dir / "tabela1_movimentos_atc_total.csv"
+            # Tabela 1: Movimento percentual por categoria de aeronaves
+            table1 = self.generate_table1_mca(d_rwy)
+            table1_path = output_dir / "tabela1_movimento_percentual_categoria.csv"
             table1.to_csv(table1_path, index=False)
-            self.log(f"💾 [SALVO] {table1_path}")
+            self.log(f"💾 [SALVO] Tabela 1 – Movimento percentual por categoria")
             results['table1'] = table1.to_dict('records')
 
-            # Tabela 2: Movimentos por pista
-            table2 = self.generate_table2(d_rwy)
-            table2_path = output_dir / "tabela2_movimentos_pista.csv"
+            # Tabela 2: Resultado do mix
+            table2 = self.generate_table2_mca(d_rwy)
+            table2_path = output_dir / "tabela2_resultado_mix_categoria.csv"
             table2.to_csv(table2_path, index=False)
-            self.log(f"💾 [SALVO] {table2_path}")
+            self.log(f"💾 [SALVO] Tabela 2 – Resultado do mix")
             results['table2'] = table2.to_dict('records')
 
-            # Tabela 3: Percentual de pistas
-            table3 = self.generate_table3(d_rwy)
-            table3_path = output_dir / "tabela3_percentual_pistas.csv"
+            # Tabela 3: Movimento mensal por pista
+            table3 = self.generate_table3_mca(d_rwy)
+            table3_path = output_dir / "tabela3_movimento_mensal_pista.csv"
             table3.to_csv(table3_path, index=False)
-            self.log(f"💾 [SALVO] {table3_path}")
+            self.log(f"💾 [SALVO] Tabela 3 – Movimento mensal por pista")
             results['table3'] = table3.to_dict('records')
 
-            # Tabela 4: Classificação de Esteira de Turbulência
-            table4 = self.generate_table4(d_rwy)
-            table4_path = output_dir / "tabela4_mix_aeronaves.csv"
+            # Tabela 4: Percentual de utilização de pistas
+            table4 = self.generate_table4_mca(d_rwy)
+            table4_path = output_dir / "tabela4_percentual_utilizacao_pistas.csv"
             table4.to_csv(table4_path, index=False)
-            self.log(f"💾 [SALVO] {table4_path}")
+            self.log(f"💾 [SALVO] Tabela 4 – Percentuais de utilização de pistas")
             results['table4'] = table4.to_dict('records')
 
-            # Tabela 5: Categoria por dia da semana
-            table5 = self.generate_table5(d_rwy)
-            table5_path = output_dir / "tabela5_categoria_weekday.csv"
-            table5.to_csv(table5_path, index=False)
-            self.log(f"💾 [SALVO] {table5_path}")
-            results['table5'] = table5.to_dict('records')
-
-            # Tabela 6: Mix por categoria
-            table6 = self.generate_table6(d_rwy)
-            table6_path = output_dir / "tabela6_mix_categoria.csv"
-            table6.to_csv(table6_path, index=False)
-            self.log(f"💾 [SALVO] {table6_path}")
-            results['table6'] = table6.to_dict('records')
+            # Gerar arquivo resumo conforme MCA 100-26-2
+            resumo_path = output_dir / "resumo.txt"
+            with open(resumo_path, "w", encoding="utf-8") as f:
+                f.write("Relatório conforme Anexo II – MCA 100-26-2 (2025)\n")
+                f.write("Inclui Tabelas 1 a 4 conforme formato normativo.\n")
+                f.write(f"\nProcessado em: {datetime.now().strftime('%d/%m/%Y %H:%M:%S')}\n")
+                f.write(f"Modo helicópteros: {'Ativado (categoria H)' if self.usar_categoria_H else 'Desativado (categorias A-E)'}\n")
+            self.log(f"💾 [SALVO] Resumo do relatório")
             
             # Gerar dados de gráficos
             charts_data = self._build_charts_data(table1, table2, table3, table4, table5, table6)
