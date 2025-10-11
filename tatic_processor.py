@@ -21,8 +21,9 @@ class TATICProcessor:
     Baseado no código que funcionava perfeitamente localmente
     """
     
-    def __init__(self, usar_categoria_H=False, log_callback=None):
+    def __init__(self, usar_categoria_H=False, incluir_finais_de_semana=False, log_callback=None):
         self.usar_categoria_H = usar_categoria_H
+        self.incluir_finais_de_semana = incluir_finais_de_semana
         self.log_callback = log_callback or (lambda msg: None)
         self.output_dir = Path("outputs")
         self.output_dir.mkdir(exist_ok=True)
@@ -366,9 +367,10 @@ class TATICProcessor:
             self.log(f"📊 Movimentos ATC total: {len(d_total)}")
             self.log(f"🛬 Movimentos de pista: {len(d_rwy)}")
             
-            # 8. Extrair ano/mês
+            # 8. Extrair ano/mês/dia da semana
             d_rwy["ano"] = d_rwy["timestamp_utc"].dt.year
             d_rwy["mes"] = d_rwy["timestamp_utc"].dt.month
+            d_rwy["weekday"] = d_rwy["timestamp_utc"].dt.dayofweek  # Adicionando dia da semana
             d_total["ano"] = d_total["timestamp_utc"].dt.year  
             d_total["mes"] = d_total["timestamp_utc"].dt.month
             
@@ -413,10 +415,11 @@ class TATICProcessor:
                 f.write("Inclui Tabelas 1 a 4 conforme formato normativo.\n")
                 f.write(f"\nProcessado em: {datetime.now().strftime('%d/%m/%Y %H:%M:%S')}\n")
                 f.write(f"Modo helicópteros: {'Ativado (categoria H)' if self.usar_categoria_H else 'Desativado (categorias A-E)'}\n")
+                f.write(f"Dias analisados na Tabela 1: {'Segunda a Domingo' if self.incluir_finais_de_semana else 'Segunda a Sexta (padrão MCA 100-26-2)'}\n")
             self.log(f"💾 [SALVO] Resumo do relatório")
             
-            # Gerar dados de gráficos
-            charts_data = self._build_charts_data(table1, table2, table3, table4, table5, table6)
+            # Gerar dados de gráficos (apenas tabelas MCA)
+            charts_data = self._build_charts_data_mca(table1, table2, table3, table4)
             try:
                 with open(output_dir / "charts_data.json", "w", encoding="utf-8") as chart_file:
                     json.dump(charts_data, chart_file, ensure_ascii=False, indent=2)
@@ -426,7 +429,7 @@ class TATICProcessor:
             # Estatísticas
             end_time = time.time()
             processing_time = end_time - start_time
-            self.log(f"✅ Processamento concluído! Tempo: {processing_time:.2f}s")
+            self.log(f"✅ Processamento concluído conforme MCA 100-26-2! Tempo: {processing_time:.2f}s")
             
             return {
                 "success": True,
@@ -450,8 +453,62 @@ class TATICProcessor:
                 "message": f"Erro no processamento: {e}"
             }
 
+    def generate_table1_mca(self, d_rwy: pd.DataFrame) -> pd.DataFrame:
+        """Tabela 1: Movimento percentual por categoria de aeronaves (MCA 100-26-2)"""
+        if len(d_rwy) == 0 or 'equipamento' not in d_rwy.columns:
+            return pd.DataFrame([{"CAT": "SEM DADOS"}])
+        
+        # Adicionar categoria e dia da semana
+        d_rwy = d_rwy.copy()
+        d_rwy['categoria'] = d_rwy['equipamento'].apply(self.get_aircraft_category)
+        
+        # Selecionar dias conforme configuração
+        if self.incluir_finais_de_semana:
+            # Incluir todos os dias da semana
+            self.log("📅 Incluindo Sábado e Domingo na análise.")
+            dias_semana = [0, 1, 2, 3, 4, 5, 6]  # Segunda a Domingo
+            dias = ["Segunda", "Terça", "Quarta", "Quinta", "Sexta", "Sábado", "Domingo"]
+        else:
+            # Filtrar apenas dias úteis (segunda a sexta) conforme MCA 100-26-2
+            self.log("📅 Considerando apenas Segunda a Sexta (MCA 100-26-2).")
+            dias_semana = [0, 1, 2, 3, 4]  # Segunda a Sexta
+            dias = ["Segunda", "Terça", "Quarta", "Quinta", "Sexta"]
+            
+        # Filtrar os dias selecionados
+        d_rwy = d_rwy[d_rwy['weekday'].isin(dias_semana)].copy()
+        
+        if len(d_rwy) == 0:
+            return pd.DataFrame([{"CAT": "SEM DADOS"}])
+        
+        categorias = ["A", "B", "C", "D", "E"]
+        if self.usar_categoria_H:
+            categorias = ["A", "B", "C", "H"]
+        
+        tabela = []
+        
+        # Calcular para cada categoria
+        for cat in categorias:
+            linha = {"CAT": cat}
+            for i, dia in enumerate(dias):
+                df_dia = d_rwy[d_rwy['weekday'] == i]
+                total_dia = len(df_dia)
+                qtd = len(df_dia[df_dia['categoria'] == cat])
+                perc = (qtd / total_dia * 100) if total_dia > 0 else 0
+                linha[dia.upper()] = f"{qtd} / {perc:.1f}%"
+            tabela.append(linha)
+        
+        # Linha TOTAL
+        linha_total = {"CAT": "TOTAL"}
+        for i, dia in enumerate(dias):
+            df_dia = d_rwy[d_rwy['weekday'] == i]
+            total_dia = len(df_dia)
+            linha_total[dia.upper()] = f"{total_dia} / 100.0%"
+        tabela.append(linha_total)
+        
+        return pd.DataFrame(tabela)
+
     def generate_table1(self, d_total: pd.DataFrame) -> pd.DataFrame:
-        """Tabela 1: Movimentos ATC Total"""
+        """Tabela 1: Movimentos ATC Total (versão legada)"""
         if len(d_total) == 0:
             return pd.DataFrame([{"MES": "SEM DADOS", "TOTAL": 0}])
         
@@ -499,6 +556,95 @@ class TATICProcessor:
         g["TOTAL"] = g["RWY 03"] + g["RWY 21"]
         
         return g[["MES", "RWY 03", "RWY 21", "TOTAL"]]
+
+    def generate_table2_mca(self, d_rwy: pd.DataFrame) -> pd.DataFrame:
+        """Tabela 2: Resultado do mix (MCA 100-26-2)"""
+        if len(d_rwy) == 0 or 'equipamento' not in d_rwy.columns:
+            return pd.DataFrame([{"CAT": "SEM DADOS", "MIX": "0%"}])
+        
+        d_rwy = d_rwy.copy()
+        d_rwy['categoria'] = d_rwy['equipamento'].apply(self.get_aircraft_category)
+        
+        # Filtrar categorias válidas
+        categorias = ["A", "B", "C", "D", "E"]
+        if self.usar_categoria_H:
+            categorias = ["A", "B", "C", "H"]
+        d_filtered = d_rwy[d_rwy['categoria'].isin(categorias)].copy()
+        
+        if len(d_filtered) == 0:
+            return pd.DataFrame([{"CAT": "SEM DADOS", "MIX": "0%"}])
+        
+        # Calcular média aritmética dos percentuais por categoria
+        category_counts = d_filtered['categoria'].value_counts()
+        total = len(d_filtered)
+        
+        table_data = []
+        for cat in sorted(categorias):
+            count = category_counts.get(cat, 0)
+            percentage = (count / total * 100) if total > 0 else 0
+            table_data.append({
+                'CAT': cat,
+                'MIX': f"{percentage:.1f}%"
+            })
+        
+        # Adicionar total
+        table_data.append({'CAT': 'TOTAL', 'MIX': '100.0%'})
+        
+        return pd.DataFrame(table_data)
+
+    def generate_table3_mca(self, d_rwy: pd.DataFrame) -> pd.DataFrame:
+        """Tabela 3: Movimento mensal por pista (MCA 100-26-2)"""
+        if len(d_rwy) == 0:
+            return pd.DataFrame([{"MES": "SEM DADOS", "RWY 03": 0, "RWY 21": 0, "TOTAL": 0}])
+        
+        # Agrupar por ano, mês, pista
+        g = (d_rwy.groupby(["ano", "mes", "pista"])
+             .size()
+             .unstack(fill_value=0)
+             .rename(columns={"03": "RWY 03", "21": "RWY 21"}))
+        
+        # Garantir colunas
+        for col in ["RWY 03", "RWY 21"]:
+            if col not in g.columns:
+                g[col] = 0
+        
+        g = g.reset_index()
+        
+        # Label do mês
+        multi_year = d_rwy["ano"].nunique() > 1
+        if multi_year:
+            g["MES"] = g.apply(lambda x: f"{x['mes']:02d}/{x['ano']}", axis=1)
+        else:
+            meses_abrev = {1:"JAN",2:"FEV",3:"MAR",4:"ABR",5:"MAI",6:"JUN",
+                          7:"JUL",8:"AGO",9:"SET",10:"OUT",11:"NOV",12:"DEZ"}
+            g["MES"] = g["mes"].map(meses_abrev)
+        
+        g["TOTAL"] = g["RWY 03"] + g["RWY 21"]
+        
+        return g[["MES", "RWY 03", "RWY 21", "TOTAL"]]
+
+    def generate_table4_mca(self, d_rwy: pd.DataFrame) -> pd.DataFrame:
+        """Tabela 4: Percentual de utilização de pistas (MCA 100-26-2)"""
+        if len(d_rwy) == 0:
+            return pd.DataFrame([{"PISTA": "03", "PERCENTUAL": "0.0%"}, 
+                               {"PISTA": "21", "PERCENTUAL": "0.0%"}])
+        
+        # Calcular totais por pista
+        total_03 = len(d_rwy[d_rwy["pista"] == "03"])
+        total_21 = len(d_rwy[d_rwy["pista"] == "21"])
+        total_geral = total_03 + total_21
+        
+        if total_geral == 0:
+            perc_03 = perc_21 = 0.0
+        else:
+            perc_03 = total_03 / total_geral * 100
+            perc_21 = total_21 / total_geral * 100
+        
+        return pd.DataFrame([
+            {"PISTA": "03", "PERCENTUAL": f"{perc_03:.1f}%"},
+            {"PISTA": "21", "PERCENTUAL": f"{perc_21:.1f}%"},
+            {"PISTA": "TOTAL", "PERCENTUAL": "100.0%"}
+        ])
 
     def generate_table3(self, d_rwy: pd.DataFrame) -> pd.DataFrame:
         """Tabela 3: Percentual de Utilização das Pistas"""
@@ -637,6 +783,46 @@ class TATICProcessor:
         table_data.append({'CAT': 'TOTAL', 'MIX': '100%'})
         
         return pd.DataFrame(table_data)
+
+    def _build_charts_data_mca(
+        self,
+        table1: pd.DataFrame,
+        table2: pd.DataFrame,
+        table3: pd.DataFrame,
+        table4: pd.DataFrame,
+    ) -> Dict[str, Any]:
+        """Gera dicionário com dados dos gráficos MCA a partir das tabelas."""
+
+        def _col_values(df: pd.DataFrame, column: str) -> List[Any]:
+            return df[column].tolist() if column in df.columns else []
+
+        charts_data: Dict[str, Any] = {
+            "percentual_categoria": {
+                "labels": ["Segunda", "Terça", "Quarta", "Quinta", "Sexta"],
+                "datasets": [],
+                "description": "Movimento percentual por categoria (Tabela 1)"
+            },
+            "mix_categoria": {
+                "labels": _col_values(table2, "CAT"),
+                "data": [float(x.replace('%', '')) for x in _col_values(table2, "MIX") if x != "100.0%"],
+                "description": "Resultado do mix (Tabela 2)"
+            },
+            "movimento_mensal": {
+                "labels": _col_values(table3, "MES"),
+                "datasets": [
+                    {"label": "RWY 03", "data": _col_values(table3, "RWY 03")},
+                    {"label": "RWY 21", "data": _col_values(table3, "RWY 21")},
+                ],
+                "description": "Movimento mensal por pista (Tabela 3)"
+            },
+            "utilizacao_pistas": {
+                "labels": ["RWY 03", "RWY 21"],
+                "data": [float(x.replace('%', '')) for x in _col_values(table4, "PERCENTUAL") if x != "100.0%"],
+                "description": "Percentual de utilização de pistas (Tabela 4)"
+            },
+        }
+
+        return charts_data
 
     def _build_charts_data(
         self,
