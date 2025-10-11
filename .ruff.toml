@@ -5,6 +5,20 @@
 line-length = 100
 target-version = "py311"  # Assuming Python 3.11 is used as in Dockerfile
 
+# Exclude a variety of commonly ignored directories
+exclude = [
+    ".git",
+    ".github",
+    "__pycache__",
+    ".venv",
+    "venv",
+    ".env",
+    "env",
+    "build",
+    "dist",
+    "node_modules",
+]
+
 # Linting specific configuration
 [lint]
 select = [
@@ -21,21 +35,6 @@ select = [
 ignore = [
     "E501",  # line too long (handled by black)
     "E203",  # whitespace before ':' (handled by black)
-]
-
-# Exclude a variety of commonly ignored directories
-[lint.exclude]
-patterns = [
-    ".git",
-    ".github",
-    "__pycache__",
-    ".venv",
-    "venv",
-    ".env",
-    "env",
-    "build",
-    "dist",
-    "node_modules",
 ]
 
 [lint.per-file-ignores]
