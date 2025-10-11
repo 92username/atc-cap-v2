@@ -24,7 +24,8 @@ ignore = [
 ]
 
 # Exclude a variety of commonly ignored directories
-exclude = [
+[lint.exclude]
+patterns = [
     ".git",
     ".github",
     "__pycache__",
