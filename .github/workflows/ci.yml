@@ -32,7 +32,7 @@ jobs:
         run: black .
       
       - name: Run Ruff
-        run: ruff --fix .
+        run: ruff check --fix .
 
   test:
     runs-on: ubuntu-latest

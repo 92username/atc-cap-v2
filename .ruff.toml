@@ -1,10 +1,12 @@
 # Ruff configuration for ATC-CAP-V2
 # See https://beta.ruff.rs/docs/ for more information
 
-# Enable pycodestyle (E), pyflakes (F), pylint (PL), isort (I), and many more
+# General configuration
 line-length = 100
 target-version = "py311"  # Assuming Python 3.11 is used as in Dockerfile
 
+# Linting specific configuration
+[lint]
 select = [
     "E",   # pycodestyle errors
     "F",   # pyflakes
@@ -35,8 +37,8 @@ exclude = [
     "node_modules",
 ]
 
-[per-file-ignores]
+[lint.per-file-ignores]
 "__init__.py" = ["F401"]  # Imported but unused
 
-[isort]
+[lint.isort]
 known-first-party = ["app", "tatic_processor"]

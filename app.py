@@ -1,12 +1,12 @@
-import streamlit as st
 import os
 import uuid
-from datetime import datetime
-from tatic_processor import TATICProcessor
-import pandas as pd
-from pathlib import Path
 import zipfile
-import datetime
+from datetime import datetime
+from pathlib import Path
+
+import streamlit as st
+
+from tatic_processor import TATICProcessor
 
 # Configuração de página
 st.set_page_config(
@@ -22,14 +22,14 @@ def add_sidebar():
         st.title("📊 TATIC - MCA 100-26")
         st.warning("⚠️ **Dica:** Exporte os dados diretamente do TATIC em formato bruto, sem aplicar filtros ou fórmulas personalizadas. O aplicativo foi otimizado para processar dados não modificados, garantindo resultados precisos conforme a MCA 100-26.")
         st.subheader("Como usar este app")
-        
+
         st.markdown("""
         ### 📋 Instruções:
         1. **Selecione** se helicópteros devem ser classificados como categoria H
         2. **Faça upload** do arquivo TATIC (.xlsx)
         3. **Clique em "Gerar Relatório"** para processar os dados
         4. **Baixe o relatório** gerado em formato ZIP
-        
+
         ### 📊 Formato MCA 100-26-2
         O relatório segue as especificações do **Anexo II da MCA 100-26-2** com as tabelas:
         - Tabela 1: Movimento percentual por categoria
@@ -37,10 +37,10 @@ def add_sidebar():
         - Tabela 3: Movimento mensal por pista
         - Tabela 4: Percentual de utilização de pistas
         """)
-        
+
         st.divider()
         st.caption("© 2025 Tamanduas.dev")
-        
+
 add_sidebar()
 
 # Interface principal
@@ -61,7 +61,7 @@ categoria_helicoptero = st.radio(
     help="Escolha como helicópteros devem ser classificados nas tabelas"
 )
 
-usar_categoria_H = categoria_helicoptero == "Classificar como categoria H (Helicopter)"
+usar_categoria_h = categoria_helicoptero == "Classificar como categoria H (Helicopter)"
 
 # Nova opção para incluir ou não finais de semana
 incluir_finais_de_semana = (
@@ -84,27 +84,28 @@ def gerar_zip_de_relatorio(job_output_dir: str, nome_arquivo: str):
     Corrigido: cria o ZIP fora do diretório para evitar conflitos
     """
     zip_path = os.path.join("outputs", nome_arquivo)
-    
+
     # DEBUG: Verificar arquivos disponíveis antes de zipar
     print(f"[DEBUG ZIP] Diretório: {job_output_dir}")
-    print(f"[DEBUG ZIP] Arquivos antes de zipar:")
+    print("[DEBUG ZIP] Arquivos antes de zipar:")
     if os.path.exists(job_output_dir):
-        for root, dirs, files in os.walk(job_output_dir):
+        for root, _dirs, files in os.walk(job_output_dir):
             for file in files:
                 print(f"[DEBUG ZIP] - {os.path.join(root, file)}")
     else:
         print(f"[DEBUG ZIP] Diretório {job_output_dir} não existe!")
-    
+
     # Criar o ZIP com todos os arquivos
     with zipfile.ZipFile(zip_path, 'w', zipfile.ZIP_DEFLATED) as zipf:
-        for root, _, files in os.walk(job_output_dir):
+        for root, _dirs, files in os.walk(job_output_dir):
+            # Directory structure is traversed automatically by os.walk
             for file in files:
                 if not file.endswith('.zip'):  # Evita incluir outros ZIPs
                     abs_path = os.path.join(root, file)
                     rel_path = os.path.relpath(abs_path, job_output_dir)
                     zipf.write(abs_path, arcname=rel_path)
                     print(f"[DEBUG ZIP] Adicionado ao ZIP: {rel_path}")
-    
+
     # DEBUG: Verificar conteúdo do ZIP
     print(f"[DEBUG ZIP] Verificando ZIP {zip_path}:")
     if os.path.exists(zip_path):
@@ -114,10 +115,10 @@ def gerar_zip_de_relatorio(job_output_dir: str, nome_arquivo: str):
                     print(f"[DEBUG ZIP] - {item}")
             print(f"[DEBUG ZIP] Tamanho do ZIP: {os.path.getsize(zip_path)} bytes")
         except zipfile.BadZipFile:
-            print(f"[DEBUG ZIP] ERRO: ZIP vazio ou corrompido!")
+            print("[DEBUG ZIP] ERRO: ZIP vazio ou corrompido!")
     else:
-        print(f"[DEBUG ZIP] ERRO: Arquivo ZIP não foi criado!")
-    
+        print("[DEBUG ZIP] ERRO: Arquivo ZIP não foi criado!")
+
     return zip_path
 
 # Inicializar estado da sessão
@@ -129,24 +130,24 @@ if "relatorio_gerado" not in st.session_state:
 
 if uploaded_file is not None:
     st.success(f"✅ Arquivo carregado: {uploaded_file.name}")
-    
+
     # 🚀 Botão para iniciar processamento
     if st.button("🚀 Gerar Relatório"):
         st.session_state.relatorio_gerado = False
-        
+
         # Criar pasta temporária para o upload
-        job_id = f"job_{datetime.datetime.now().strftime('%Y%m%d%H%M%S')}_{uuid.uuid4().hex[:8]}"
+        job_id = f"job_{datetime.now().strftime('%Y%m%d%H%M%S')}_{uuid.uuid4().hex[:8]}"
         upload_dir = os.path.join("uploads", job_id)
         os.makedirs(upload_dir, exist_ok=True)
-        
+
         # Salvar o arquivo para processamento
         file_path = os.path.join(upload_dir, uploaded_file.name)
         with open(file_path, "wb") as f:
             f.write(uploaded_file.getbuffer())
-            
+
         # Inicializar processador
         processor = TATICProcessor(
-            usar_categoria_H=usar_categoria_H,
+            usar_categoria_H=usar_categoria_h,
             incluir_finais_de_semana=incluir_finais_de_semana,
             log_callback=st.write
         )
@@ -157,25 +158,25 @@ if uploaded_file is not None:
 
         # Converter output_dir para Path
         output_dir = Path(output_dir)
-        
+
         # Substituir o método de processamento para usar `process_tatic_data`
         try:
             with st.spinner("Processando os dados..."):
                 import asyncio
                 asyncio.run(processor.process_tatic_data(file_path, output_dir))
-            
+
             st.success("Processamento concluído!")
 
             # Gerar nome do relatório e arquivo ZIP
-            nome_arquivo = processor.gerar_nome_relatorio(usar_categoria_H)
+            nome_arquivo = processor.gerar_nome_relatorio(usar_categoria_h)
             relatorio_zip_path = gerar_zip_de_relatorio(str(output_dir), nome_arquivo)
-            
+
             # Salvar no estado da sessão
             st.session_state.relatorio_gerado = True
             st.session_state.nome_arquivo = nome_arquivo
             st.session_state.relatorio_zip_path = relatorio_zip_path
             st.session_state.output_dir = str(output_dir)
-            
+
             # Exibir mensagem de sucesso com o nome do arquivo
             st.success(f"✅ Relatório gerado: {nome_arquivo}")
 
@@ -194,13 +195,13 @@ if st.session_state.relatorio_gerado:
                 file_name=st.session_state.nome_arquivo,
                 mime="application/zip"
             )
-        
+
         # Adicionar informações sobre o relatório
         st.info(f"""
         **💾 Relatório**: {st.session_state.nome_arquivo}
-        
+
         📊 Conforme especificações MCA 100-26-2
-        🚁 Categoria H para helicópteros: {"Ativada" if usar_categoria_H else "Desativada"}
+        🚁 Categoria H para helicópteros: {"Ativada" if usar_categoria_h else "Desativada"}
         📅 Dias analisados na Tabela 1: {"Segunda a Domingo (incluindo finais de semana)" if incluir_finais_de_semana else "Segunda a Sexta (padrão MCA 100-26-2)"}
         """)
     else:
