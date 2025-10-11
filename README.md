@@ -2,12 +2,12 @@
 
 ## 🚀 Visão Geral
 
-Aplicação web moderna para processamento e análise de dados TATIC (Terminal de Controle de Tráfego Aéreo) com interface intuitiva no Streamlit, classificação inteligente de aeronaves e geração automática de relatórios detalhados.
+Aplicação web para processamento e análise de dados TATIC  com interface Streamlit, classificação de aeronaves e geração automática de relatórios detalhados.
 
 ## 🏗️ Arquitetura
 
-- **Interface**: Streamlit - Interface web moderna e responsiva
-- **Processamento**: Python + Pandas - Motor de análise de dados otimizado
+- **Interface**: Streamlit - Interface web responsiva
+- **Processamento**: Python + Pandas - Motor de análise de dados
 - **Deploy**: Docker + Nginx - Deploy containerizado para produção
 - **Dados**: Excel (.xlsx) → CSV → Relatórios ZIP
 
@@ -15,10 +15,9 @@ Aplicação web moderna para processamento e análise de dados TATIC (Terminal d
 
 ### 📊 Processamento de Dados
 - ✅ **Upload drag-and-drop** de arquivos Excel (.xlsx)
-- ✅ **Processamento rápido** de 155k+ registros em segundos
+- ✅ **Processamento rápido** de 155k+ registros em 60 segundos
 - ✅ **Validação automática** de estrutura e cabeçalhos TATIC
 - ✅ **Logs em tempo real** durante o processamento
-- ✅ **Spinner visual** para feedback do usuário
 
 ### 🚁 Classificação de Aeronaves
 - ✅ **Modo Padrão (A-E)** - Categorias tradicionais de wake turbulence
@@ -32,21 +31,18 @@ Aplicação web moderna para processamento e análise de dados TATIC (Terminal d
 3. **Tabela 3 - Percentual por Pista** - Análise de utilização
 4. **Tabela 4 - Mix de Aeronaves** - Classificação por esteira de turbulência
 5. **Tabela 5 - Categoria por Dia da Semana** - Padrões semanais
-6. **Tabela 6 - Mix por Categoria** - Resumo final com percentuais
+6. **Tabela 6 - Mix por Categoria** - Resumo com percentuais
 
 ### 🧭 Interface do Usuário
 - ✅ **Menu lateral expansível** com guia de uso
-- ✅ **Layout wide** para melhor visualização
 - ✅ **Seletor de modo** (Padrão/Helicóptero)
-- ✅ **Visualização de dados** em tabelas interativas
+- ✅ **Visualização de dados**
 - ✅ **Download de relatórios** em formato ZIP
 
 ### 📦 Sistema de Relatórios
 - ✅ **Nomes incrementais** - `relatorio_NNNN_DDMMYYYY_MODO.zip`
 - ✅ **Identificação por modo** - STD (padrão) ou H (helicóptero)
 - ✅ **Numeração sequencial** automática por dia
-- ✅ **Compatibilidade** com formatos anteriores
-
 ## 🚀 Início Rápido
 
 ### Desenvolvimento Local
