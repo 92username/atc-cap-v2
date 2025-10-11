@@ -58,27 +58,20 @@ def sample_tatic_df():
 def test_tatic_processor_initialization(temp_job_dir):
     """Test that the TATIC processor initializes correctly"""
     processor = TATICProcessor(
-        job_id=TEST_JOB_ID,
-        inicio_periodo=datetime(2025, 1, 1),
-        fim_periodo=datetime(2025, 1, 31),
-        base_dir=temp_job_dir,
-        incluir_finais_de_semana=False,
+        usar_categoria_h=False,
+        incluir_finais_de_semana=False
     )
 
-    assert processor.job_id == TEST_JOB_ID
-    assert processor.periodo_inicio == datetime(2025, 1, 1)
-    assert processor.periodo_fim == datetime(2025, 1, 31)
-    assert processor.job_dir.exists()
+    assert processor.incluir_finais_de_semana is False
+    assert hasattr(processor, "output_dir")
+    assert processor.output_dir.exists()
 
 
 def test_process_weekday_filtering(sample_tatic_df):
     """Test that weekday filtering works correctly"""
     # Create a processor with weekends excluded
     processor = TATICProcessor(
-        job_id=TEST_JOB_ID,
-        inicio_periodo=datetime(2025, 1, 1),
-        fim_periodo=datetime(2025, 1, 31),
-        incluir_finais_de_semana=False,
+        incluir_finais_de_semana=False
     )
 
     # Set up the DataFrame to have a mix of weekdays and weekends
