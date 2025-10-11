@@ -149,6 +149,47 @@ A aplicação reconhece automaticamente **47 modelos** de helicópteros, incluin
 4. Push para a branch (`git push origin feature/nova-funcionalidade`)
 5. Abra um Pull Request
 
+## 🔄 CI/CD Pipeline
+
+O projeto utiliza GitHub Actions para automação de CI/CD com os seguintes stages:
+
+### 🧹 Lint
+
+- **Black**: Formatação de código Python padronizada
+- **Ruff**: Verificação de qualidade e estilo de código
+
+### 🧪 Test
+
+- **Pytest**: Execução automática de testes unitários
+
+### 🐳 Build & Deploy
+
+- **Docker**: Build automático da imagem Docker
+- **GHCR**: Upload da imagem para GitHub Container Registry
+- **Tagging**: Versionamento automático com tags semânticas
+
+### 🚀 Como usar o CI/CD
+
+1. Faça push para a branch `main` ou abra um Pull Request
+2. O pipeline executará lint, testes e (se no main) build+push da imagem
+3. A imagem Docker ficará disponível em `ghcr.io/tamandua-devs/atc-cap-v2:0.0.1`
+
+### 📋 Desenvolvimento local com Lint
+
+```bash
+# Instalar dependências de desenvolvimento
+pip install -r requirements.txt
+
+# Formatar código com Black
+black .
+
+# Verificar código com Ruff
+ruff check .
+
+# Executar testes
+pytest
+```
+
 ---
 
 **🛫 Desenvolvido para análise profissional de tráfego aéreo seguindo padrões ICAO e melhores práticas da aviação civil**

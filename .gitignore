@@ -26,9 +26,15 @@ env/
 ENV/
 
 # Data directories
-uploads/
+uploads/job_*
+!uploads/.gitkeep
+outputs/job_*
+!outputs/.gitkeep
+data/uploads/*
+!data/uploads/.gitkeep
+data/outputs/*
+!data/outputs/.gitkeep
 outputs/
-data/
 
 # IDE
 .vscode/
