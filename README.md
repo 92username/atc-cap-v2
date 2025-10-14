@@ -48,7 +48,7 @@ Aplicação web para processamento e análise de dados TATIC  com interface Stre
 ### Desenvolvimento Local
 ```bash
 # Clone o repositório
-git clone <repository>
+git clone https://github.com/92username/atc-cap-v2
 cd atc-cap-v2
 
 # Criar ambiente virtual
