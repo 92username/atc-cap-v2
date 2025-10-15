@@ -147,7 +147,7 @@ if uploaded_file is not None:
 
         # Inicializar processador
         processor = TATICProcessor(
-            usar_categoria_H=usar_categoria_h,
+            usar_categoria_h=usar_categoria_h,  # Corrected argument name
             incluir_finais_de_semana=incluir_finais_de_semana,
             log_callback=st.write
         )
