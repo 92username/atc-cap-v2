@@ -5,7 +5,7 @@ services:
     build: .
     image: atc-cap-v2:0.0.1
     ports:
-      - "8501:8501"
+      - "${APP_PORT}:${APP_PORT}"
     environment:
       - PYTHONPATH=/app
       - PYTHONUNBUFFERED=1
