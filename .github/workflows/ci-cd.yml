@@ -1,0 +1,80 @@
+name: CI/CD - TATIC Processor
+
+# Trigger: Executa em push para main e pull requests
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+
+# Variáveis de ambiente globais
+env:
+  APP_NAME: tatic-processor
+  APP_PORT: 8506
+  REGISTRY_USER: 92username
+
+jobs:
+  # Job de CI: Build e testes locais
+  ci:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout do código
+        uses: actions/checkout@v4
+
+      - name: Configurar Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.11'
+
+      - name: Instalar dependências
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+
+      - name: Executar testes com pytest
+        run: |
+          pip install pytest
+          pytest tests/ --tb=short
+
+  # Job de CD: Build Docker, push para GHCR e deploy via SSH
+  cd:
+    needs: ci  # Depende do job ci passar
+    if: github.ref == 'refs/heads/main'  # Só roda na branch main
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout do código
+        uses: actions/checkout@v4
+
+      - name: Login no GitHub Container Registry (GHCR)
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ env.REGISTRY_USER }}
+          password: ${{ secrets.GHCR_TOKEN }}
+
+      - name: Build da imagem Docker
+        run: |
+          docker build -t ghcr.io/${{ env.REGISTRY_USER }}/tatic-processor:0.0.1 .
+
+      - name: Push da imagem para GHCR
+        run: |
+          docker push ghcr.io/${{ env.REGISTRY_USER }}/tatic-processor:0.0.1
+
+      - name: Deploy via SSH na VPS Hostinger
+        uses: appleboy/ssh-action@v1.1.0
+        with:
+          host: ${{ secrets.VPS_HOST }}
+          username: ${{ secrets.VPS_USER }}
+          key: ${{ secrets.VPS_KEY }}
+          script: |
+            # Parar e remover container antigo se existir
+            docker stop ${{ env.APP_NAME }} || true
+            docker rm ${{ env.APP_NAME }} || true
+            
+            # Rodar novo container
+            docker run -d \
+              --name ${{ env.APP_NAME }} \
+              -p ${{ env.APP_PORT }}:${{ env.APP_PORT }} \
+              --restart=always \
+              -v /var/www/streamlit-reports:/app/reports \
+              ghcr.io/${{ env.REGISTRY_USER }}/tatic-processor:0.0.1

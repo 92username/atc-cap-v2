@@ -29,16 +29,16 @@ RUN touch uploads/.keep outputs/.keep && \
     chmod -R 777 uploads outputs
 
 # Expose Streamlit port
-EXPOSE 8501
+EXPOSE 8506
 
 # Configure Streamlit
 ENV STREAMLIT_BROWSER_GATHER_USAGE_STATS=false \
     STREAMLIT_SERVER_ENABLECORS=false \
-    STREAMLIT_SERVER_PORT=8501 \
+    STREAMLIT_SERVER_PORT=8506 \
     STREAMLIT_SERVER_HEADLESS=true
 
 # Volume declaration to ensure data persistence
 VOLUME ["/app/uploads", "/app/outputs"]
 
 # Run Streamlit
-CMD ["streamlit", "run", "app.py", "--server.port=8501", "--server.address=0.0.0.0"]
+CMD ["streamlit", "run", "app.py", "--server.port=8506", "--server.address=0.0.0.0"]
