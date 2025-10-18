@@ -49,10 +49,12 @@ Reports use incremental numbering with format: `relatorio_NNNN_DDMMYYYY_MODO.zip
 - `DDMMYYYY`: Current date
 - `MODO`: "STD" (standard A-E categories) or "H" (helicopter category enabled)
 
+Example: `relatorio_0001_15102025_H.zip`
+
 ### Data Processing Patterns
 - **Column Normalization**: Maps Portuguese column names to English (`"h.evento"` → `"timestamp_utc"`, `"equipamento"` → `"equipamento"`)
 - **Timestamp Parsing**: Vectorized parsing of Portuguese date formats (`2025-janeiro-15 14:30:00` → UTC datetime)
-- **Event Filtering**: 
+- **Event Filtering**:
   - Runway statistics: `{"ARR", "DEP", "TGL"}`
   - ATC totals: `{"ARR", "DEP", "TGL", "QAY", "QAF", "ABA", "ABD", "ACD", "ATN", "LOW", "QRF", "QSO"}`
 - **Helicopter Classification**: Hardcoded list of 47+ models (R22, S76, A109, EC135, etc.) when H-mode enabled
@@ -63,11 +65,33 @@ Reports use incremental numbering with format: `relatorio_NNNN_DDMMYYYY_MODO.zip
 - Async processing with `asyncio.to_thread()` for Excel conversion
 - Real-time logging via callback functions passed to processor
 
+Example job directory structure:
+```
+outputs/job_20251015143022_a1b2c3d4/
+├── tabela1_movimento_percentual_categoria.csv
+├── tabela2_resultado_mix_categoria.csv
+├── tabela3_movimento_mensal_pista.csv
+├── tabela4_percentual_utilizacao_pistas.csv
+├── resumo.txt
+└── charts_data.json
+```
+
 ### Category Loading with Fallbacks
 Aircraft categories loaded from multiple possible paths:
 1. `TATIC_CATEGORIAS_CSV` environment variable
 2. `categorias-A-E.csv` in module/assets directories
 3. Falls back to basic classification if file not found
+
+### Portuguese Date Format Handling
+```python
+# Vectorized month replacement in tatic_processor.py
+meses_map = {
+    'janeiro': '01', 'fevereiro': '02', 'março': '03', 'abril': '04',
+    'maio': '05', 'junho': '06', 'julho': '07', 'agosto': '08',
+    'setembro': '09', 'outubro': '10', 'novembro': '11', 'dezembro': '12'
+}
+# Converts: "2025-janeiro-15 14:30:00" → "2025-01-15 14:30:00"
+```
 
 ## Integration Points
 - **Streamlit**: UI, file uploads, session state, real-time progress display
@@ -90,7 +114,7 @@ Aircraft categories loaded from multiple possible paths:
 3. Verify classification in generated reports
 
 ### Modifying Report Tables
-1. Update table generation logic in `tatic_processor.py` methods
+1. Update table generation logic in `tatic_processor.py` methods like `generate_table1_mca()`
 2. Modify UI options in `app.py` if new parameters needed
 3. Test with sample data and verify ZIP contents
 
@@ -99,6 +123,13 @@ Aircraft categories loaded from multiple possible paths:
 - Examine intermediate CSV files in job output directories
 - Use `pandas.read_excel()` directly for Excel parsing issues
 - Verify column normalization with `normalize_columns()` method
+
+### Adding New Processing Options
+When adding features like helicopter mode or weekend inclusion:
+1. Add parameter to `TATICProcessor.__init__()`
+2. Pass from `app.py` radio buttons to processor instantiation
+3. Update table generation methods (e.g., `generate_table1_mca()`) to respect the flag
+4. Update report naming logic in `gerar_nome_relatorio()`
 
 ## Performance Considerations
 - Vectorized timestamp parsing for large datasets (155k+ records in ~70 seconds)

@@ -5,11 +5,11 @@ services:
     build: .
     image: atc-cap-v2:0.0.1
     ports:
-      - "${APP_PORT}:${APP_PORT}"
+      - "${APP_PORT:-8506}:${APP_PORT:-8506}"
     environment:
       - PYTHONPATH=/app
       - PYTHONUNBUFFERED=1
-      - STREAMLIT_SERVER_PORT=${APP_PORT}
+      - STREAMLIT_SERVER_PORT=${APP_PORT:-8506}
       - STREAMLIT_SERVER_HEADLESS=true
       - STREAMLIT_BROWSER_GATHER_USAGE_STATS=false
     volumes:
