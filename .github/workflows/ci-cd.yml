@@ -35,6 +35,16 @@ jobs:
           python -m pip install --upgrade pip
           pip install -r requirements.txt
 
+      - name: Verificar formatação com Black
+        run: |
+          pip install black
+          black --check .
+
+      - name: Verificar código com Ruff
+        run: |
+          pip install ruff
+          ruff check .
+
       - name: Executar testes com pytest
         run: |
           pip install pytest
