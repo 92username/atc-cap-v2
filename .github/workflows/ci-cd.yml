@@ -83,14 +83,34 @@ jobs:
           username: ${{ secrets.VPS_USER }}
           key: ${{ secrets.VPS_KEY }}
           script: |
-            # Parar e remover container antigo se existir
+            # Fazer backup do container atual
             docker stop ${{ env.APP_NAME }} || true
+            docker commit ${{ env.APP_NAME }} ${{ env.APP_NAME }}:backup.$(date +%s) || true
             docker rm ${{ env.APP_NAME }} || true
             
             # Rodar novo container com a tag dinâmica
             docker run -d \
               --name ${{ env.APP_NAME }} \
+              --restart unless-stopped \
               -p ${{ env.APP_PORT }}:${{ env.APP_PORT }} \
-              --restart=always \
-              -v /var/www/streamlit-reports:/app/reports \
+              -v /root/atc-cap-v2/uploads:/app/uploads \
+              -v /root/atc-cap-v2/outputs:/app/outputs \
+              -v /root/.streamlit:/app/.streamlit \
+              -e STREAMLIT_BROWSER_GATHER_USAGE_STATS=false \
+              -e STREAMLIT_SERVER_ENABLECORS=false \
+              -e STREAMLIT_SERVER_PORT=8506 \
+              -e STREAMLIT_SERVER_HEADLESS=true \
+              -e STREAMLIT_SERVER_MAXUPLOADSIZE=200 \
               ghcr.io/${{ env.REGISTRY_USER }}/tatic-processor:${{ github.run_number }}
+            
+            # Aguardar container iniciar
+            sleep 5
+            
+            # Verificar status
+            if docker ps | grep -q ${{ env.APP_NAME }}; then
+              echo "✅ Deploy realizado com sucesso!"
+              docker logs --tail 10 ${{ env.APP_NAME }}
+            else
+              echo "❌ Erro no deploy!"
+              exit 1
+            fi
