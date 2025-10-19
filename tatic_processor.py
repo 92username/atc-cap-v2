@@ -376,7 +376,7 @@ class TATICProcessor:
             d_total["ano"] = d_total["timestamp_utc"].dt.year
             d_total["mes"] = d_total["timestamp_utc"].dt.month
 
-            # 9. Gerar tabelas conforme Anexo II – MCA 100-26-2 (2025)
+            # 9. Gerar tabelas conforme Anexo II – MCA 100-26 (2025)
             results = {}
 
             # Garantir que o diretório de saída existe
@@ -410,14 +410,14 @@ class TATICProcessor:
             self.log("💾 [SALVO] Tabela 4 – Percentuais de utilização de pistas")
             results['table4'] = table4.to_dict('records')
 
-            # Gerar arquivo resumo conforme MCA 100-26-2
+            # Gerar arquivo resumo conforme MCA 100-26
             resumo_path = output_dir / "resumo.txt"
             with open(resumo_path, "w", encoding="utf-8") as f:
-                f.write("Relatório conforme Anexo II – MCA 100-26-2 (2025)\n")
+                f.write("Relatório conforme Anexo II – MCA 100-26 (2025)\n")
                 f.write("Inclui Tabelas 1 a 4 conforme formato normativo.\n")
                 f.write(f"\nProcessado em: {datetime.now().strftime('%d/%m/%Y %H:%M:%S')}\n")
                 f.write(f"Modo helicópteros: {'Ativado (categoria H)' if self.usar_categoria_H else 'Desativado (categorias A-E)'}\n")
-                f.write(f"Dias analisados na Tabela 1: {'Segunda a Domingo' if self.incluir_finais_de_semana else 'Segunda a Sexta (padrão MCA 100-26-2)'}\n")
+                f.write(f"Dias analisados na Tabela 1: {'Segunda a Domingo' if self.incluir_finais_de_semana else 'Segunda a Sexta (padrão MCA 100-26)'}\n")
             self.log("💾 [SALVO] Resumo do relatório")
 
             # Gerar dados de gráficos (apenas tabelas MCA)
@@ -431,7 +431,7 @@ class TATICProcessor:
             # Estatísticas
             end_time = time.time()
             processing_time = end_time - start_time
-            self.log(f"✅ Processamento concluído conforme MCA 100-26-2! Tempo: {processing_time:.2f}s")
+            self.log(f"✅ Processamento concluído conforme MCA 100-26! Tempo: {processing_time:.2f}s")
 
             return {
                 "success": True,
@@ -456,7 +456,7 @@ class TATICProcessor:
             }
 
     def generate_table1_mca(self, d_rwy: pd.DataFrame) -> pd.DataFrame:
-        """Tabela 1: Movimento percentual por categoria de aeronaves (MCA 100-26-2)"""
+        """Tabela 1: Movimento percentual por categoria de aeronaves (MCA 100-26)"""
         if len(d_rwy) == 0 or 'equipamento' not in d_rwy.columns:
             return pd.DataFrame([{"CAT": "SEM DADOS"}])
 
@@ -471,8 +471,8 @@ class TATICProcessor:
             dias_semana = [0, 1, 2, 3, 4, 5, 6]  # Segunda a Domingo
             dias = ["Segunda", "Terça", "Quarta", "Quinta", "Sexta", "Sábado", "Domingo"]
         else:
-            # Filtrar apenas dias úteis (segunda a sexta) conforme MCA 100-26-2
-            self.log("📅 Considerando apenas Segunda a Sexta (MCA 100-26-2).")
+            # Filtrar apenas dias úteis (segunda a sexta) conforme MCA 100-26
+            self.log("📅 Considerando apenas Segunda a Sexta (MCA 100-26).")
             dias_semana = [0, 1, 2, 3, 4]  # Segunda a Sexta
             dias = ["Segunda", "Terça", "Quarta", "Quinta", "Sexta"]
 
@@ -560,7 +560,7 @@ class TATICProcessor:
         return g[["MES", "RWY 03", "RWY 21", "TOTAL"]]
 
     def generate_table2_mca(self, d_rwy: pd.DataFrame) -> pd.DataFrame:
-        """Tabela 2: Resultado do mix (MCA 100-26-2)"""
+        """Tabela 2: Resultado do mix (MCA 100-26)"""
         if len(d_rwy) == 0 or 'equipamento' not in d_rwy.columns:
             return pd.DataFrame([{"CAT": "SEM DADOS", "MIX": "0%"}])
 
@@ -595,7 +595,7 @@ class TATICProcessor:
         return pd.DataFrame(table_data)
 
     def generate_table3_mca(self, d_rwy: pd.DataFrame) -> pd.DataFrame:
-        """Tabela 3: Movimento mensal por pista (MCA 100-26-2)"""
+        """Tabela 3: Movimento mensal por pista (MCA 100-26)"""
         if len(d_rwy) == 0:
             return pd.DataFrame([{"MES": "SEM DADOS", "RWY 03": 0, "RWY 21": 0, "TOTAL": 0}])
 
@@ -626,7 +626,7 @@ class TATICProcessor:
         return g[["MES", "RWY 03", "RWY 21", "TOTAL"]]
 
     def generate_table4_mca(self, d_rwy: pd.DataFrame) -> pd.DataFrame:
-        """Tabela 4: Percentual de utilização de pistas (MCA 100-26-2)"""
+        """Tabela 4: Percentual de utilização de pistas (MCA 100-26)"""
         if len(d_rwy) == 0:
             return pd.DataFrame([{"PISTA": "03", "PERCENTUAL": "0.0%"},
                                {"PISTA": "21", "PERCENTUAL": "0.0%"}])

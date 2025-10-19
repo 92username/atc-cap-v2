@@ -20,7 +20,7 @@ st.set_page_config(
 def add_sidebar():
     with st.sidebar:
         st.title("📊 TATIC - MCA 100-26")
-        st.warning("⚠️ **Dica:** Exporte os dados diretamente do TATIC em formato bruto, sem aplicar filtros ou fórmulas personalizadas. O aplicativo foi otimizado para processar dados não modificados, garantindo resultados precisos conforme a MCA 100-26.")
+        st.warning("⚠️ **Dica:** Exporte os dados diretamente do TATIC em formato bruto, sem aplicar filtros ou fórmulas personalizadas. O aplicativo foi otimizado para processar dados não modificados, garantindo resultados conforme a MCA 100-26.")
         st.subheader("Como usar este app")
 
         st.markdown("""
@@ -30,8 +30,8 @@ def add_sidebar():
         3. **Clique em "Gerar Relatório"** para processar os dados
         4. **Baixe o relatório** gerado em formato ZIP
 
-        ### 📊 Formato MCA 100-26-2
-        O relatório segue as especificações do **Anexo II da MCA 100-26-2** com as tabelas:
+        ### 📊 Formato MCA 100-26
+        O relatório segue as especificações do **Anexo II da MCA 100-26** com as tabelas:
         - Tabela 1: Movimento percentual por categoria
         - Tabela 2: Resultado do mix
         - Tabela 3: Movimento mensal por pista
@@ -48,7 +48,7 @@ st.title("🛫 Análise de Dados TATIC")
 st.subheader("Processador de Dados de Movimento Aéreo")
 
 st.info("""
-Este aplicativo processa dados TATIC conforme as especificações do **Anexo II da MCA 100-26-2**.
+Este aplicativo processa dados TATIC conforme as especificações do **Anexo II da MCA 100-26**.
 Faça upload do arquivo Excel exportado do TATIC e obtenha as tabelas de análise.
 """)
 
@@ -202,7 +202,7 @@ if st.session_state.relatorio_gerado:
 
         📊 Conforme especificações MCA 100-26-2
         🚁 Categoria H para helicópteros: {"Ativada" if usar_categoria_h else "Desativada"}
-        📅 Dias analisados na Tabela 1: {"Segunda a Domingo (incluindo finais de semana)" if incluir_finais_de_semana else "Segunda a Sexta (padrão MCA 100-26-2)"}
+        📅 Dias analisados na Tabela 1: {"Segunda a Domingo (incluindo finais de semana)" if incluir_finais_de_semana else "Segunda a Sexta (padrão MCA 100-26)"}
         """)
     else:
         st.error("⚠️ Arquivo de relatório não encontrado. Por favor, gere novamente.")
