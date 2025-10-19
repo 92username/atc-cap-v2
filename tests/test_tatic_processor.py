@@ -4,7 +4,6 @@ Basic tests for TATIC Processor
 import os
 import shutil
 import tempfile
-from datetime import datetime
 
 import pandas as pd
 import pytest
@@ -57,10 +56,7 @@ def sample_tatic_df():
 
 def test_tatic_processor_initialization(temp_job_dir):
     """Test that the TATIC processor initializes correctly"""
-    processor = TATICProcessor(
-        usar_categoria_h=False,
-        incluir_finais_de_semana=False
-    )
+    processor = TATICProcessor(usar_categoria_h=False, incluir_finais_de_semana=False)
 
     assert processor.incluir_finais_de_semana is False
     assert hasattr(processor, "output_dir")
@@ -70,16 +66,22 @@ def test_tatic_processor_initialization(temp_job_dir):
 def test_process_weekday_filtering(sample_tatic_df):
     """Test that weekday filtering works correctly"""
     # Create a processor with weekends excluded
-    processor = TATICProcessor(
-        incluir_finais_de_semana=False
-    )
+    processor = TATICProcessor(incluir_finais_de_semana=False)
 
     # Set up the DataFrame to have a mix of weekdays and weekends
-    sample_tatic_df["weekday"] = ["Monday", "Tuesday", "Wednesday", "Saturday", "Sunday"]
+    sample_tatic_df["weekday"] = [
+        "Monday",
+        "Tuesday",
+        "Wednesday",
+        "Saturday",
+        "Sunday",
+    ]
 
     # Test the filtering logic from generate_table1_mca (without actually calling the method)
     if not processor.incluir_finais_de_semana:
-        filtered_df = sample_tatic_df[~sample_tatic_df["weekday"].isin(["Saturday", "Sunday"])]
+        filtered_df = sample_tatic_df[
+            ~sample_tatic_df["weekday"].isin(["Saturday", "Sunday"])
+        ]
     else:
         filtered_df = sample_tatic_df
 
@@ -92,7 +94,9 @@ def test_process_weekday_filtering(sample_tatic_df):
     processor.incluir_finais_de_semana = True
 
     if not processor.incluir_finais_de_semana:
-        filtered_df = sample_tatic_df[~sample_tatic_df["weekday"].isin(["Saturday", "Sunday"])]
+        filtered_df = sample_tatic_df[
+            ~sample_tatic_df["weekday"].isin(["Saturday", "Sunday"])
+        ]
     else:
         filtered_df = sample_tatic_df
 

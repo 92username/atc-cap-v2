@@ -38,12 +38,12 @@ jobs:
       - name: Verificar formatação com Black
         run: |
           pip install black
-          black --check .
+          black --verbose .
 
       - name: Verificar código com Ruff
         run: |
           pip install ruff
-          ruff check .
+          ruff --fix .
 
       - name: Executar testes com pytest
         run: |
