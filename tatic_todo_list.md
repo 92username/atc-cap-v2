@@ -4,9 +4,9 @@
 
 Essas são as primeiras tarefas práticas para retomar o projeto e confirmar que o pipeline funciona do início ao fim.
 
-* [ ] **Testar o pipeline CI/CD completo** (`git push origin main`)
+* [X] **Testar o pipeline CI/CD completo** (`git push origin main`)
   → Verificar se o workflow executa **build → push → deploy** corretamente.
-* [ ] **Validar o container rodando na VPS**:
+* [X] **Validar o container rodando na VPS**:
 
   ```bash
   docker ps
