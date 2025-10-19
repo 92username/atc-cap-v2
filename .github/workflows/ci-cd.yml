@@ -82,7 +82,6 @@ jobs:
           host: ${{ secrets.VPS_HOST }}
           username: ${{ secrets.VPS_USER }}
           key: ${{ secrets.VPS_KEY }}
-          script_stop: all
           script: |
             mkdir -p /root/.streamlit
             cat > /root/.streamlit/config.toml << CONFIGEOF
