@@ -44,7 +44,16 @@ def add_sidebar():
 add_sidebar()
 
 # Interface principal
-st.title("🛫 Análise de Dados TATIC")
+# Título com tag "Experimental" e tooltip
+st.markdown("""
+    <div style="display: flex; justify-content: center; align-items: center; gap: 12px; flex-wrap: wrap;">
+        <h1 style="margin: 0; text-align: center;">🛫 Análise de Dados TATIC</h1>
+        <span style="background-color: #fbdd41; color: #000; padding: 4px 10px; border-radius: 6px; font-weight: 600; font-size: 14px;">
+            Experimental
+        </span>
+    </div>
+""", unsafe_allow_html=True)
+
 st.subheader("Processador de Dados de Movimento Aéreo")
 
 st.info("""
@@ -200,7 +209,7 @@ if st.session_state.relatorio_gerado:
         st.info(f"""
         **💾 Relatório**: {st.session_state.nome_arquivo}
 
-        📊 Conforme especificações MCA 100-26-2
+        📊 Conforme especificações MCA 100-26
         🚁 Categoria H para helicópteros: {"Ativada" if usar_categoria_h else "Desativada"}
         📅 Dias analisados na Tabela 1: {"Segunda a Domingo (incluindo finais de semana)" if incluir_finais_de_semana else "Segunda a Sexta (padrão MCA 100-26)"}
         """)

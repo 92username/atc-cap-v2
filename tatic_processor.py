@@ -431,7 +431,8 @@ class TATICProcessor:
             # Estatísticas
             end_time = time.time()
             processing_time = end_time - start_time
-            self.log(f"✅ Processamento concluído conforme MCA 100-26! Tempo: {processing_time:.2f}s")
+            self.log("✅ Processamento concluído conforme MCA 100-26!")
+            self.log(f"⏳ Tempo Decorrido: {processing_time:.2f}s")
 
             return {
                 "success": True,

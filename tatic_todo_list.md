@@ -12,7 +12,7 @@ Essas são as primeiras tarefas práticas para retomar o projeto e confirmar que
   docker ps
   docker logs tatic-processor
   ```
-* [ ] **Confirmar persistência dos relatórios** (`/var/www/streamlit-reports`): gerar e verificar se o diretório é mantido após reinício do container.
+* [X] **Confirmar persistência dos relatórios** (`/var/www/streamlit-reports`): gerar e verificar se o diretório é mantido após reinício do container.
 
 ---
 
