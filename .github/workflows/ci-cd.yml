@@ -82,13 +82,25 @@ jobs:
           host: ${{ secrets.VPS_HOST }}
           username: ${{ secrets.VPS_USER }}
           key: ${{ secrets.VPS_KEY }}
+          script_stop: all
           script: |
-            # Fazer backup do container atual
+            mkdir -p /root/.streamlit
+            cat > /root/.streamlit/config.toml << CONFIGEOF
+            [theme]
+            primaryColor="#00D9FF"
+            backgroundColor="#000000"
+            secondaryBackgroundColor="#1A1A1A"
+            textColor="#FFFFFF"
+            font="sans serif"
+
+            [client]
+            showErrorDetails=true
+            CONFIGEOF
+
             docker stop ${{ env.APP_NAME }} || true
             docker commit ${{ env.APP_NAME }} ${{ env.APP_NAME }}:backup.$(date +%s) || true
             docker rm ${{ env.APP_NAME }} || true
-            
-            # Rodar novo container com a tag dinâmica
+
             docker run -d \
               --name ${{ env.APP_NAME }} \
               --restart unless-stopped \
@@ -102,11 +114,9 @@ jobs:
               -e STREAMLIT_SERVER_HEADLESS=true \
               -e STREAMLIT_SERVER_MAXUPLOADSIZE=200 \
               ghcr.io/${{ env.REGISTRY_USER }}/tatic-processor:${{ github.run_number }}
-            
-            # Aguardar container iniciar
+
             sleep 5
-            
-            # Verificar status
+
             if docker ps | grep -q ${{ env.APP_NAME }}; then
               echo "✅ Deploy realizado com sucesso!"
               docker logs --tail 10 ${{ env.APP_NAME }}

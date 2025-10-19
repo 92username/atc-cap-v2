@@ -13,9 +13,9 @@ RUN apt-get update && \
         && apt-get clean && \
         rm -rf /var/lib/apt/lists/*
 
-# Create directories for uploads and outputs first
-RUN mkdir -p uploads outputs && \
-    chmod 777 uploads outputs
+# Create directories for uploads, outputs and streamlit config
+RUN mkdir -p uploads outputs .streamlit && \
+    chmod 777 uploads outputs .streamlit
 
 # Copy requirements and install dependencies
 COPY requirements.txt .
@@ -25,8 +25,8 @@ RUN pip install --no-cache-dir -r requirements.txt
 COPY . .
 
 # Guarantee that the directories are not overwritten and have correct permissions
-RUN touch uploads/.keep outputs/.keep && \
-    chmod -R 777 uploads outputs
+RUN touch uploads/.keep outputs/.keep .streamlit/.keep && \
+    chmod -R 777 uploads outputs .streamlit
 
 # Expose Streamlit port
 EXPOSE 8506
@@ -38,7 +38,7 @@ ENV STREAMLIT_BROWSER_GATHER_USAGE_STATS=false \
     STREAMLIT_SERVER_HEADLESS=true
 
 # Volume declaration to ensure data persistence
-VOLUME ["/app/uploads", "/app/outputs"]
+VOLUME ["/app/uploads", "/app/outputs", "/app/.streamlit"]
 
 # Run Streamlit
 CMD ["streamlit", "run", "app.py", "--server.port=8506", "--server.address=0.0.0.0"]
