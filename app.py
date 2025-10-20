@@ -21,28 +21,73 @@ st.set_page_config(
 def add_sidebar():
     with st.sidebar:
         st.title("📊 TATIC - MCA 100-26")
-        st.warning(
-            "⚠️ **Dica:** Exporte os dados diretamente do TATIC em formato bruto, sem aplicar filtros ou fórmulas personalizadas. O aplicativo foi otimizado para processar dados não modificados, garantindo resultados conforme a MCA 100-26."
-        )
-        st.subheader("Como usar este app")
-
+        
+        # Bloco fixo com dica importante em destaque amarelo âmbar
         st.markdown(
             """
-        ### 📋 Instruções:
-        1. **Selecione** se helicópteros devem ser classificados como categoria H
-        2. **Faça upload** do arquivo TATIC (.xlsx)
-        3. **Clique em "Gerar Relatório"** para processar os dados
-        4. **Baixe o relatório** gerado em formato ZIP
-
-        ### 📊 Formato MCA 100-26
-        O relatório segue as especificações do **Anexo II da MCA 100-26** com as tabelas:
-        - Tabela 1: Movimento percentual por categoria
-        - Tabela 2: Resultado do mix
-        - Tabela 3: Movimento mensal por pista
-        - Tabela 4: Percentual de utilização de pistas
-        """
+            <div style="
+                background-color: rgba(255, 193, 7, 0.15);
+                border: 2px solid rgba(255, 193, 7, 0.5);
+                border-radius: 8px;
+                padding: 16px;
+                margin-bottom: 8px;
+            ">
+                <h4 style="margin-top: 0; color: #ffa025;">💡 Dica:</h4>
+                <p style="margin-bottom: 0;">
+                    Exporte os dados <strong>diretamente do TATIC</strong> em formato bruto, sem aplicar filtros ou fórmulas. 
+                    O aplicativo foi otimizado para processar dados não modificados, garantindo resultados conforme a <strong>MCA 100-26</strong>.
+                </p>
+            </div>
+            """,
+            unsafe_allow_html=True
         )
-
+        
+        st.divider()
+        
+        # Dropdown 1: Como exportar o arquivo do TATIC
+        with st.expander("📂 Como exportar o arquivo do TATIC"):
+            st.markdown(
+                """
+                ### No Saipher – TATIC (Módulo Supervisor):
+                
+                **1️⃣ Abra o menu principal**  
+                🧭 *Consultas → Pesquisa Operacional → Movimentos*
+                
+                **2️⃣ Selecione o período de análise**  
+                📅 Escolha o intervalo que cubra **12 meses**, conforme a **MCA 100-26**.
+                
+                **3️⃣ Execute a consulta**  
+                ▶️ Clique em **EXECUTAR** e aguarde o processamento do relatório.
+                
+                **4️⃣ Exporte o resultado**  
+                ⋮ No canto **superior direito**, clique nos **três pontinhos (⋮)**  
+                e escolha **"Exportar para Excel"**.
+                
+                ⚠️ **Observação:** Você pode alterar o nome do arquivo gerado, por ex.: SBJR_Dez2024_Dez2025.xlsx.
+                """
+            )
+        
+        # Dropdown 2: Como usar este app
+        with st.expander("🧭 Como usar este app"):
+            st.markdown(
+                """
+                ### 📋 Instruções de uso:
+                
+                1. **Selecione** se helicópteros devem ser classificados como categoria H
+                2. **Faça upload** do arquivo TATIC (.xlsx)
+                3. **Clique em "Gerar Relatório"** para processar os dados
+                4. **Baixe o relatório** gerado em formato ZIP
+                
+                ### 📊 Formato MCA 100-26
+                
+                O relatório segue as especificações do **Anexo II da MCA 100-26** com as tabelas:
+                - **Tabela 1:** Movimento percentual por categoria
+                - **Tabela 2:** Resultado do mix
+                - **Tabela 3:** Movimento mensal por pista
+                - **Tabela 4:** Percentual de utilização de pistas
+                """
+            )
+        
         st.divider()
         st.caption("© 2025 Tamanduas.dev")
 
