@@ -2,7 +2,7 @@
 
 ## Overview
 
-This system allows you to create scripts locally in VS Code and execute them on the VPS (`147.79.82.234`) via SSH.
+This system allows you to create scripts locally in VS Code and execute them on the VPS via SSH.
 
 ## Quick Start
 
@@ -57,24 +57,6 @@ Check application status and disk usage.
 
 ```bash
 ./scripts/execute_on_vps.sh scripts/status.sh
-```
-
-## Creating Your Own Scripts
-
-### Template
-
-Create a new file in `scripts/` directory:
-
-```bash
-#!/bin/bash
-#
-# My Custom Script
-#
-# Description of what this does
-#
-
-echo "Running my custom script..."
-# Your code here
 ```
 
 ### Rules
