@@ -16,6 +16,17 @@ from typing import Any
 import numpy as np
 import pandas as pd
 
+# ============================================================================
+# PARALELISMO COM PANDARALLEL
+# ============================================================================
+# Tentar importar e inicializar pandarallel para processamento paralelo
+try:
+    from pandarallel import pandarallel
+    pandarallel.initialize(nb_workers=2, progress_bar=False, verbose=0)
+    PARALLEL_ENABLED = True
+except ImportError:
+    PARALLEL_ENABLED = False
+
 
 class TATICProcessor:
     """
@@ -85,6 +96,32 @@ class TATICProcessor:
             r"^\s*(\d{4})-([A-Za-zçãáâéêíóôõúü\-]+)-(\d{1,2})\s+(\d{2}:\d{2}:\d{2})\s*$",
             re.IGNORECASE,
         )
+
+    def _apply_parallel(self, series, func, axis=None):
+        """
+        Aplica uma função a uma Series ou DataFrame com suporte a paralelismo.
+        Se pandarallel estiver disponível, usa parallel_apply; caso contrário, usa apply normal.
+        
+        Args:
+            series: pandas Series ou DataFrame
+            func: função a aplicar
+            axis: eixo para apply (0 ou 1), usado apenas para DataFrames
+        
+        Returns:
+            Series ou DataFrame com resultado da aplicação
+        """
+        if PARALLEL_ENABLED and hasattr(series, 'parallel_apply'):
+            # Usar parallelização
+            if axis is not None:
+                return series.parallel_apply(func, axis=axis)
+            else:
+                return series.parallel_apply(func)
+        else:
+            # Fallback para apply normal
+            if axis is not None:
+                return series.apply(func, axis=axis)
+            else:
+                return series.apply(func)
 
     def gerar_nome_relatorio(self, usar_categoria_h=None):
         """Gera nome de relatório incremental e datado"""
@@ -452,7 +489,8 @@ class TATICProcessor:
             # 3. Normalizações básicas
             self.log("🔧 Aplicando normalizações...")
             d["evento"] = d["evento"].astype(str).str.strip().str.upper()
-            d["pista"] = d["pista"].apply(self.normalize_pista)
+            # Usar paralelismo para normalizar pistas
+            d["pista"] = self._apply_parallel(d["pista"], self.normalize_pista)
 
             self.log(f"📊 Eventos únicos: {sorted(d['evento'].unique())}")
             pistas_unicas = [x for x in d["pista"].unique() if pd.notna(x)]
@@ -560,7 +598,8 @@ class TATICProcessor:
             end_time = time.time()
             processing_time = end_time - start_time
             self.log("✅ Processamento concluído conforme MCA 100-26!")
-            self.log(f"⏳ Tempo Decorrido: {processing_time:.2f}s")
+            # Registrar tempo decorrido em Português
+            self.log(f"⏳ Tempo decorrido: {processing_time:.2f} segundos")
 
             return {
                 "success": True,
@@ -593,7 +632,8 @@ class TATICProcessor:
 
         # Adicionar categoria e dia da semana
         d_rwy = d_rwy.copy()
-        d_rwy["categoria"] = d_rwy["equipamento"].apply(self.get_aircraft_category)
+        # Usar paralelismo para classificar aeronaves por categoria
+        d_rwy["categoria"] = self._apply_parallel(d_rwy["equipamento"], self.get_aircraft_category)
 
         # Selecionar dias conforme configuração
         if self.incluir_finais_de_semana:
@@ -732,7 +772,8 @@ class TATICProcessor:
             return pd.DataFrame([{"CAT": "SEM DADOS", "MIX": "0%"}])
 
         d_rwy = d_rwy.copy()
-        d_rwy["categoria"] = d_rwy["equipamento"].apply(self.get_aircraft_category)
+        # Usar paralelismo para classificar aeronaves por categoria
+        d_rwy["categoria"] = self._apply_parallel(d_rwy["equipamento"], self.get_aircraft_category)
 
         # Filtrar categorias válidas
         categorias = ["A", "B", "C", "D", "E"]
@@ -783,7 +824,8 @@ class TATICProcessor:
         # Label do mês
         multi_year = d_rwy["ano"].nunique() > 1
         if multi_year:
-            g["MES"] = g.apply(lambda x: f"{x['mes']:02d}/{x['ano']}", axis=1)
+            # Usar paralelismo para formatar meses
+            g["MES"] = self._apply_parallel(g, lambda x: f"{x['mes']:02d}/{x['ano']}", axis=1)
         else:
             meses_abrev = {
                 1: "JAN",
@@ -875,7 +917,9 @@ class TATICProcessor:
             d_rwy["wake_category"] = "UNKNOWN"
         else:
             d_rwy = d_rwy.copy()
-            d_rwy["wake_category"] = d_rwy["equipamento"].apply(
+            # Usar paralelismo para extrair categorias de esteira de turbulência
+            d_rwy["wake_category"] = self._apply_parallel(
+                d_rwy["equipamento"],
                 self.extract_wake_turbulence_category
             )
 
@@ -916,7 +960,8 @@ class TATICProcessor:
             return pd.DataFrame([{"CATEGORIA": "SEM DADOS"}])
 
         d_rwy = d_rwy.copy()
-        d_rwy["categoria"] = d_rwy["equipamento"].apply(self.get_aircraft_category)
+        # Usar paralelismo para classificar aeronaves por categoria
+        d_rwy["categoria"] = self._apply_parallel(d_rwy["equipamento"], self.get_aircraft_category)
 
         # Log específico para modo helicóptero
         if self.usar_categoria_H:
@@ -926,7 +971,8 @@ class TATICProcessor:
             )
 
         d_rwy["weekday"] = d_rwy["timestamp_utc"].dt.dayofweek
-        d_rwy["weekday_name"] = d_rwy["weekday"].apply(self.get_weekday_name)
+        # Usar paralelismo para obter nomes dos dias da semana
+        d_rwy["weekday_name"] = self._apply_parallel(d_rwy["weekday"], self.get_weekday_name)
 
         # Filtrar categorias válidas (incluindo H quando aplicável)
         categorias_validas = ["A", "B", "C"]
@@ -969,7 +1015,8 @@ class TATICProcessor:
             return pd.DataFrame([{"CAT": "SEM DADOS", "MIX": "0%"}])
 
         d_rwy = d_rwy.copy()
-        d_rwy["categoria"] = d_rwy["equipamento"].apply(self.get_aircraft_category)
+        # Usar paralelismo para classificar aeronaves por categoria
+        d_rwy["categoria"] = self._apply_parallel(d_rwy["equipamento"], self.get_aircraft_category)
 
         # Filtrar categorias válidas (incluindo H quando aplicável)
         categorias_validas = ["A", "B", "C"]

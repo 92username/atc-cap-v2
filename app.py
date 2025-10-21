@@ -1,4 +1,5 @@
 import os
+import time
 import uuid
 import zipfile
 from datetime import datetime
@@ -8,13 +9,25 @@ import streamlit as st
 
 from tatic_processor import TATICProcessor
 
-# Configuração de página
+# Configuração de página (DEVE SER PRIMEIRO)
 st.set_page_config(
     page_title="TATIC Análise de Dados",
     page_icon="🛫",
     layout="wide",
     initial_sidebar_state="expanded",
 )
+
+# ============================================================================
+# PARALELISMO COM PANDARALLEL
+# ============================================================================
+# Inicializar pandarallel para usar os 2 núcleos disponíveis da VPS
+try:
+    from pandarallel import pandarallel
+    pandarallel.initialize(nb_workers=2, progress_bar=True, verbose=0)
+    parallel_enabled = True
+except ImportError:
+    parallel_enabled = False
+    # Pandarallel não disponível — fallback para modo sequencial
 
 
 # Configuração de barra lateral
@@ -203,6 +216,9 @@ if uploaded_file is not None:
 
     # 🚀 Botão para iniciar processamento
     if st.button("🚀 Gerar Relatório"):
+        # ⏱️ Iniciar cronômetro do clique do usuário
+        tempo_inicio = time.time()
+        
         st.session_state.relatorio_gerado = False
 
         # Criar pasta temporária para o upload
@@ -231,12 +247,16 @@ if uploaded_file is not None:
 
         # Substituir o método de processamento para usar `process_tatic_data`
         try:
-            with st.spinner("Processando os dados..."):
+            with st.spinner("Processando os dados... pode demorar até 3 minutos."):
                 import asyncio
 
-                asyncio.run(processor.process_tatic_data(file_path, output_dir))
+                resultado = asyncio.run(processor.process_tatic_data(file_path, output_dir))
 
             st.success("Processamento concluído!")
+
+            # ⏱️ Calcular tempo total desde o clique do usuário
+            tempo_total = time.time() - tempo_inicio
+            st.info(f"⏳ Tempo decorrido: {tempo_total:.2f} segundos")
 
             # Gerar nome do relatório e arquivo ZIP
             nome_arquivo = processor.gerar_nome_relatorio(usar_categoria_h)
