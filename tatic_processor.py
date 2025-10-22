@@ -123,6 +123,53 @@ class TATICProcessor:
             else:
                 return series.apply(func)
 
+    def _sync_file(self, file_path):
+        """
+        Sincroniza um arquivo com o disco para garantir que foi escrito.
+        Essencial quando usando asyncio para evitar race conditions.
+        
+        Args:
+            file_path: Path ou string do arquivo a sincronizar
+        """
+        try:
+            file_path = Path(file_path)
+            if file_path.exists():
+                # Fazer fsync no arquivo aberto
+                with open(file_path, 'r') as f:
+                    os.fsync(f.fileno())
+        except Exception:
+            # Silenciosamente ignorar erros de sync
+            # (nem todos os filesystems suportam fsync)
+            pass
+
+    def _sync_directory(self, dir_path):
+        """
+        Sincroniza um diretório inteiro com o disco.
+        Garante que todos os arquivos dentro foram de fato escritos.
+        
+        Args:
+            dir_path: Path ou string do diretório a sincronizar
+        """
+        try:
+            dir_path = Path(dir_path)
+            if dir_path.exists():
+                # Sincronizar cada arquivo no diretório
+                for file in dir_path.iterdir():
+                    if file.is_file():
+                        self._sync_file(file)
+                
+                # Sincronizar o próprio diretório
+                # Abrir e fazer fsync para garantir metadados
+                try:
+                    fd = os.open(str(dir_path), os.O_RDONLY)
+                    os.fsync(fd)
+                    os.close(fd)
+                except Exception:
+                    # Em alguns sistemas, pode não ser possível fazer fsync em diretório
+                    pass
+        except Exception as e:
+            self.log(f"⚠️ Aviso ao sincronizar diretório {dir_path}: {e}")
+
     def gerar_nome_relatorio(self, usar_categoria_h=None):
         """Gera nome de relatório incremental e datado"""
         if usar_categoria_h is None:
@@ -544,6 +591,7 @@ class TATICProcessor:
             table1 = self.generate_table1_mca(d_rwy)
             table1_path = output_dir / "tabela1_movimento_percentual_categoria.csv"
             table1.to_csv(table1_path, index=False)
+            self._sync_file(table1_path)
             self.log("💾 [SALVO] Tabela 1 – Movimento percentual por categoria")
             results["table1"] = table1.to_dict("records")
 
@@ -551,6 +599,7 @@ class TATICProcessor:
             table2 = self.generate_table2_mca(d_rwy)
             table2_path = output_dir / "tabela2_resultado_mix_categoria.csv"
             table2.to_csv(table2_path, index=False)
+            self._sync_file(table2_path)
             self.log("💾 [SALVO] Tabela 2 – Resultado do mix")
             results["table2"] = table2.to_dict("records")
 
@@ -558,6 +607,7 @@ class TATICProcessor:
             table3 = self.generate_table3_mca(d_rwy)
             table3_path = output_dir / "tabela3_movimento_mensal_pista.csv"
             table3.to_csv(table3_path, index=False)
+            self._sync_file(table3_path)
             self.log("💾 [SALVO] Tabela 3 – Movimento mensal por pista")
             results["table3"] = table3.to_dict("records")
 
@@ -565,6 +615,7 @@ class TATICProcessor:
             table4 = self.generate_table4_mca(d_rwy)
             table4_path = output_dir / "tabela4_percentual_utilizacao_pistas.csv"
             table4.to_csv(table4_path, index=False)
+            self._sync_file(table4_path)
             self.log("💾 [SALVO] Tabela 4 – Percentuais de utilização de pistas")
             results["table4"] = table4.to_dict("records")
 
@@ -582,6 +633,7 @@ class TATICProcessor:
                 f.write(
                     f"Dias analisados na Tabela 1: {'Segunda a Domingo' if self.incluir_finais_de_semana else 'Segunda a Sexta (padrão MCA 100-26)'}\n"
                 )
+            self._sync_file(resumo_path)
             self.log("💾 [SALVO] Resumo do relatório")
 
             # Gerar dados de gráficos (apenas tabelas MCA)
@@ -591,6 +643,7 @@ class TATICProcessor:
                     output_dir / "charts_data.json", "w", encoding="utf-8"
                 ) as chart_file:
                     json.dump(charts_data, chart_file, ensure_ascii=False, indent=2)
+                self._sync_file(output_dir / "charts_data.json")
             except Exception as chart_exc:
                 self.log(f"Erro ao escrever charts_data.json: {chart_exc}")
 
@@ -600,6 +653,15 @@ class TATICProcessor:
             self.log("✅ Processamento concluído conforme MCA 100-26!")
             # Registrar tempo decorrido em Português
             self.log(f"⏳ Tempo decorrido: {processing_time:.2f} segundos")
+
+            # 🔧 CRÍTICO: Sincronizar diretório com o disco
+            # Isso garante que todos os arquivos foram de fato escritos ao disco
+            # Essencial quando usando asyncio para evitar race conditions
+            self._sync_directory(output_dir)
+            
+            # Pequeno delay para garantir que o SO completou todas as operações
+            import time as time_module
+            time_module.sleep(0.5)
 
             return {
                 "success": True,

@@ -193,9 +193,28 @@ def gerar_zip_de_relatorio(job_output_dir: str, nome_arquivo: str):
     if os.path.exists(zip_path):
         try:
             with zipfile.ZipFile(zip_path, "r") as zipf:
-                for item in zipf.namelist():
+                items = zipf.namelist()
+                print(f"[DEBUG ZIP] Total de arquivos no ZIP: {len(items)}")
+                for item in items:
                     print(f"[DEBUG ZIP] - {item}")
-            print(f"[DEBUG ZIP] Tamanho do ZIP: {os.path.getsize(zip_path)} bytes")
+            file_size = os.path.getsize(zip_path)
+            print(f"[DEBUG ZIP] Tamanho do ZIP: {file_size} bytes")
+            
+            # ⚠️ AVISO: Se ZIP tem menos de 100 bytes, está praticamente vazio
+            if file_size < 100:
+                print(f"[DEBUG ZIP] ⚠️ AVISO: ZIP vazio ou quase vazio! Tamanho: {file_size} bytes")
+                print(f"[DEBUG ZIP] Tentando re-criar ZIP...")
+                # Tentar novamente com pequeno delay
+                import time as time_module
+                time_module.sleep(1)
+                with zipfile.ZipFile(zip_path, "w", zipfile.ZIP_DEFLATED) as zipf:
+                    for root, _dirs, files in os.walk(job_output_dir):
+                        for file in files:
+                            if not file.endswith(".zip"):
+                                abs_path = os.path.join(root, file)
+                                rel_path = os.path.relpath(abs_path, job_output_dir)
+                                zipf.write(abs_path, arcname=rel_path)
+                                print(f"[DEBUG ZIP] Re-adicionado ao ZIP: {rel_path}")
         except zipfile.BadZipFile:
             print("[DEBUG ZIP] ERRO: ZIP vazio ou corrompido!")
     else:
@@ -257,6 +276,23 @@ if uploaded_file is not None:
             # ⏱️ Calcular tempo total desde o clique do usuário
             tempo_total = time.time() - tempo_inicio
             st.info(f"⏳ Tempo decorrido: {tempo_total:.2f} segundos")
+
+            # 🔧 CRÍTICO: Pequeno delay para garantir que todos os arquivos foram
+            # sincronizados com o disco pelo sistema operacional
+            time.sleep(1)
+
+            # 🔍 DEBUG: Verificar se os arquivos foram realmente criados
+            output_dir_str = str(output_dir)
+            print(f"\n[DEBUG APP] Verificando arquivos em: {output_dir_str}")
+            if os.path.exists(output_dir_str):
+                files_in_dir = list(os.listdir(output_dir_str))
+                print(f"[DEBUG APP] Arquivos encontrados: {len(files_in_dir)}")
+                for f in files_in_dir:
+                    file_path = os.path.join(output_dir_str, f)
+                    file_size = os.path.getsize(file_path)
+                    print(f"[DEBUG APP]   - {f}: {file_size} bytes")
+            else:
+                print(f"[DEBUG APP] ERRO: Diretório não existe: {output_dir_str}")
 
             # Gerar nome do relatório e arquivo ZIP
             nome_arquivo = processor.gerar_nome_relatorio(usar_categoria_h)
