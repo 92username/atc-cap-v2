@@ -5,13 +5,11 @@ Script de teste para verificar se o problema do ZIP vazio foi resolvido
 
 import os
 import sys
+import tempfile
 import time
 import zipfile
-import tempfile
-import shutil
 from pathlib import Path
 
-# Adicionar o diretório ao path
 sys.path.insert(0, os.path.dirname(__file__))
 
 from tatic_processor import TATICProcessor
@@ -143,11 +141,11 @@ def test_file_sync():
 
         # Verificar
         if test_file.exists():
-            print(f"✅ Arquivo sincronizado com sucesso")
+            print("✅ Arquivo sincronizado com sucesso")
             print(f"   Tamanho: {test_file.stat().st_size} bytes")
             return True
         else:
-            print(f"❌ Arquivo não encontrado após sincronização")
+            print("❌ Arquivo não encontrado após sincronização")
             return False
 
 

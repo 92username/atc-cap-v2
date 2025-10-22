@@ -134,7 +134,7 @@ class TATICProcessor:
             file_path = Path(file_path)
             if file_path.exists():
                 # Fazer fsync no arquivo aberto
-                with open(file_path, "r") as f:
+                with open(file_path) as f:
                     os.fsync(f.fileno())
         except Exception:
             # Silenciosamente ignorar erros de sync

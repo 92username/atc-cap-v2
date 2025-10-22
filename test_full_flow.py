@@ -7,10 +7,11 @@ Simula o fluxo que acontece no Streamlit
 import os
 import sys
 import time
-import zipfile
-from pathlib import Path
-from datetime import datetime
+import traceback
 import uuid
+import zipfile
+from datetime import datetime
+from pathlib import Path
 
 sys.path.insert(0, os.path.dirname(__file__))
 
@@ -110,7 +111,7 @@ def test_full_processing():
         tempo_processamento = time.time() - tempo_inicio
 
         if resultado.get("success"):
-            print(f"\n✅ Processamento concluído com sucesso!")
+            print("\n✅ Processamento concluído com sucesso!")
             print(f"   Tempo: {tempo_processamento:.2f} segundos")
             print(f"   Movimentos ATC: {resultado['statistics']['atc_movements']}")
             print(f"   Movimentos de pista: {resultado['statistics']['runway_movements']}")
@@ -157,7 +158,7 @@ def test_full_processing():
     print("\n✅ ZIP criado com sucesso!")
 
     # Verificar ZIP
-    print(f"\n🔍 Verificando conteúdo final do ZIP...")
+    print("\n🔍 Verificando conteúdo final do ZIP...")
     try:
         with zipfile.ZipFile(zip_path, "r") as zipf:
             items = zipf.namelist()
@@ -165,12 +166,12 @@ def test_full_processing():
                 print("❌ ZIP está vazio!")
                 return False
             print(f"✅ ZIP contém {len(items)} arquivos")
-    except:
+    except Exception:
         print("❌ Não foi possível abrir o ZIP")
         return False
 
-    print(f"\n✅ TESTE COMPLETO PASSOU!")
-    print(f"\n📁 Arquivos gerados em:")
+    print("\n✅ TESTE COMPLETO PASSOU!")
+    print("\n📁 Arquivos gerados em:")
     print(f"   Processamento: {output_dir}/")
     print(f"   ZIP: {zip_path}")
 
@@ -195,7 +196,5 @@ if __name__ == "__main__":
 
     except Exception as e:
         print(f"\n❌ Erro crítico: {e}")
-        import traceback
-
         traceback.print_exc()
         sys.exit(1)

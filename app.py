@@ -48,7 +48,7 @@ def add_sidebar():
             ">
                 <h4 style="margin-top: 0; color: #ffa025;">💡 Dica:</h4>
                 <p style="margin-bottom: 0;">
-                    Exporte os dados <strong>diretamente do TATIC</strong> em formato bruto, sem aplicar filtros ou fórmulas. 
+                    Exporte os dados <strong>diretamente do TATIC</strong> em formato bruto, sem aplicar filtros ou fórmulas.
                     O aplicativo foi otimizado para processar dados não modificados, garantindo resultados conforme a <strong>MCA 100-26</strong>.
                 </p>
             </div>
@@ -63,20 +63,20 @@ def add_sidebar():
             st.markdown(
                 """
                 ### No Saipher – TATIC (Módulo Supervisor):
-                
-                **1️⃣ Abra o menu principal**  
+
+                **1️⃣ Abra o menu principal**
                 🧭 *Consultas → Pesquisa Operacional → Movimentos*
-                
-                **2️⃣ Selecione o período de análise**  
+
+                **2️⃣ Selecione o período de análise**
                 📅 Escolha o intervalo que cubra **12 meses**, conforme a **MCA 100-26**.
-                
-                **3️⃣ Execute a consulta**  
+
+                **3️⃣ Execute a consulta**
                 ▶️ Clique em **EXECUTAR** e aguarde o processamento do relatório.
-                
-                **4️⃣ Exporte o resultado**  
-                ⋮ No canto **superior direito**, clique nos **três pontinhos (⋮)**  
+
+                **4️⃣ Exporte o resultado**
+                ⋮ No canto **superior direito**, clique nos **três pontinhos (⋮)**
                 e escolha **"Exportar para Excel"**.
-                
+
                 ⚠️ **Observação:** Você pode alterar o nome do arquivo gerado, por ex.: SBJR_Dez2024_Dez2025.xlsx.
                 """
             )
@@ -86,14 +86,14 @@ def add_sidebar():
             st.markdown(
                 """
                 ### 📋 Instruções de uso:
-                
+
                 1. **Selecione** se helicópteros devem ser classificados como categoria H
                 2. **Faça upload** do arquivo TATIC (.xlsx)
                 3. **Clique em "Gerar Relatório"** para processar os dados
                 4. **Baixe o relatório** gerado em formato ZIP
-                
+
                 ### 📊 Formato MCA 100-26
-                
+
                 O relatório segue as especificações do **Anexo II da MCA 100-26** com as tabelas:
                 - **Tabela 1:** Movimento percentual por categoria
                 - **Tabela 2:** Resultado do mix
@@ -204,7 +204,7 @@ def gerar_zip_de_relatorio(job_output_dir: str, nome_arquivo: str):
             # ⚠️ AVISO: Se ZIP tem menos de 100 bytes, está praticamente vazio
             if file_size < 100:
                 print(f"[DEBUG ZIP] ⚠️ AVISO: ZIP vazio ou quase vazio! Tamanho: {file_size} bytes")
-                print(f"[DEBUG ZIP] Tentando re-criar ZIP...")
+                print("[DEBUG ZIP] Tentando re-criar ZIP...")
                 # Tentar novamente com pequeno delay
                 import time as time_module
 

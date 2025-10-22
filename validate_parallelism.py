@@ -12,7 +12,7 @@ from pathlib import Path
 def check_file_content(filepath, search_string, description):
     """Verifica se um arquivo contém uma string específica"""
     try:
-        with open(filepath, "r", encoding="utf-8") as f:
+        with open(filepath, encoding="utf-8") as f:
             content = f.read()
             if search_string in content:
                 print(f"✅ {description}")
@@ -138,15 +138,15 @@ def main():
     print("\n📜 Verificando scripts...")
     script_path = base_path / "scripts" / "test_parallelism.sh"
     if script_path.exists():
-        print(f"✅ Script test_parallelism.sh encontrado")
+        print("✅ Script test_parallelism.sh encontrado")
         if os.access(script_path, os.X_OK):
-            print(f"✅ Script é executável")
+            print("✅ Script é executável")
             checks.append(True)
         else:
-            print(f"⚠️  Script não é executável")
+            print("⚠️  Script não é executável")
             checks.append(False)
     else:
-        print(f"❌ Script test_parallelism.sh não encontrado")
+        print("❌ Script test_parallelism.sh não encontrado")
         checks.append(False)
 
     # Resumo
