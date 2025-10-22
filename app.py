@@ -23,6 +23,7 @@ st.set_page_config(
 # Inicializar pandarallel para usar os 2 núcleos disponíveis da VPS
 try:
     from pandarallel import pandarallel
+
     pandarallel.initialize(nb_workers=2, progress_bar=True, verbose=0)
     parallel_enabled = True
 except ImportError:
@@ -34,7 +35,7 @@ except ImportError:
 def add_sidebar():
     with st.sidebar:
         st.title("📊 TATIC - MCA 100-26")
-        
+
         # Bloco fixo com dica importante em destaque amarelo âmbar
         st.markdown(
             """
@@ -52,11 +53,11 @@ def add_sidebar():
                 </p>
             </div>
             """,
-            unsafe_allow_html=True
+            unsafe_allow_html=True,
         )
-        
+
         st.divider()
-        
+
         # Dropdown 1: Como exportar o arquivo do TATIC
         with st.expander("📂 Como exportar o arquivo do TATIC"):
             st.markdown(
@@ -79,7 +80,7 @@ def add_sidebar():
                 ⚠️ **Observação:** Você pode alterar o nome do arquivo gerado, por ex.: SBJR_Dez2024_Dez2025.xlsx.
                 """
             )
-        
+
         # Dropdown 2: Como usar este app
         with st.expander("🧭 Como usar este app"):
             st.markdown(
@@ -100,7 +101,7 @@ def add_sidebar():
                 - **Tabela 4:** Percentual de utilização de pistas
                 """
             )
-        
+
         st.divider()
         st.caption("© 2025 Tamanduas.dev")
 
@@ -199,13 +200,14 @@ def gerar_zip_de_relatorio(job_output_dir: str, nome_arquivo: str):
                     print(f"[DEBUG ZIP] - {item}")
             file_size = os.path.getsize(zip_path)
             print(f"[DEBUG ZIP] Tamanho do ZIP: {file_size} bytes")
-            
+
             # ⚠️ AVISO: Se ZIP tem menos de 100 bytes, está praticamente vazio
             if file_size < 100:
                 print(f"[DEBUG ZIP] ⚠️ AVISO: ZIP vazio ou quase vazio! Tamanho: {file_size} bytes")
                 print(f"[DEBUG ZIP] Tentando re-criar ZIP...")
                 # Tentar novamente com pequeno delay
                 import time as time_module
+
                 time_module.sleep(1)
                 with zipfile.ZipFile(zip_path, "w", zipfile.ZIP_DEFLATED) as zipf:
                     for root, _dirs, files in os.walk(job_output_dir):
@@ -237,7 +239,7 @@ if uploaded_file is not None:
     if st.button("🚀 Gerar Relatório"):
         # ⏱️ Iniciar cronômetro do clique do usuário
         tempo_inicio = time.time()
-        
+
         st.session_state.relatorio_gerado = False
 
         # Criar pasta temporária para o upload

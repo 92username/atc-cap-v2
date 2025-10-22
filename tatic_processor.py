@@ -22,6 +22,7 @@ import pandas as pd
 # Tentar importar e inicializar pandarallel para processamento paralelo
 try:
     from pandarallel import pandarallel
+
     pandarallel.initialize(nb_workers=2, progress_bar=False, verbose=0)
     PARALLEL_ENABLED = True
 except ImportError:
@@ -34,9 +35,7 @@ class TATICProcessor:
     Baseado no código que funcionava perfeitamente localmente
     """
 
-    def __init__(
-        self, usar_categoria_h=False, incluir_finais_de_semana=False, log_callback=None
-    ):
+    def __init__(self, usar_categoria_h=False, incluir_finais_de_semana=False, log_callback=None):
         self.usar_categoria_H = usar_categoria_h
         self.incluir_finais_de_semana = incluir_finais_de_semana
         self.log_callback = log_callback or (lambda msg: None)
@@ -101,16 +100,16 @@ class TATICProcessor:
         """
         Aplica uma função a uma Series ou DataFrame com suporte a paralelismo.
         Se pandarallel estiver disponível, usa parallel_apply; caso contrário, usa apply normal.
-        
+
         Args:
             series: pandas Series ou DataFrame
             func: função a aplicar
             axis: eixo para apply (0 ou 1), usado apenas para DataFrames
-        
+
         Returns:
             Series ou DataFrame com resultado da aplicação
         """
-        if PARALLEL_ENABLED and hasattr(series, 'parallel_apply'):
+        if PARALLEL_ENABLED and hasattr(series, "parallel_apply"):
             # Usar parallelização
             if axis is not None:
                 return series.parallel_apply(func, axis=axis)
@@ -127,7 +126,7 @@ class TATICProcessor:
         """
         Sincroniza um arquivo com o disco para garantir que foi escrito.
         Essencial quando usando asyncio para evitar race conditions.
-        
+
         Args:
             file_path: Path ou string do arquivo a sincronizar
         """
@@ -135,7 +134,7 @@ class TATICProcessor:
             file_path = Path(file_path)
             if file_path.exists():
                 # Fazer fsync no arquivo aberto
-                with open(file_path, 'r') as f:
+                with open(file_path, "r") as f:
                     os.fsync(f.fileno())
         except Exception:
             # Silenciosamente ignorar erros de sync
@@ -146,7 +145,7 @@ class TATICProcessor:
         """
         Sincroniza um diretório inteiro com o disco.
         Garante que todos os arquivos dentro foram de fato escritos.
-        
+
         Args:
             dir_path: Path ou string do diretório a sincronizar
         """
@@ -157,7 +156,7 @@ class TATICProcessor:
                 for file in dir_path.iterdir():
                     if file.is_file():
                         self._sync_file(file)
-                
+
                 # Sincronizar o próprio diretório
                 # Abrir e fazer fsync para garantir metadados
                 try:
@@ -314,9 +313,7 @@ class TATICProcessor:
     def strip_accents(self, s: str) -> str:
         """Remove acentos de strings"""
         return "".join(
-            c
-            for c in unicodedata.normalize("NFD", s)
-            if unicodedata.category(c) != "Mn"
+            c for c in unicodedata.normalize("NFD", s) if unicodedata.category(c) != "Mn"
         )
 
     def detect_and_read_csv(self, file_path: Path) -> pd.DataFrame:
@@ -338,9 +335,7 @@ class TATICProcessor:
         encodings = ["utf-8", "latin-1", "cp1252", "iso-8859-1"]
         for encoding in encodings:
             try:
-                df = pd.read_csv(
-                    file_path, sep=None, engine="python", encoding=encoding
-                )
+                df = pd.read_csv(file_path, sep=None, engine="python", encoding=encoding)
                 self.log(f"✅ CSV lido com {encoding}. Shape: {df.shape}")
                 return df
             except UnicodeDecodeError:
@@ -407,9 +402,7 @@ class TATICProcessor:
         }
 
         for mes_nome, mes_num in meses_map.items():
-            str_series = str_series.str.replace(
-                f"-{mes_nome}-", f"-{mes_num}-", regex=False
-            )
+            str_series = str_series.str.replace(f"-{mes_nome}-", f"-{mes_num}-", regex=False)
 
         # Parse com pandas
         result = pd.to_datetime(str_series, format="%Y-%m-%d %H:%M:%S", errors="coerce")
@@ -467,9 +460,7 @@ class TATICProcessor:
         # Processar formato CODIGO/WAKE ou CODIGOWAKE
         if "/" in aircraft_str:
             aircraft_type = aircraft_str.split("/")[0]
-            wake_part = (
-                aircraft_str.split("/")[1] if len(aircraft_str.split("/")) > 1 else ""
-            )
+            wake_part = aircraft_str.split("/")[1] if len(aircraft_str.split("/")) > 1 else ""
         elif aircraft_str[-1] in ["L", "M", "H"] and len(aircraft_str) > 1:
             # Formato CODIGOL, CODIGOM, CODIGOH
             aircraft_type = aircraft_str[:-1]
@@ -484,14 +475,10 @@ class TATICProcessor:
 
         # Tentar na tabela de categorias
         if not self.categorias_df.empty:
-            match = self.categorias_df[
-                self.categorias_df["Aeronave"].str.upper() == aircraft_type
-            ]
+            match = self.categorias_df[self.categorias_df["Aeronave"].str.upper() == aircraft_type]
             if not match.empty:
                 categoria = match.iloc[0]["Categoria"]
-                return (
-                    categoria.replace("CAT ", "") if "CAT" in categoria else categoria
-                )
+                return categoria.replace("CAT ", "") if "CAT" in categoria else categoria
 
         # Fallback para esteira de turbulência
         if wake_part:
@@ -555,9 +542,7 @@ class TATICProcessor:
             # 5. Forward-fill seletivo em pistas
             self.log("🛬 Aplicando forward-fill...")
             mask_requer_pista = d["evento"].isin(self.EVENTOS_REQUER_PISTA)
-            d.loc[mask_requer_pista, "pista"] = d.loc[
-                mask_requer_pista, "pista"
-            ].ffill()
+            d.loc[mask_requer_pista, "pista"] = d.loc[mask_requer_pista, "pista"].ffill()
 
             # 6. Excluir eventos desnecessários
             d_clean = d[~d["evento"].isin(self.EVENTOS_EXCLUIR)].copy()
@@ -565,8 +550,7 @@ class TATICProcessor:
             # 7. Separar por categorias
             d_total = d_clean[d_clean["evento"].isin(self.EVENTOS_ATC_TOTAL)].copy()
             d_rwy = d_clean[
-                (d_clean["evento"].isin(self.EVENTOS_PISTA))
-                & (d_clean["pista"].isin({"03", "21"}))
+                (d_clean["evento"].isin(self.EVENTOS_PISTA)) & (d_clean["pista"].isin({"03", "21"}))
             ].copy()
 
             self.log(f"📊 Movimentos ATC total: {len(d_total)}")
@@ -575,9 +559,7 @@ class TATICProcessor:
             # 8. Extrair ano/mês/dia da semana
             d_rwy["ano"] = d_rwy["timestamp_utc"].dt.year
             d_rwy["mes"] = d_rwy["timestamp_utc"].dt.month
-            d_rwy["weekday"] = d_rwy[
-                "timestamp_utc"
-            ].dt.dayofweek  # Adicionando dia da semana
+            d_rwy["weekday"] = d_rwy["timestamp_utc"].dt.dayofweek  # Adicionando dia da semana
             d_total["ano"] = d_total["timestamp_utc"].dt.year
             d_total["mes"] = d_total["timestamp_utc"].dt.month
 
@@ -624,9 +606,7 @@ class TATICProcessor:
             with open(resumo_path, "w", encoding="utf-8") as f:
                 f.write("Relatório conforme Anexo II – MCA 100-26 (2025)\n")
                 f.write("Inclui Tabelas 1 a 4 conforme formato normativo.\n")
-                f.write(
-                    f"\nProcessado em: {datetime.now().strftime('%d/%m/%Y %H:%M:%S')}\n"
-                )
+                f.write(f"\nProcessado em: {datetime.now().strftime('%d/%m/%Y %H:%M:%S')}\n")
                 f.write(
                     f"Modo helicópteros: {'Ativado (categoria H)' if self.usar_categoria_H else 'Desativado (categorias A-E)'}\n"
                 )
@@ -639,9 +619,7 @@ class TATICProcessor:
             # Gerar dados de gráficos (apenas tabelas MCA)
             charts_data = self._build_charts_data_mca(table1, table2, table3, table4)
             try:
-                with open(
-                    output_dir / "charts_data.json", "w", encoding="utf-8"
-                ) as chart_file:
+                with open(output_dir / "charts_data.json", "w", encoding="utf-8") as chart_file:
                     json.dump(charts_data, chart_file, ensure_ascii=False, indent=2)
                 self._sync_file(output_dir / "charts_data.json")
             except Exception as chart_exc:
@@ -658,9 +636,10 @@ class TATICProcessor:
             # Isso garante que todos os arquivos foram de fato escritos ao disco
             # Essencial quando usando asyncio para evitar race conditions
             self._sync_directory(output_dir)
-            
+
             # Pequeno delay para garantir que o SO completou todas as operações
             import time as time_module
+
             time_module.sleep(0.5)
 
             return {
@@ -784,9 +763,7 @@ class TATICProcessor:
     def generate_table2(self, d_rwy: pd.DataFrame) -> pd.DataFrame:
         """Tabela 2: Movimentos por Pista"""
         if len(d_rwy) == 0:
-            return pd.DataFrame(
-                [{"MES": "SEM DADOS", "RWY 03": 0, "RWY 21": 0, "TOTAL": 0}]
-            )
+            return pd.DataFrame([{"MES": "SEM DADOS", "RWY 03": 0, "RWY 21": 0, "TOTAL": 0}])
 
         # Agrupar por ano, mês, pista
         g = (
@@ -864,9 +841,7 @@ class TATICProcessor:
     def generate_table3_mca(self, d_rwy: pd.DataFrame) -> pd.DataFrame:
         """Tabela 3: Movimento mensal por pista (MCA 100-26)"""
         if len(d_rwy) == 0:
-            return pd.DataFrame(
-                [{"MES": "SEM DADOS", "RWY 03": 0, "RWY 21": 0, "TOTAL": 0}]
-            )
+            return pd.DataFrame([{"MES": "SEM DADOS", "RWY 03": 0, "RWY 21": 0, "TOTAL": 0}])
 
         # Agrupar por ano, mês, pista
         g = (
@@ -970,9 +945,7 @@ class TATICProcessor:
     def generate_table4(self, d_rwy: pd.DataFrame) -> pd.DataFrame:
         """Tabela 4: Classificação de Esteira de Turbulência"""
         if len(d_rwy) == 0:
-            return pd.DataFrame(
-                [{"CATEGORIA": "SEM DADOS", "MOVIMENTOS": 0, "PERCENTUAL": "0%"}]
-            )
+            return pd.DataFrame([{"CATEGORIA": "SEM DADOS", "MOVIMENTOS": 0, "PERCENTUAL": "0%"}])
 
         # Extrair categorias
         if "equipamento" not in d_rwy.columns:
@@ -981,8 +954,7 @@ class TATICProcessor:
             d_rwy = d_rwy.copy()
             # Usar paralelismo para extrair categorias de esteira de turbulência
             d_rwy["wake_category"] = self._apply_parallel(
-                d_rwy["equipamento"],
-                self.extract_wake_turbulence_category
+                d_rwy["equipamento"], self.extract_wake_turbulence_category
             )
 
         # Contar por categoria
@@ -1028,9 +1000,7 @@ class TATICProcessor:
         # Log específico para modo helicóptero
         if self.usar_categoria_H:
             qtd_heli = len(d_rwy[d_rwy["categoria"] == "H"])
-            self.log(
-                f"🚁 Modo H ativo — {qtd_heli} helicópteros reclassificados como Categoria H."
-            )
+            self.log(f"🚁 Modo H ativo — {qtd_heli} helicópteros reclassificados como Categoria H.")
 
         d_rwy["weekday"] = d_rwy["timestamp_utc"].dt.dayofweek
         # Usar paralelismo para obter nomes dos dias da semana
@@ -1046,11 +1016,7 @@ class TATICProcessor:
             return pd.DataFrame([{"CATEGORIA": "SEM DADOS"}])
 
         # Agrupar por categoria e dia da semana
-        grouped = (
-            d_filtered.groupby(["categoria", "weekday_name"])
-            .size()
-            .reset_index(name="count")
-        )
+        grouped = d_filtered.groupby(["categoria", "weekday_name"]).size().reset_index(name="count")
         pivot_table = grouped.pivot(
             index="categoria", columns="weekday_name", values="count"
         ).fillna(0)
@@ -1087,9 +1053,7 @@ class TATICProcessor:
         d_filtered = d_rwy[d_rwy["categoria"].isin(categorias_validas)].copy()
 
         # Log das categorias únicas antes do mix
-        self.log(
-            f"Categorias únicas antes do mix: {d_filtered['categoria'].unique().tolist()}"
-        )
+        self.log(f"Categorias únicas antes do mix: {d_filtered['categoria'].unique().tolist()}")
 
         if len(d_filtered) == 0:
             return pd.DataFrame([{"CAT": "SEM DADOS", "MIX": "0%"}])
@@ -1131,9 +1095,7 @@ class TATICProcessor:
             "mix_categoria": {
                 "labels": _col_values(table2, "CAT"),
                 "data": [
-                    float(x.replace("%", ""))
-                    for x in _col_values(table2, "MIX")
-                    if x != "100.0%"
+                    float(x.replace("%", "")) for x in _col_values(table2, "MIX") if x != "100.0%"
                 ],
                 "description": "Resultado do mix (Tabela 2)",
             },
@@ -1194,8 +1156,7 @@ class TATICProcessor:
                 "datasets": [],
             },
             "mix_categoria": {
-                "labels": _col_values(table6, "CAT")
-                or _col_values(table6, "CATEGORIA"),
+                "labels": _col_values(table6, "CAT") or _col_values(table6, "CATEGORIA"),
                 "data": _col_values(table6, "TOTAL"),
             },
         }
