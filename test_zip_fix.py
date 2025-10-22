@@ -10,9 +10,9 @@ import time
 import zipfile
 from pathlib import Path
 
-sys.path.insert(0, os.path.dirname(__file__))
-
 from tatic_processor import TATICProcessor
+
+sys.path.insert(0, os.path.dirname(__file__))
 
 
 def test_zip_creation():

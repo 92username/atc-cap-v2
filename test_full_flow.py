@@ -13,9 +13,9 @@ import zipfile
 from datetime import datetime
 from pathlib import Path
 
-sys.path.insert(0, os.path.dirname(__file__))
-
 from tatic_processor import TATICProcessor
+
+sys.path.insert(0, os.path.dirname(__file__))
 
 
 def gerar_zip_de_relatorio(job_output_dir: str, nome_arquivo: str):
