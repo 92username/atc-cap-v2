@@ -164,64 +164,81 @@ uploaded_file = st.file_uploader("Envie o arquivo TATIC (.xlsx)", type=["xlsx"])
 def gerar_zip_de_relatorio(job_output_dir: str, nome_arquivo: str):
     """
     Gera ZIP com todos os arquivos do job_output_dir
-    Corrigido: cria o ZIP fora do diretório para evitar conflitos
+    
+    Args:
+        job_output_dir: Caminho ABSOLUTO para o diretório de saída
+        nome_arquivo: Nome do arquivo ZIP (ex: relatorio_0001_15102025_STD.zip)
+    
+    Returns:
+        Caminho ABSOLUTO para o arquivo ZIP criado
     """
-    zip_path = os.path.join("outputs", nome_arquivo)
+    # 🔧 CRÍTICO: Garantir que job_output_dir é um caminho válido
+    job_output_dir = str(job_output_dir).strip()
+    
+    # Criar ZIP no mesmo diretório que os arquivos de saída
+    # Pegar o parent dir (remover job_id) para colocar ZIP em outputs/
+    parent_dir = str(Path(job_output_dir).parent)
+    zip_path = os.path.join(parent_dir, nome_arquivo)
+    
+    print(f"[DEBUG ZIP] job_output_dir: {job_output_dir}")
+    print(f"[DEBUG ZIP] zip_path: {zip_path}")
+    print(f"[DEBUG ZIP] job_output_dir existe? {os.path.exists(job_output_dir)}")
+    print(f"[DEBUG ZIP] job_output_dir é absoluto? {os.path.isabs(job_output_dir)}")
 
     # DEBUG: Verificar arquivos disponíveis antes de zipar
-    print(f"[DEBUG ZIP] Diretório: {job_output_dir}")
     print("[DEBUG ZIP] Arquivos antes de zipar:")
+    arquivos_encontrados = 0
     if os.path.exists(job_output_dir):
         for root, _dirs, files in os.walk(job_output_dir):
             for file in files:
-                print(f"[DEBUG ZIP] - {os.path.join(root, file)}")
+                full_path = os.path.join(root, file)
+                size = os.path.getsize(full_path)
+                print(f"[DEBUG ZIP] - {file} ({size} bytes)")
+                arquivos_encontrados += 1
     else:
-        print(f"[DEBUG ZIP] Diretório {job_output_dir} não existe!")
+        print(f"[DEBUG ZIP] ❌ ERRO: Diretório {job_output_dir} não existe!")
+        return zip_path
+
+    if arquivos_encontrados == 0:
+        print("[DEBUG ZIP] ⚠️ AVISO: Nenhum arquivo encontrado no diretório!")
 
     # Criar o ZIP com todos os arquivos
+    files_added = 0
     with zipfile.ZipFile(zip_path, "w", zipfile.ZIP_DEFLATED) as zipf:
         for root, _dirs, files in os.walk(job_output_dir):
-            # Directory structure is traversed automatically by os.walk
             for file in files:
                 if not file.endswith(".zip"):  # Evita incluir outros ZIPs
                     abs_path = os.path.join(root, file)
                     rel_path = os.path.relpath(abs_path, job_output_dir)
                     zipf.write(abs_path, arcname=rel_path)
-                    print(f"[DEBUG ZIP] Adicionado ao ZIP: {rel_path}")
+                    print(f"[DEBUG ZIP] ✅ Adicionado ao ZIP: {rel_path}")
+                    files_added += 1
 
     # DEBUG: Verificar conteúdo do ZIP
-    print(f"[DEBUG ZIP] Verificando ZIP {zip_path}:")
+    print(f"\n[DEBUG ZIP] Verificando ZIP {zip_path}:")
     if os.path.exists(zip_path):
         try:
             with zipfile.ZipFile(zip_path, "r") as zipf:
                 items = zipf.namelist()
                 print(f"[DEBUG ZIP] Total de arquivos no ZIP: {len(items)}")
                 for item in items:
-                    print(f"[DEBUG ZIP] - {item}")
+                    info = zipf.getinfo(item)
+                    print(f"[DEBUG ZIP] - {item} ({info.file_size} bytes)")
+            
             file_size = os.path.getsize(zip_path)
-            print(f"[DEBUG ZIP] Tamanho do ZIP: {file_size} bytes")
+            print(f"[DEBUG ZIP] Tamanho total do ZIP: {file_size} bytes")
 
             # ⚠️ AVISO: Se ZIP tem menos de 100 bytes, está praticamente vazio
             if file_size < 100:
-                print(f"[DEBUG ZIP] ⚠️ AVISO: ZIP vazio ou quase vazio! Tamanho: {file_size} bytes")
-                print("[DEBUG ZIP] Tentando re-criar ZIP...")
-                # Tentar novamente com pequeno delay
-                import time as time_module
-
-                time_module.sleep(1)
-                with zipfile.ZipFile(zip_path, "w", zipfile.ZIP_DEFLATED) as zipf:
-                    for root, _dirs, files in os.walk(job_output_dir):
-                        for file in files:
-                            if not file.endswith(".zip"):
-                                abs_path = os.path.join(root, file)
-                                rel_path = os.path.relpath(abs_path, job_output_dir)
-                                zipf.write(abs_path, arcname=rel_path)
-                                print(f"[DEBUG ZIP] Re-adicionado ao ZIP: {rel_path}")
+                print(f"[DEBUG ZIP] ⚠️ AVISO: ZIP vazio ou quase vazio!")
+                print(f"[DEBUG ZIP]    Arquivos adicionados: {files_added}")
+                print(f"[DEBUG ZIP]    Arquivos encontrados no diretório: {arquivos_encontrados}")
         except zipfile.BadZipFile:
-            print("[DEBUG ZIP] ERRO: ZIP vazio ou corrompido!")
+            print("[DEBUG ZIP] ❌ ERRO: ZIP vazio ou corrompido!")
     else:
-        print("[DEBUG ZIP] ERRO: Arquivo ZIP não foi criado!")
+        print("[DEBUG ZIP] ❌ ERRO: Arquivo ZIP não foi criado!")
 
+    print(f"[DEBUG ZIP] Retornando: {zip_path}\n")
     return zip_path
 
 
@@ -244,11 +261,18 @@ if uploaded_file is not None:
 
         # Criar pasta temporária para o upload
         job_id = f"job_{datetime.now().strftime('%Y%m%d%H%M%S')}_{uuid.uuid4().hex[:8]}"
-        upload_dir = os.path.join("uploads", job_id)
-        os.makedirs(upload_dir, exist_ok=True)
+        
+        # 🔧 CRÍTICO: Usar caminhos ABSOLUTOS para evitar problemas em Docker
+        base_dir = Path.cwd()  # Diretório de trabalho do app
+        upload_dir_rel = os.path.join("uploads", job_id)
+        upload_dir = base_dir / upload_dir_rel
+        upload_dir.mkdir(parents=True, exist_ok=True)
+        
+        st.write(f"[DEBUG] Base dir: {base_dir}")
+        st.write(f"[DEBUG] Upload dir: {upload_dir}")
 
         # Salvar o arquivo para processamento
-        file_path = os.path.join(upload_dir, uploaded_file.name)
+        file_path = upload_dir / uploaded_file.name
         with open(file_path, "wb") as f:
             f.write(uploaded_file.getbuffer())
 
@@ -259,12 +283,12 @@ if uploaded_file is not None:
             log_callback=st.write,
         )
 
-        # Criar diretório de saída
-        output_dir = os.path.join("outputs", job_id)
-        os.makedirs(output_dir, exist_ok=True)
-
-        # Converter output_dir para Path
-        output_dir = Path(output_dir)
+        # Criar diretório de saída com caminho ABSOLUTO
+        output_dir_rel = os.path.join("outputs", job_id)
+        output_dir = base_dir / output_dir_rel
+        output_dir.mkdir(parents=True, exist_ok=True)
+        
+        st.write(f"[DEBUG] Output dir: {output_dir}")
 
         # Substituir o método de processamento para usar `process_tatic_data`
         try:
@@ -285,20 +309,22 @@ if uploaded_file is not None:
 
             # 🔍 DEBUG: Verificar se os arquivos foram realmente criados
             output_dir_str = str(output_dir)
-            print(f"\n[DEBUG APP] Verificando arquivos em: {output_dir_str}")
+            st.write(f"\n[DEBUG APP] Verificando arquivos em: {output_dir_str}")
             if os.path.exists(output_dir_str):
                 files_in_dir = list(os.listdir(output_dir_str))
-                print(f"[DEBUG APP] Arquivos encontrados: {len(files_in_dir)}")
+                st.write(f"[DEBUG APP] Arquivos encontrados: {len(files_in_dir)}")
                 for f in files_in_dir:
-                    file_path = os.path.join(output_dir_str, f)
-                    file_size = os.path.getsize(file_path)
-                    print(f"[DEBUG APP]   - {f}: {file_size} bytes")
+                    file_path_check = os.path.join(output_dir_str, f)
+                    file_size = os.path.getsize(file_path_check)
+                    st.write(f"[DEBUG APP]   - {f}: {file_size} bytes")
             else:
-                print(f"[DEBUG APP] ERRO: Diretório não existe: {output_dir_str}")
+                st.write(f"[DEBUG APP] ERRO: Diretório não existe: {output_dir_str}")
 
             # Gerar nome do relatório e arquivo ZIP
             nome_arquivo = processor.gerar_nome_relatorio(usar_categoria_h)
+            st.write(f"[DEBUG] Chamando gerar_zip_de_relatorio com: {output_dir_str}")
             relatorio_zip_path = gerar_zip_de_relatorio(str(output_dir), nome_arquivo)
+            st.write(f"[DEBUG] ZIP criado em: {relatorio_zip_path}")
 
             # Salvar no estado da sessão
             st.session_state.relatorio_gerado = True
