@@ -6,14 +6,16 @@ from logging.handlers import RotatingFileHandler
 import pandas as pd
 
 # Configurar logging rotativo (substituir se >1MB)
-logs_dir = 'logs'
+logs_dir = "logs"
 if not os.path.exists(logs_dir):
     os.makedirs(logs_dir)
 
-log_file = os.path.join(logs_dir, 'aeronaves_dict.log')
-handler = RotatingFileHandler(log_file, maxBytes=1024*1024, backupCount=0)  # 1MB, substituir
-handler.setFormatter(logging.Formatter('%(asctime)s - %(levelname)s - %(message)s'))
-logger = logging.getLogger('aeronaves_dict')
+log_file = os.path.join(logs_dir, "aeronaves_dict.log")
+handler = RotatingFileHandler(
+    log_file, maxBytes=1024 * 1024, backupCount=0
+)  # 1MB, substituir
+handler.setFormatter(logging.Formatter("%(asctime)s - %(levelname)s - %(message)s"))
+logger = logging.getLogger("aeronaves_dict")
 logger.setLevel(logging.INFO)
 logger.addHandler(handler)
 
@@ -29,14 +31,15 @@ DEFAULT_PARAMS = {
     "Vi_aprox_kt": 80,
     "TOPP_s": 60,
     "TOPD_s": 70,
-    "estimado": True
+    "estimado": True,
 }
+
 
 def carregar_config():
     """Carrega o arquivo aeronaves_config.json."""
-    config_path = 'aeronaves_config.json'
+    config_path = "aeronaves_config.json"
     if os.path.exists(config_path):
-        with open(config_path, 'r', encoding='utf-8') as f:
+        with open(config_path, "r", encoding="utf-8") as f:
             return json.load(f)
     else:
         # Criar estrutura inicial se não existir
@@ -44,19 +47,24 @@ def carregar_config():
         salvar_config(config)
         return config
 
+
 def salvar_config(config):
     """Salva o arquivo aeronaves_config.json."""
-    config_path = 'aeronaves_config.json'
+    config_path = "aeronaves_config.json"
     with lock:
-        with open(config_path, 'w', encoding='utf-8') as f:
+        with open(config_path, "w", encoding="utf-8") as f:
             json.dump(config, f, indent=4, ensure_ascii=False)
+
 
 def registrar_nova_aeronave(config, tipo):
     """Registra uma nova aeronave na seção 'novos'."""
     nova_entrada = DEFAULT_PARAMS.copy()
     nova_entrada["tipos"] = [tipo]
     config["novos"].append(nova_entrada)
-    logger.info(f"Nova aeronave detectada: {tipo} (entrada criada com valores estimados)")
+    logger.info(
+        f"Nova aeronave detectada: {tipo} (entrada criada com valores estimados)"
+    )
+
 
 def obter_parametros(tipo):
     """Obtém os parâmetros de uma aeronave pelo tipo."""
@@ -75,6 +83,7 @@ def obter_parametros(tipo):
             return item
     return None  # Não encontrado
 
+
 def atualizar_dicionario(df):
     """Atualiza o dicionário com novos tipos de aeronave do DataFrame."""
     col_nome = None
@@ -84,7 +93,9 @@ def atualizar_dicionario(df):
             break
 
     if not col_nome:
-        logger.error("Nenhuma coluna de tipo de aeronave encontrada (esperado: 'TipoAeronave' ou 'Equipamento').")
+        logger.error(
+            "Nenhuma coluna de tipo de aeronave encontrada (esperado: 'TipoAeronave' ou 'Equipamento')."
+        )
         return
 
     config = carregar_config()
@@ -101,6 +112,7 @@ def atualizar_dicionario(df):
         logger.info("Dicionário atualizado com sucesso.")
     else:
         logger.info("Nenhuma nova aeronave detectada.")
+
 
 if __name__ == "__main__":
     # Teste rápido manual (isolado)

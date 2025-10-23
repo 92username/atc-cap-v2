@@ -1,6 +1,7 @@
 import os
 import uuid
-import zipfileimport logging
+import zipfile
+import logging
 import threading
 from datetime import datetime
 from pathlib import Path
@@ -178,7 +179,9 @@ if uploaded_file is not None:
 
         # Atualiza o dicionário de aeronaves em background
         try:
-            threading.Thread(target=atualizar_dicionario, args=(df,), daemon=True).start()
+            threading.Thread(
+                target=atualizar_dicionario, args=(df,), daemon=True
+            ).start()
             logging.info("Thread de atualização do dicionário iniciada.")
         except Exception as e:
             logging.error(f"Falha ao iniciar thread de atualização do dicionário: {e}")
