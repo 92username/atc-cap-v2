@@ -1,12 +1,15 @@
 import os
 import uuid
-import zipfile
+import zipfileimport logging
+import threading
 from datetime import datetime
 from pathlib import Path
 
+import pandas as pd
 import streamlit as st
 
 from tatic_processor import TATICProcessor
+from aeronaves_dict import atualizar_dicionario
 
 # Configuração de página
 st.set_page_config(
@@ -169,6 +172,16 @@ if uploaded_file is not None:
         file_path = os.path.join(upload_dir, uploaded_file.name)
         with open(file_path, "wb") as f:
             f.write(uploaded_file.getbuffer())
+
+        # Ler DataFrame para atualização do dicionário
+        df = pd.read_excel(file_path)
+
+        # Atualiza o dicionário de aeronaves em background
+        try:
+            threading.Thread(target=atualizar_dicionario, args=(df,), daemon=True).start()
+            logging.info("Thread de atualização do dicionário iniciada.")
+        except Exception as e:
+            logging.error(f"Falha ao iniciar thread de atualização do dicionário: {e}")
 
         # Inicializar processador
         processor = TATICProcessor(

@@ -289,6 +289,7 @@ class TATICProcessor:
                 rename[lower_map[k]] = v
 
         dfn = df.rename(columns=rename).copy()
+        time.sleep(0.05)  # Pausa para reduzir uso de CPU
         self.log(f"📋 Colunas após renomeação: {list(dfn.columns)}")
 
         # Verificar colunas obrigatórias
@@ -333,6 +334,7 @@ class TATICProcessor:
 
         valid_count = result.notna().sum()
         self.log(f"📅 Parsing: {valid_count:,}/{len(series):,} sucessos")
+        time.sleep(0.05)  # Pausa para reduzir uso de CPU
 
         return result
 
@@ -645,6 +647,7 @@ class TATICProcessor:
             total_dia = len(df_dia)
             linha_total[dia.upper()] = f"{total_dia} / 100.0%"
         tabela.append(linha_total)
+        time.sleep(0.05)  # Pausa para reduzir uso de CPU
 
         return pd.DataFrame(tabela)
 
@@ -755,6 +758,7 @@ class TATICProcessor:
 
         # Adicionar total
         table_data.append({"CAT": "TOTAL", "MIX": "100.0%"})
+        time.sleep(0.05)  # Pausa para reduzir uso de CPU
 
         return pd.DataFrame(table_data)
 
@@ -802,6 +806,7 @@ class TATICProcessor:
             g["MES"] = g["mes"].map(meses_abrev)
 
         g["TOTAL"] = g["RWY 03"] + g["RWY 21"]
+        time.sleep(0.05)  # Pausa para reduzir uso de CPU
 
         return g[["MES", "RWY 03", "RWY 21", "TOTAL"]]
 
@@ -854,6 +859,7 @@ class TATICProcessor:
         else:
             perc_03 = round(total_03 / total_geral * 100)
             perc_21 = 100 - perc_03
+        time.sleep(0.05)  # Pausa para reduzir uso de CPU
 
         return pd.DataFrame(
             [

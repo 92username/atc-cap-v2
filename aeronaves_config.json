@@ -1,0 +1,2754 @@
+{
+    "helicopteros": [],
+    "avioes": [],
+    "novos": [
+        {
+            "classe_operacional": "desconhecida",
+            "tipos": [
+                "R44/L"
+            ],
+            "cat_vel": "A",
+            "wake": "L",
+            "Vi_aprox_kt": 80,
+            "TOPP_s": 60,
+            "TOPD_s": 70,
+            "estimado": true
+        },
+        {
+            "classe_operacional": "desconhecida",
+            "tipos": [
+                "C208/L"
+            ],
+            "cat_vel": "A",
+            "wake": "L",
+            "Vi_aprox_kt": 80,
+            "TOPP_s": 60,
+            "TOPD_s": 70,
+            "estimado": true
+        },
+        {
+            "classe_operacional": "desconhecida",
+            "tipos": [
+                "SR22/L"
+            ],
+            "cat_vel": "A",
+            "wake": "L",
+            "Vi_aprox_kt": 80,
+            "TOPP_s": 60,
+            "TOPD_s": 70,
+            "estimado": true
+        },
+        {
+            "classe_operacional": "desconhecida",
+            "tipos": [
+                "S92/M"
+            ],
+            "cat_vel": "A",
+            "wake": "L",
+            "Vi_aprox_kt": 80,
+            "TOPP_s": 60,
+            "TOPD_s": 70,
+            "estimado": true
+        },
+        {
+            "classe_operacional": "desconhecida",
+            "tipos": [
+                "A139/L"
+            ],
+            "cat_vel": "A",
+            "wake": "L",
+            "Vi_aprox_kt": 80,
+            "TOPP_s": 60,
+            "TOPD_s": 70,
+            "estimado": true
+        },
+        {
+            "classe_operacional": "desconhecida",
+            "tipos": [
+                "A189/L"
+            ],
+            "cat_vel": "A",
+            "wake": "L",
+            "Vi_aprox_kt": 80,
+            "TOPP_s": 60,
+            "TOPD_s": 70,
+            "estimado": true
+        },
+        {
+            "classe_operacional": "desconhecida",
+            "tipos": [
+                "TBM7/L"
+            ],
+            "cat_vel": "A",
+            "wake": "L",
+            "Vi_aprox_kt": 80,
+            "TOPP_s": 60,
+            "TOPD_s": 70,
+            "estimado": true
+        },
+        {
+            "classe_operacional": "desconhecida",
+            "tipos": [
+                "C25B/L"
+            ],
+            "cat_vel": "A",
+            "wake": "L",
+            "Vi_aprox_kt": 80,
+            "TOPP_s": 60,
+            "TOPD_s": 70,
+            "estimado": true
+        },
+        {
+            "classe_operacional": "desconhecida",
+            "tipos": [
+                "R66/L"
+            ],
+            "cat_vel": "A",
+            "wake": "L",
+            "Vi_aprox_kt": 80,
+            "TOPP_s": 60,
+            "TOPD_s": 70,
+            "estimado": true
+        },
+        {
+            "classe_operacional": "desconhecida",
+            "tipos": [
+                "BE36/L"
+            ],
+            "cat_vel": "A",
+            "wake": "L",
+            "Vi_aprox_kt": 80,
+            "TOPP_s": 60,
+            "TOPD_s": 70,
+            "estimado": true
+        },
+        {
+            "classe_operacional": "desconhecida",
+            "tipos": [
+                "R22/L"
+            ],
+            "cat_vel": "A",
+            "wake": "L",
+            "Vi_aprox_kt": 80,
+            "TOPP_s": 60,
+            "TOPD_s": 70,
+            "estimado": true
+        },
+        {
+            "classe_operacional": "desconhecida",
+            "tipos": [
+                "AS50/L"
+            ],
+            "cat_vel": "A",
+            "wake": "L",
+            "Vi_aprox_kt": 80,
+            "TOPP_s": 60,
+            "TOPD_s": 70,
+            "estimado": true
+        },
+        {
+            "classe_operacional": "desconhecida",
+            "tipos": [
+                "ZZZZ/L"
+            ],
+            "cat_vel": "A",
+            "wake": "L",
+            "Vi_aprox_kt": 80,
+            "TOPP_s": 60,
+            "TOPD_s": 70,
+            "estimado": true
+        },
+        {
+            "classe_operacional": "desconhecida",
+            "tipos": [
+                "S76/L"
+            ],
+            "cat_vel": "A",
+            "wake": "L",
+            "Vi_aprox_kt": 80,
+            "TOPP_s": 60,
+            "TOPD_s": 70,
+            "estimado": true
+        },
+        {
+            "classe_operacional": "desconhecida",
+            "tipos": [
+                "A109/L"
+            ],
+            "cat_vel": "A",
+            "wake": "L",
+            "Vi_aprox_kt": 80,
+            "TOPP_s": 60,
+            "TOPD_s": 70,
+            "estimado": true
+        },
+        {
+            "classe_operacional": "desconhecida",
+            "tipos": [
+                "ULAC/L"
+            ],
+            "cat_vel": "A",
+            "wake": "L",
+            "Vi_aprox_kt": 80,
+            "TOPP_s": 60,
+            "TOPD_s": 70,
+            "estimado": true
+        },
+        {
+            "classe_operacional": "desconhecida",
+            "tipos": [
+                "EC30/L"
+            ],
+            "cat_vel": "A",
+            "wake": "L",
+            "Vi_aprox_kt": 80,
+            "TOPP_s": 60,
+            "TOPD_s": 70,
+            "estimado": true
+        },
+        {
+            "classe_operacional": "desconhecida",
+            "tipos": [
+                "B505/L"
+            ],
+            "cat_vel": "A",
+            "wake": "L",
+            "Vi_aprox_kt": 80,
+            "TOPP_s": 60,
+            "TOPD_s": 70,
+            "estimado": true
+        },
+        {
+            "classe_operacional": "desconhecida",
+            "tipos": [
+                "EC45/L"
+            ],
+            "cat_vel": "A",
+            "wake": "L",
+            "Vi_aprox_kt": 80,
+            "TOPP_s": 60,
+            "TOPD_s": 70,
+            "estimado": true
+        },
+        {
+            "classe_operacional": "desconhecida",
+            "tipos": [
+                "PA34/L"
+            ],
+            "cat_vel": "A",
+            "wake": "L",
+            "Vi_aprox_kt": 80,
+            "TOPP_s": 60,
+            "TOPD_s": 70,
+            "estimado": true
+        },
+        {
+            "classe_operacional": "desconhecida",
+            "tipos": [
+                "B06/L"
+            ],
+            "cat_vel": "A",
+            "wake": "L",
+            "Vi_aprox_kt": 80,
+            "TOPP_s": 60,
+            "TOPD_s": 70,
+            "estimado": true
+        },
+        {
+            "classe_operacional": "desconhecida",
+            "tipos": [
+                "C152/L"
+            ],
+            "cat_vel": "A",
+            "wake": "L",
+            "Vi_aprox_kt": 80,
+            "TOPP_s": 60,
+            "TOPD_s": 70,
+            "estimado": true
+        },
+        {
+            "classe_operacional": "desconhecida",
+            "tipos": [
+                "P46T/L"
+            ],
+            "cat_vel": "A",
+            "wake": "L",
+            "Vi_aprox_kt": 80,
+            "TOPP_s": 60,
+            "TOPD_s": 70,
+            "estimado": true
+        },
+        {
+            "classe_operacional": "desconhecida",
+            "tipos": [
+                "BE58/L"
+            ],
+            "cat_vel": "A",
+            "wake": "L",
+            "Vi_aprox_kt": 80,
+            "TOPP_s": 60,
+            "TOPD_s": 70,
+            "estimado": true
+        },
+        {
+            "classe_operacional": "desconhecida",
+            "tipos": [
+                "S92/L"
+            ],
+            "cat_vel": "A",
+            "wake": "L",
+            "Vi_aprox_kt": 80,
+            "TOPP_s": 60,
+            "TOPD_s": 70,
+            "estimado": true
+        },
+        {
+            "classe_operacional": "desconhecida",
+            "tipos": [
+                "SF50/L"
+            ],
+            "cat_vel": "A",
+            "wake": "L",
+            "Vi_aprox_kt": 80,
+            "TOPP_s": 60,
+            "TOPD_s": 70,
+            "estimado": true
+        },
+        {
+            "classe_operacional": "desconhecida",
+            "tipos": [
+                "/"
+            ],
+            "cat_vel": "A",
+            "wake": "L",
+            "Vi_aprox_kt": 80,
+            "TOPP_s": 60,
+            "TOPD_s": 70,
+            "estimado": true
+        },
+        {
+            "classe_operacional": "desconhecida",
+            "tipos": [
+                "B07/L"
+            ],
+            "cat_vel": "A",
+            "wake": "L",
+            "Vi_aprox_kt": 80,
+            "TOPP_s": 60,
+            "TOPD_s": 70,
+            "estimado": true
+        },
+        {
+            "classe_operacional": "desconhecida",
+            "tipos": [
+                "B429/L"
+            ],
+            "cat_vel": "A",
+            "wake": "L",
+            "Vi_aprox_kt": 80,
+            "TOPP_s": 60,
+            "TOPD_s": 70,
+            "estimado": true
+        },
+        {
+            "classe_operacional": "desconhecida",
+            "tipos": [
+                "EC55/L"
+            ],
+            "cat_vel": "A",
+            "wake": "L",
+            "Vi_aprox_kt": 80,
+            "TOPP_s": 60,
+            "TOPD_s": 70,
+            "estimado": true
+        },
+        {
+            "classe_operacional": "desconhecida",
+            "tipos": [
+                "RH44/M"
+            ],
+            "cat_vel": "A",
+            "wake": "L",
+            "Vi_aprox_kt": 80,
+            "TOPP_s": 60,
+            "TOPD_s": 70,
+            "estimado": true
+        },
+        {
+            "classe_operacional": "desconhecida",
+            "tipos": [
+                "E55P/M"
+            ],
+            "cat_vel": "A",
+            "wake": "L",
+            "Vi_aprox_kt": 80,
+            "TOPP_s": 60,
+            "TOPD_s": 70,
+            "estimado": true
+        },
+        {
+            "classe_operacional": "desconhecida",
+            "tipos": [
+                "090/L"
+            ],
+            "cat_vel": "A",
+            "wake": "L",
+            "Vi_aprox_kt": 80,
+            "TOPP_s": 60,
+            "TOPD_s": 70,
+            "estimado": true
+        },
+        {
+            "classe_operacional": "desconhecida",
+            "tipos": [
+                "C172/L"
+            ],
+            "cat_vel": "A",
+            "wake": "L",
+            "Vi_aprox_kt": 80,
+            "TOPP_s": 60,
+            "TOPD_s": 70,
+            "estimado": true
+        },
+        {
+            "classe_operacional": "desconhecida",
+            "tipos": [
+                "PC12/L"
+            ],
+            "cat_vel": "A",
+            "wake": "L",
+            "Vi_aprox_kt": 80,
+            "TOPP_s": 60,
+            "TOPD_s": 70,
+            "estimado": true
+        },
+        {
+            "classe_operacional": "desconhecida",
+            "tipos": [
+                "XXXX/L"
+            ],
+            "cat_vel": "A",
+            "wake": "L",
+            "Vi_aprox_kt": 80,
+            "TOPP_s": 60,
+            "TOPD_s": 70,
+            "estimado": true
+        },
+        {
+            "classe_operacional": "desconhecida",
+            "tipos": [
+                "P28T/L"
+            ],
+            "cat_vel": "A",
+            "wake": "L",
+            "Vi_aprox_kt": 80,
+            "TOPP_s": 60,
+            "TOPD_s": 70,
+            "estimado": true
+        },
+        {
+            "classe_operacional": "desconhecida",
+            "tipos": [
+                "BE9L/L"
+            ],
+            "cat_vel": "A",
+            "wake": "L",
+            "Vi_aprox_kt": 80,
+            "TOPP_s": 60,
+            "TOPD_s": 70,
+            "estimado": true
+        },
+        {
+            "classe_operacional": "desconhecida",
+            "tipos": [
+                "C525/L"
+            ],
+            "cat_vel": "A",
+            "wake": "L",
+            "Vi_aprox_kt": 80,
+            "TOPP_s": 60,
+            "TOPD_s": 70,
+            "estimado": true
+        },
+        {
+            "classe_operacional": "desconhecida",
+            "tipos": [
+                "C170/L"
+            ],
+            "cat_vel": "A",
+            "wake": "L",
+            "Vi_aprox_kt": 80,
+            "TOPP_s": 60,
+            "TOPD_s": 70,
+            "estimado": true
+        },
+        {
+            "classe_operacional": "desconhecida",
+            "tipos": [
+                "C550/L"
+            ],
+            "cat_vel": "A",
+            "wake": "L",
+            "Vi_aprox_kt": 80,
+            "TOPP_s": 60,
+            "TOPD_s": 70,
+            "estimado": true
+        },
+        {
+            "classe_operacional": "desconhecida",
+            "tipos": [
+                "PA46/L"
+            ],
+            "cat_vel": "A",
+            "wake": "L",
+            "Vi_aprox_kt": 80,
+            "TOPP_s": 60,
+            "TOPD_s": 70,
+            "estimado": true
+        },
+        {
+            "classe_operacional": "desconhecida",
+            "tipos": [
+                "EC20/L"
+            ],
+            "cat_vel": "A",
+            "wake": "L",
+            "Vi_aprox_kt": 80,
+            "TOPP_s": 60,
+            "TOPD_s": 70,
+            "estimado": true
+        },
+        {
+            "classe_operacional": "desconhecida",
+            "tipos": [
+                "AS55/L"
+            ],
+            "cat_vel": "A",
+            "wake": "L",
+            "Vi_aprox_kt": 80,
+            "TOPP_s": 60,
+            "TOPD_s": 70,
+            "estimado": true
+        },
+        {
+            "classe_operacional": "desconhecida",
+            "tipos": [
+                "B350/L"
+            ],
+            "cat_vel": "A",
+            "wake": "L",
+            "Vi_aprox_kt": 80,
+            "TOPP_s": 60,
+            "TOPD_s": 70,
+            "estimado": true
+        },
+        {
+            "classe_operacional": "desconhecida",
+            "tipos": [
+                "B407/L"
+            ],
+            "cat_vel": "A",
+            "wake": "L",
+            "Vi_aprox_kt": 80,
+            "TOPP_s": 60,
+            "TOPD_s": 70,
+            "estimado": true
+        },
+        {
+            "classe_operacional": "desconhecida",
+            "tipos": [
+                "EC75/M"
+            ],
+            "cat_vel": "A",
+            "wake": "L",
+            "Vi_aprox_kt": 80,
+            "TOPP_s": 60,
+            "TOPD_s": 70,
+            "estimado": true
+        },
+        {
+            "classe_operacional": "desconhecida",
+            "tipos": [
+                "AB11/L"
+            ],
+            "cat_vel": "A",
+            "wake": "L",
+            "Vi_aprox_kt": 80,
+            "TOPP_s": 60,
+            "TOPD_s": 70,
+            "estimado": true
+        },
+        {
+            "classe_operacional": "desconhecida",
+            "tipos": [
+                "A169/L"
+            ],
+            "cat_vel": "A",
+            "wake": "L",
+            "Vi_aprox_kt": 80,
+            "TOPP_s": 60,
+            "TOPD_s": 70,
+            "estimado": true
+        },
+        {
+            "classe_operacional": "desconhecida",
+            "tipos": [
+                "A320/M"
+            ],
+            "cat_vel": "A",
+            "wake": "L",
+            "Vi_aprox_kt": 80,
+            "TOPP_s": 60,
+            "TOPD_s": 70,
+            "estimado": true
+        },
+        {
+            "classe_operacional": "desconhecida",
+            "tipos": [
+                "RV10/L"
+            ],
+            "cat_vel": "A",
+            "wake": "L",
+            "Vi_aprox_kt": 80,
+            "TOPP_s": 60,
+            "TOPD_s": 70,
+            "estimado": true
+        },
+        {
+            "classe_operacional": "desconhecida",
+            "tipos": [
+                "H160/L"
+            ],
+            "cat_vel": "A",
+            "wake": "L",
+            "Vi_aprox_kt": 80,
+            "TOPP_s": 60,
+            "TOPD_s": 70,
+            "estimado": true
+        },
+        {
+            "classe_operacional": "desconhecida",
+            "tipos": [
+                "C680/M"
+            ],
+            "cat_vel": "A",
+            "wake": "L",
+            "Vi_aprox_kt": 80,
+            "TOPP_s": 60,
+            "TOPD_s": 70,
+            "estimado": true
+        },
+        {
+            "classe_operacional": "desconhecida",
+            "tipos": [
+                "BE33/L"
+            ],
+            "cat_vel": "A",
+            "wake": "L",
+            "Vi_aprox_kt": 80,
+            "TOPP_s": 60,
+            "TOPD_s": 70,
+            "estimado": true
+        },
+        {
+            "classe_operacional": "desconhecida",
+            "tipos": [
+                "E50P/L"
+            ],
+            "cat_vel": "A",
+            "wake": "L",
+            "Vi_aprox_kt": 80,
+            "TOPP_s": 60,
+            "TOPD_s": 70,
+            "estimado": true
+        },
+        {
+            "classe_operacional": "desconhecida",
+            "tipos": [
+                "RH44/"
+            ],
+            "cat_vel": "A",
+            "wake": "L",
+            "Vi_aprox_kt": 80,
+            "TOPP_s": 60,
+            "TOPD_s": 70,
+            "estimado": true
+        },
+        {
+            "classe_operacional": "desconhecida",
+            "tipos": [
+                "ZZZZ/M"
+            ],
+            "cat_vel": "A",
+            "wake": "L",
+            "Vi_aprox_kt": 80,
+            "TOPP_s": 60,
+            "TOPD_s": 70,
+            "estimado": true
+        },
+        {
+            "classe_operacional": "desconhecida",
+            "tipos": [
+                "DA62/M"
+            ],
+            "cat_vel": "A",
+            "wake": "L",
+            "Vi_aprox_kt": 80,
+            "TOPP_s": 60,
+            "TOPD_s": 70,
+            "estimado": true
+        },
+        {
+            "classe_operacional": "desconhecida",
+            "tipos": [
+                "P28R/L"
+            ],
+            "cat_vel": "A",
+            "wake": "L",
+            "Vi_aprox_kt": 80,
+            "TOPP_s": 60,
+            "TOPD_s": 70,
+            "estimado": true
+        },
+        {
+            "classe_operacional": "desconhecida",
+            "tipos": [
+                "BE20/L"
+            ],
+            "cat_vel": "A",
+            "wake": "L",
+            "Vi_aprox_kt": 80,
+            "TOPP_s": 60,
+            "TOPD_s": 70,
+            "estimado": true
+        },
+        {
+            "classe_operacional": "desconhecida",
+            "tipos": [
+                "EPIC/L"
+            ],
+            "cat_vel": "A",
+            "wake": "L",
+            "Vi_aprox_kt": 80,
+            "TOPP_s": 60,
+            "TOPD_s": 70,
+            "estimado": true
+        },
+        {
+            "classe_operacional": "desconhecida",
+            "tipos": [
+                "BE9T/L"
+            ],
+            "cat_vel": "A",
+            "wake": "L",
+            "Vi_aprox_kt": 80,
+            "TOPP_s": 60,
+            "TOPD_s": 70,
+            "estimado": true
+        },
+        {
+            "classe_operacional": "desconhecida",
+            "tipos": [
+                "DA62/L"
+            ],
+            "cat_vel": "A",
+            "wake": "L",
+            "Vi_aprox_kt": 80,
+            "TOPP_s": 60,
+            "TOPD_s": 70,
+            "estimado": true
+        },
+        {
+            "classe_operacional": "desconhecida",
+            "tipos": [
+                "AS65/L"
+            ],
+            "cat_vel": "A",
+            "wake": "L",
+            "Vi_aprox_kt": 80,
+            "TOPP_s": 60,
+            "TOPD_s": 70,
+            "estimado": true
+        },
+        {
+            "classe_operacional": "desconhecida",
+            "tipos": [
+                "EC35/L"
+            ],
+            "cat_vel": "A",
+            "wake": "L",
+            "Vi_aprox_kt": 80,
+            "TOPP_s": 60,
+            "TOPD_s": 70,
+            "estimado": true
+        },
+        {
+            "classe_operacional": "desconhecida",
+            "tipos": [
+                "RH66/L"
+            ],
+            "cat_vel": "A",
+            "wake": "L",
+            "Vi_aprox_kt": 80,
+            "TOPP_s": 60,
+            "TOPD_s": 70,
+            "estimado": true
+        },
+        {
+            "classe_operacional": "desconhecida",
+            "tipos": [
+                "SK92/L"
+            ],
+            "cat_vel": "A",
+            "wake": "L",
+            "Vi_aprox_kt": 80,
+            "TOPP_s": 60,
+            "TOPD_s": 70,
+            "estimado": true
+        },
+        {
+            "classe_operacional": "desconhecida",
+            "tipos": [
+                "G2CA/L"
+            ],
+            "cat_vel": "A",
+            "wake": "L",
+            "Vi_aprox_kt": 80,
+            "TOPP_s": 60,
+            "TOPD_s": 70,
+            "estimado": true
+        },
+        {
+            "classe_operacional": "desconhecida",
+            "tipos": [
+                "B505/"
+            ],
+            "cat_vel": "A",
+            "wake": "L",
+            "Vi_aprox_kt": 80,
+            "TOPP_s": 60,
+            "TOPD_s": 70,
+            "estimado": true
+        },
+        {
+            "classe_operacional": "desconhecida",
+            "tipos": [
+                "BE35/L"
+            ],
+            "cat_vel": "A",
+            "wake": "L",
+            "Vi_aprox_kt": 80,
+            "TOPP_s": 60,
+            "TOPD_s": 70,
+            "estimado": true
+        },
+        {
+            "classe_operacional": "desconhecida",
+            "tipos": [
+                "C208/M"
+            ],
+            "cat_vel": "A",
+            "wake": "L",
+            "Vi_aprox_kt": 80,
+            "TOPP_s": 60,
+            "TOPD_s": 70,
+            "estimado": true
+        },
+        {
+            "classe_operacional": "desconhecida",
+            "tipos": [
+                "BH06/L"
+            ],
+            "cat_vel": "A",
+            "wake": "L",
+            "Vi_aprox_kt": 80,
+            "TOPP_s": 60,
+            "TOPD_s": 70,
+            "estimado": true
+        },
+        {
+            "classe_operacional": "desconhecida",
+            "tipos": [
+                "C510/L"
+            ],
+            "cat_vel": "A",
+            "wake": "L",
+            "Vi_aprox_kt": 80,
+            "TOPP_s": 60,
+            "TOPD_s": 70,
+            "estimado": true
+        },
+        {
+            "classe_operacional": "desconhecida",
+            "tipos": [
+                "P32R/L"
+            ],
+            "cat_vel": "A",
+            "wake": "L",
+            "Vi_aprox_kt": 80,
+            "TOPP_s": 60,
+            "TOPD_s": 70,
+            "estimado": true
+        },
+        {
+            "classe_operacional": "desconhecida",
+            "tipos": [
+                "BE55/L"
+            ],
+            "cat_vel": "A",
+            "wake": "L",
+            "Vi_aprox_kt": 80,
+            "TOPP_s": 60,
+            "TOPD_s": 70,
+            "estimado": true
+        },
+        {
+            "classe_operacional": "desconhecida",
+            "tipos": [
+                "BH05/L"
+            ],
+            "cat_vel": "A",
+            "wake": "L",
+            "Vi_aprox_kt": 80,
+            "TOPP_s": 60,
+            "TOPD_s": 70,
+            "estimado": true
+        },
+        {
+            "classe_operacional": "desconhecida",
+            "tipos": [
+                "TWEN/L"
+            ],
+            "cat_vel": "A",
+            "wake": "L",
+            "Vi_aprox_kt": 80,
+            "TOPP_s": 60,
+            "TOPD_s": 70,
+            "estimado": true
+        },
+        {
+            "classe_operacional": "desconhecida",
+            "tipos": [
+                "EC25/M"
+            ],
+            "cat_vel": "A",
+            "wake": "L",
+            "Vi_aprox_kt": 80,
+            "TOPP_s": 60,
+            "TOPD_s": 70,
+            "estimado": true
+        },
+        {
+            "classe_operacional": "desconhecida",
+            "tipos": [
+                "A189/M"
+            ],
+            "cat_vel": "A",
+            "wake": "L",
+            "Vi_aprox_kt": 80,
+            "TOPP_s": 60,
+            "TOPD_s": 70,
+            "estimado": true
+        },
+        {
+            "classe_operacional": "desconhecida",
+            "tipos": [
+                "SK76/M"
+            ],
+            "cat_vel": "A",
+            "wake": "L",
+            "Vi_aprox_kt": 80,
+            "TOPP_s": 60,
+            "TOPD_s": 70,
+            "estimado": true
+        },
+        {
+            "classe_operacional": "desconhecida",
+            "tipos": [
+                "EC75/L"
+            ],
+            "cat_vel": "A",
+            "wake": "L",
+            "Vi_aprox_kt": 80,
+            "TOPP_s": 60,
+            "TOPD_s": 70,
+            "estimado": true
+        },
+        {
+            "classe_operacional": "desconhecida",
+            "tipos": [
+                "PAY1/L"
+            ],
+            "cat_vel": "A",
+            "wake": "L",
+            "Vi_aprox_kt": 80,
+            "TOPP_s": 60,
+            "TOPD_s": 70,
+            "estimado": true
+        },
+        {
+            "classe_operacional": "desconhecida",
+            "tipos": [
+                "PAY2/L"
+            ],
+            "cat_vel": "A",
+            "wake": "L",
+            "Vi_aprox_kt": 80,
+            "TOPP_s": 60,
+            "TOPD_s": 70,
+            "estimado": true
+        },
+        {
+            "classe_operacional": "desconhecida",
+            "tipos": [
+                "B22/L"
+            ],
+            "cat_vel": "A",
+            "wake": "L",
+            "Vi_aprox_kt": 80,
+            "TOPP_s": 60,
+            "TOPD_s": 70,
+            "estimado": true
+        },
+        {
+            "classe_operacional": "desconhecida",
+            "tipos": [
+                "E121/L"
+            ],
+            "cat_vel": "A",
+            "wake": "L",
+            "Vi_aprox_kt": 80,
+            "TOPP_s": 60,
+            "TOPD_s": 70,
+            "estimado": true
+        },
+        {
+            "classe_operacional": "desconhecida",
+            "tipos": [
+                "B430/L"
+            ],
+            "cat_vel": "A",
+            "wake": "L",
+            "Vi_aprox_kt": 80,
+            "TOPP_s": 60,
+            "TOPD_s": 70,
+            "estimado": true
+        },
+        {
+            "classe_operacional": "desconhecida",
+            "tipos": [
+                "T6/L"
+            ],
+            "cat_vel": "A",
+            "wake": "L",
+            "Vi_aprox_kt": 80,
+            "TOPP_s": 60,
+            "TOPD_s": 70,
+            "estimado": true
+        },
+        {
+            "classe_operacional": "desconhecida",
+            "tipos": [
+                "NAT6/L"
+            ],
+            "cat_vel": "A",
+            "wake": "L",
+            "Vi_aprox_kt": 80,
+            "TOPP_s": 60,
+            "TOPD_s": 70,
+            "estimado": true
+        },
+        {
+            "classe_operacional": "desconhecida",
+            "tipos": [
+                "AS35/L"
+            ],
+            "cat_vel": "A",
+            "wake": "L",
+            "Vi_aprox_kt": 80,
+            "TOPP_s": 60,
+            "TOPD_s": 70,
+            "estimado": true
+        },
+        {
+            "classe_operacional": "desconhecida",
+            "tipos": [
+                "G2C/L"
+            ],
+            "cat_vel": "A",
+            "wake": "L",
+            "Vi_aprox_kt": 80,
+            "TOPP_s": 60,
+            "TOPD_s": 70,
+            "estimado": true
+        },
+        {
+            "classe_operacional": "desconhecida",
+            "tipos": [
+                "E55P/L"
+            ],
+            "cat_vel": "A",
+            "wake": "L",
+            "Vi_aprox_kt": 80,
+            "TOPP_s": 60,
+            "TOPD_s": 70,
+            "estimado": true
+        },
+        {
+            "classe_operacional": "desconhecida",
+            "tipos": [
+                "PA32/L"
+            ],
+            "cat_vel": "A",
+            "wake": "L",
+            "Vi_aprox_kt": 80,
+            "TOPP_s": 60,
+            "TOPD_s": 70,
+            "estimado": true
+        },
+        {
+            "classe_operacional": "desconhecida",
+            "tipos": [
+                "S923/M"
+            ],
+            "cat_vel": "A",
+            "wake": "L",
+            "Vi_aprox_kt": 80,
+            "TOPP_s": 60,
+            "TOPD_s": 70,
+            "estimado": true
+        },
+        {
+            "classe_operacional": "desconhecida",
+            "tipos": [
+                "LJ45/M"
+            ],
+            "cat_vel": "A",
+            "wake": "L",
+            "Vi_aprox_kt": 80,
+            "TOPP_s": 60,
+            "TOPD_s": 70,
+            "estimado": true
+        },
+        {
+            "classe_operacional": "desconhecida",
+            "tipos": [
+                "C182/L"
+            ],
+            "cat_vel": "A",
+            "wake": "L",
+            "Vi_aprox_kt": 80,
+            "TOPP_s": 60,
+            "TOPD_s": 70,
+            "estimado": true
+        },
+        {
+            "classe_operacional": "desconhecida",
+            "tipos": [
+                "SR20/L"
+            ],
+            "cat_vel": "A",
+            "wake": "L",
+            "Vi_aprox_kt": 80,
+            "TOPP_s": 60,
+            "TOPD_s": 70,
+            "estimado": true
+        },
+        {
+            "classe_operacional": "desconhecida",
+            "tipos": [
+                "H269/L"
+            ],
+            "cat_vel": "A",
+            "wake": "L",
+            "Vi_aprox_kt": 80,
+            "TOPP_s": 60,
+            "TOPD_s": 70,
+            "estimado": true
+        },
+        {
+            "classe_operacional": "desconhecida",
+            "tipos": [
+                "S927/M"
+            ],
+            "cat_vel": "A",
+            "wake": "L",
+            "Vi_aprox_kt": 80,
+            "TOPP_s": 60,
+            "TOPD_s": 70,
+            "estimado": true
+        },
+        {
+            "classe_operacional": "desconhecida",
+            "tipos": [
+                "PA31/L"
+            ],
+            "cat_vel": "A",
+            "wake": "L",
+            "Vi_aprox_kt": 80,
+            "TOPP_s": 60,
+            "TOPD_s": 70,
+            "estimado": true
+        },
+        {
+            "classe_operacional": "desconhecida",
+            "tipos": [
+                "C56X/M"
+            ],
+            "cat_vel": "A",
+            "wake": "L",
+            "Vi_aprox_kt": 80,
+            "TOPP_s": 60,
+            "TOPD_s": 70,
+            "estimado": true
+        },
+        {
+            "classe_operacional": "desconhecida",
+            "tipos": [
+                "UH1/L"
+            ],
+            "cat_vel": "A",
+            "wake": "L",
+            "Vi_aprox_kt": 80,
+            "TOPP_s": 60,
+            "TOPD_s": 70,
+            "estimado": true
+        },
+        {
+            "classe_operacional": "desconhecida",
+            "tipos": [
+                "AC50/L"
+            ],
+            "cat_vel": "A",
+            "wake": "L",
+            "Vi_aprox_kt": 80,
+            "TOPP_s": 60,
+            "TOPD_s": 70,
+            "estimado": true
+        },
+        {
+            "classe_operacional": "desconhecida",
+            "tipos": [
+                "P28A/L"
+            ],
+            "cat_vel": "A",
+            "wake": "L",
+            "Vi_aprox_kt": 80,
+            "TOPP_s": 60,
+            "TOPD_s": 70,
+            "estimado": true
+        },
+        {
+            "classe_operacional": "desconhecida",
+            "tipos": [
+                "A119/L"
+            ],
+            "cat_vel": "A",
+            "wake": "L",
+            "Vi_aprox_kt": 80,
+            "TOPP_s": 60,
+            "TOPD_s": 70,
+            "estimado": true
+        },
+        {
+            "classe_operacional": "desconhecida",
+            "tipos": [
+                "B429/"
+            ],
+            "cat_vel": "A",
+            "wake": "L",
+            "Vi_aprox_kt": 80,
+            "TOPP_s": 60,
+            "TOPD_s": 70,
+            "estimado": true
+        },
+        {
+            "classe_operacional": "desconhecida",
+            "tipos": [
+                "BE30/L"
+            ],
+            "cat_vel": "A",
+            "wake": "L",
+            "Vi_aprox_kt": 80,
+            "TOPP_s": 60,
+            "TOPD_s": 70,
+            "estimado": true
+        },
+        {
+            "classe_operacional": "desconhecida",
+            "tipos": [
+                "UH1H/L"
+            ],
+            "cat_vel": "A",
+            "wake": "L",
+            "Vi_aprox_kt": 80,
+            "TOPP_s": 60,
+            "TOPD_s": 70,
+            "estimado": true
+        },
+        {
+            "classe_operacional": "desconhecida",
+            "tipos": [
+                "H60/M"
+            ],
+            "cat_vel": "A",
+            "wake": "L",
+            "Vi_aprox_kt": 80,
+            "TOPP_s": 60,
+            "TOPD_s": 70,
+            "estimado": true
+        },
+        {
+            "classe_operacional": "desconhecida",
+            "tipos": [
+                "C500/L"
+            ],
+            "cat_vel": "A",
+            "wake": "L",
+            "Vi_aprox_kt": 80,
+            "TOPP_s": 60,
+            "TOPD_s": 70,
+            "estimado": true
+        },
+        {
+            "classe_operacional": "desconhecida",
+            "tipos": [
+                "C560/M"
+            ],
+            "cat_vel": "A",
+            "wake": "L",
+            "Vi_aprox_kt": 80,
+            "TOPP_s": 60,
+            "TOPD_s": 70,
+            "estimado": true
+        },
+        {
+            "classe_operacional": "desconhecida",
+            "tipos": [
+                "RH22/L"
+            ],
+            "cat_vel": "A",
+            "wake": "L",
+            "Vi_aprox_kt": 80,
+            "TOPP_s": 60,
+            "TOPD_s": 70,
+            "estimado": true
+        },
+        {
+            "classe_operacional": "desconhecida",
+            "tipos": [
+                "RV7/L"
+            ],
+            "cat_vel": "A",
+            "wake": "L",
+            "Vi_aprox_kt": 80,
+            "TOPP_s": 60,
+            "TOPD_s": 70,
+            "estimado": true
+        },
+        {
+            "classe_operacional": "desconhecida",
+            "tipos": [
+                "EC25/L"
+            ],
+            "cat_vel": "A",
+            "wake": "L",
+            "Vi_aprox_kt": 80,
+            "TOPP_s": 60,
+            "TOPD_s": 70,
+            "estimado": true
+        },
+        {
+            "classe_operacional": "desconhecida",
+            "tipos": [
+                "RH44/L"
+            ],
+            "cat_vel": "A",
+            "wake": "L",
+            "Vi_aprox_kt": 80,
+            "TOPP_s": 60,
+            "TOPD_s": 70,
+            "estimado": true
+        },
+        {
+            "classe_operacional": "desconhecida",
+            "tipos": [
+                "SR92/L"
+            ],
+            "cat_vel": "A",
+            "wake": "L",
+            "Vi_aprox_kt": 80,
+            "TOPP_s": 60,
+            "TOPD_s": 70,
+            "estimado": true
+        },
+        {
+            "classe_operacional": "desconhecida",
+            "tipos": [
+                "BH07/L"
+            ],
+            "cat_vel": "A",
+            "wake": "L",
+            "Vi_aprox_kt": 80,
+            "TOPP_s": 60,
+            "TOPD_s": 70,
+            "estimado": true
+        },
+        {
+            "classe_operacional": "desconhecida",
+            "tipos": [
+                "C680/L"
+            ],
+            "cat_vel": "A",
+            "wake": "L",
+            "Vi_aprox_kt": 80,
+            "TOPP_s": 60,
+            "TOPD_s": 70,
+            "estimado": true
+        },
+        {
+            "classe_operacional": "desconhecida",
+            "tipos": [
+                "RH66/"
+            ],
+            "cat_vel": "A",
+            "wake": "L",
+            "Vi_aprox_kt": 80,
+            "TOPP_s": 60,
+            "TOPD_s": 70,
+            "estimado": true
+        },
+        {
+            "classe_operacional": "desconhecida",
+            "tipos": [
+                "C150/L"
+            ],
+            "cat_vel": "A",
+            "wake": "L",
+            "Vi_aprox_kt": 80,
+            "TOPP_s": 60,
+            "TOPD_s": 70,
+            "estimado": true
+        },
+        {
+            "classe_operacional": "desconhecida",
+            "tipos": [
+                "S921/M"
+            ],
+            "cat_vel": "A",
+            "wake": "L",
+            "Vi_aprox_kt": 80,
+            "TOPP_s": 60,
+            "TOPD_s": 70,
+            "estimado": true
+        },
+        {
+            "classe_operacional": "desconhecida",
+            "tipos": [
+                "AS32/M"
+            ],
+            "cat_vel": "A",
+            "wake": "L",
+            "Vi_aprox_kt": 80,
+            "TOPP_s": 60,
+            "TOPD_s": 70,
+            "estimado": true
+        },
+        {
+            "classe_operacional": "desconhecida",
+            "tipos": [
+                "C208/H"
+            ],
+            "cat_vel": "A",
+            "wake": "L",
+            "Vi_aprox_kt": 80,
+            "TOPP_s": 60,
+            "TOPD_s": 70,
+            "estimado": true
+        },
+        {
+            "classe_operacional": "desconhecida",
+            "tipos": [
+                "PA38/L"
+            ],
+            "cat_vel": "A",
+            "wake": "L",
+            "Vi_aprox_kt": 80,
+            "TOPP_s": 60,
+            "TOPD_s": 70,
+            "estimado": true
+        },
+        {
+            "classe_operacional": "desconhecida",
+            "tipos": [
+                "C210/L"
+            ],
+            "cat_vel": "A",
+            "wake": "L",
+            "Vi_aprox_kt": 80,
+            "TOPP_s": 60,
+            "TOPD_s": 70,
+            "estimado": true
+        },
+        {
+            "classe_operacional": "desconhecida",
+            "tipos": [
+                "H1H/L"
+            ],
+            "cat_vel": "A",
+            "wake": "L",
+            "Vi_aprox_kt": 80,
+            "TOPP_s": 60,
+            "TOPD_s": 70,
+            "estimado": true
+        },
+        {
+            "classe_operacional": "desconhecida",
+            "tipos": [
+                "AS39/L"
+            ],
+            "cat_vel": "A",
+            "wake": "L",
+            "Vi_aprox_kt": 80,
+            "TOPP_s": 60,
+            "TOPD_s": 70,
+            "estimado": true
+        },
+        {
+            "classe_operacional": "desconhecida",
+            "tipos": [
+                "C310/L"
+            ],
+            "cat_vel": "A",
+            "wake": "L",
+            "Vi_aprox_kt": 80,
+            "TOPP_s": 60,
+            "TOPD_s": 70,
+            "estimado": true
+        },
+        {
+            "classe_operacional": "desconhecida",
+            "tipos": [
+                "S920/M"
+            ],
+            "cat_vel": "A",
+            "wake": "L",
+            "Vi_aprox_kt": 80,
+            "TOPP_s": 60,
+            "TOPD_s": 70,
+            "estimado": true
+        },
+        {
+            "classe_operacional": "desconhecida",
+            "tipos": [
+                "LYNX/L"
+            ],
+            "cat_vel": "A",
+            "wake": "L",
+            "Vi_aprox_kt": 80,
+            "TOPP_s": 60,
+            "TOPD_s": 70,
+            "estimado": true
+        },
+        {
+            "classe_operacional": "desconhecida",
+            "tipos": [
+                "3204/"
+            ],
+            "cat_vel": "A",
+            "wake": "L",
+            "Vi_aprox_kt": 80,
+            "TOPP_s": 60,
+            "TOPD_s": 70,
+            "estimado": true
+        },
+        {
+            "classe_operacional": "desconhecida",
+            "tipos": [
+                "R100/L"
+            ],
+            "cat_vel": "A",
+            "wake": "L",
+            "Vi_aprox_kt": 80,
+            "TOPP_s": 60,
+            "TOPD_s": 70,
+            "estimado": true
+        },
+        {
+            "classe_operacional": "desconhecida",
+            "tipos": [
+                "MC01/L"
+            ],
+            "cat_vel": "A",
+            "wake": "L",
+            "Vi_aprox_kt": 80,
+            "TOPP_s": 60,
+            "TOPD_s": 70,
+            "estimado": true
+        },
+        {
+            "classe_operacional": "desconhecida",
+            "tipos": [
+                "BE40/M"
+            ],
+            "cat_vel": "A",
+            "wake": "L",
+            "Vi_aprox_kt": 80,
+            "TOPP_s": 60,
+            "TOPD_s": 70,
+            "estimado": true
+        },
+        {
+            "classe_operacional": "desconhecida",
+            "tipos": [
+                "A319/M"
+            ],
+            "cat_vel": "A",
+            "wake": "L",
+            "Vi_aprox_kt": 80,
+            "TOPP_s": 60,
+            "TOPD_s": 70,
+            "estimado": true
+        },
+        {
+            "classe_operacional": "desconhecida",
+            "tipos": [
+                "1604/"
+            ],
+            "cat_vel": "A",
+            "wake": "L",
+            "Vi_aprox_kt": 80,
+            "TOPP_s": 60,
+            "TOPD_s": 70,
+            "estimado": true
+        },
+        {
+            "classe_operacional": "desconhecida",
+            "tipos": [
+                "BE90/L"
+            ],
+            "cat_vel": "A",
+            "wake": "L",
+            "Vi_aprox_kt": 80,
+            "TOPP_s": 60,
+            "TOPD_s": 70,
+            "estimado": true
+        },
+        {
+            "classe_operacional": "desconhecida",
+            "tipos": [
+                "AS52/L"
+            ],
+            "cat_vel": "A",
+            "wake": "L",
+            "Vi_aprox_kt": 80,
+            "TOPP_s": 60,
+            "TOPD_s": 70,
+            "estimado": true
+        },
+        {
+            "classe_operacional": "desconhecida",
+            "tipos": [
+                "EP55/L"
+            ],
+            "cat_vel": "A",
+            "wake": "L",
+            "Vi_aprox_kt": 80,
+            "TOPP_s": 60,
+            "TOPD_s": 70,
+            "estimado": true
+        },
+        {
+            "classe_operacional": "desconhecida",
+            "tipos": [
+                "R66/"
+            ],
+            "cat_vel": "A",
+            "wake": "L",
+            "Vi_aprox_kt": 80,
+            "TOPP_s": 60,
+            "TOPD_s": 70,
+            "estimado": true
+        },
+        {
+            "classe_operacional": "desconhecida",
+            "tipos": [
+                "S92L/L"
+            ],
+            "cat_vel": "A",
+            "wake": "L",
+            "Vi_aprox_kt": 80,
+            "TOPP_s": 60,
+            "TOPD_s": 70,
+            "estimado": true
+        },
+        {
+            "classe_operacional": "desconhecida",
+            "tipos": [
+                "C206/L"
+            ],
+            "cat_vel": "A",
+            "wake": "L",
+            "Vi_aprox_kt": 80,
+            "TOPP_s": 60,
+            "TOPD_s": 70,
+            "estimado": true
+        },
+        {
+            "classe_operacional": "desconhecida",
+            "tipos": [
+                "B47G/L"
+            ],
+            "cat_vel": "A",
+            "wake": "L",
+            "Vi_aprox_kt": 80,
+            "TOPP_s": 60,
+            "TOPD_s": 70,
+            "estimado": true
+        },
+        {
+            "classe_operacional": "desconhecida",
+            "tipos": [
+                "S94/M"
+            ],
+            "cat_vel": "A",
+            "wake": "L",
+            "Vi_aprox_kt": 80,
+            "TOPP_s": 60,
+            "TOPD_s": 70,
+            "estimado": true
+        },
+        {
+            "classe_operacional": "desconhecida",
+            "tipos": [
+                "A50L/L"
+            ],
+            "cat_vel": "A",
+            "wake": "L",
+            "Vi_aprox_kt": 80,
+            "TOPP_s": 60,
+            "TOPD_s": 70,
+            "estimado": true
+        },
+        {
+            "classe_operacional": "desconhecida",
+            "tipos": [
+                "E550/M"
+            ],
+            "cat_vel": "A",
+            "wake": "L",
+            "Vi_aprox_kt": 80,
+            "TOPP_s": 60,
+            "TOPD_s": 70,
+            "estimado": true
+        },
+        {
+            "classe_operacional": "desconhecida",
+            "tipos": [
+                "S925/L"
+            ],
+            "cat_vel": "A",
+            "wake": "L",
+            "Vi_aprox_kt": 80,
+            "TOPP_s": 60,
+            "TOPD_s": 70,
+            "estimado": true
+        },
+        {
+            "classe_operacional": "desconhecida",
+            "tipos": [
+                "E712/L"
+            ],
+            "cat_vel": "A",
+            "wake": "L",
+            "Vi_aprox_kt": 80,
+            "TOPP_s": 60,
+            "TOPD_s": 70,
+            "estimado": true
+        },
+        {
+            "classe_operacional": "desconhecida",
+            "tipos": [
+                "B763/H"
+            ],
+            "cat_vel": "A",
+            "wake": "L",
+            "Vi_aprox_kt": 80,
+            "TOPP_s": 60,
+            "TOPD_s": 70,
+            "estimado": true
+        },
+        {
+            "classe_operacional": "desconhecida",
+            "tipos": [
+                "ULM/L"
+            ],
+            "cat_vel": "A",
+            "wake": "L",
+            "Vi_aprox_kt": 80,
+            "TOPP_s": 60,
+            "TOPD_s": 70,
+            "estimado": true
+        },
+        {
+            "classe_operacional": "desconhecida",
+            "tipos": [
+                "C501/L"
+            ],
+            "cat_vel": "A",
+            "wake": "L",
+            "Vi_aprox_kt": 80,
+            "TOPP_s": 60,
+            "TOPD_s": 70,
+            "estimado": true
+        },
+        {
+            "classe_operacional": "desconhecida",
+            "tipos": [
+                "RR66/L"
+            ],
+            "cat_vel": "A",
+            "wake": "L",
+            "Vi_aprox_kt": 80,
+            "TOPP_s": 60,
+            "TOPD_s": 70,
+            "estimado": true
+        },
+        {
+            "classe_operacional": "desconhecida",
+            "tipos": [
+                "B05/H"
+            ],
+            "cat_vel": "A",
+            "wake": "L",
+            "Vi_aprox_kt": 80,
+            "TOPP_s": 60,
+            "TOPD_s": 70,
+            "estimado": true
+        },
+        {
+            "classe_operacional": "desconhecida",
+            "tipos": [
+                "PC24/M"
+            ],
+            "cat_vel": "A",
+            "wake": "L",
+            "Vi_aprox_kt": 80,
+            "TOPP_s": 60,
+            "TOPD_s": 70,
+            "estimado": true
+        },
+        {
+            "classe_operacional": "desconhecida",
+            "tipos": [
+                "C280/L"
+            ],
+            "cat_vel": "A",
+            "wake": "L",
+            "Vi_aprox_kt": 80,
+            "TOPP_s": 60,
+            "TOPD_s": 70,
+            "estimado": true
+        },
+        {
+            "classe_operacional": "desconhecida",
+            "tipos": [
+                "2527/"
+            ],
+            "cat_vel": "A",
+            "wake": "L",
+            "Vi_aprox_kt": 80,
+            "TOPP_s": 60,
+            "TOPD_s": 70,
+            "estimado": true
+        },
+        {
+            "classe_operacional": "desconhecida",
+            "tipos": [
+                "SK92/M"
+            ],
+            "cat_vel": "A",
+            "wake": "L",
+            "Vi_aprox_kt": 80,
+            "TOPP_s": 60,
+            "TOPD_s": 70,
+            "estimado": true
+        },
+        {
+            "classe_operacional": "desconhecida",
+            "tipos": [
+                "C25A/L"
+            ],
+            "cat_vel": "A",
+            "wake": "L",
+            "Vi_aprox_kt": 80,
+            "TOPP_s": 60,
+            "TOPD_s": 70,
+            "estimado": true
+        },
+        {
+            "classe_operacional": "desconhecida",
+            "tipos": [
+                "S926/M"
+            ],
+            "cat_vel": "A",
+            "wake": "L",
+            "Vi_aprox_kt": 80,
+            "TOPP_s": 60,
+            "TOPD_s": 70,
+            "estimado": true
+        },
+        {
+            "classe_operacional": "desconhecida",
+            "tipos": [
+                "B429/l"
+            ],
+            "cat_vel": "A",
+            "wake": "L",
+            "Vi_aprox_kt": 80,
+            "TOPP_s": 60,
+            "TOPD_s": 70,
+            "estimado": true
+        },
+        {
+            "classe_operacional": "desconhecida",
+            "tipos": [
+                "CH7B/L"
+            ],
+            "cat_vel": "A",
+            "wake": "L",
+            "Vi_aprox_kt": 80,
+            "TOPP_s": 60,
+            "TOPD_s": 70,
+            "estimado": true
+        },
+        {
+            "classe_operacional": "desconhecida",
+            "tipos": [
+                "PA28/L"
+            ],
+            "cat_vel": "A",
+            "wake": "L",
+            "Vi_aprox_kt": 80,
+            "TOPP_s": 60,
+            "TOPD_s": 70,
+            "estimado": true
+        },
+        {
+            "classe_operacional": "desconhecida",
+            "tipos": [
+                "SK76/L"
+            ],
+            "cat_vel": "A",
+            "wake": "L",
+            "Vi_aprox_kt": 80,
+            "TOPP_s": 60,
+            "TOPD_s": 70,
+            "estimado": true
+        },
+        {
+            "classe_operacional": "desconhecida",
+            "tipos": [
+                "CH7B/H"
+            ],
+            "cat_vel": "A",
+            "wake": "L",
+            "Vi_aprox_kt": 80,
+            "TOPP_s": 60,
+            "TOPD_s": 70,
+            "estimado": true
+        },
+        {
+            "classe_operacional": "desconhecida",
+            "tipos": [
+                "B05/L"
+            ],
+            "cat_vel": "A",
+            "wake": "L",
+            "Vi_aprox_kt": 80,
+            "TOPP_s": 60,
+            "TOPD_s": 70,
+            "estimado": true
+        },
+        {
+            "classe_operacional": "desconhecida",
+            "tipos": [
+                "PUMA/L"
+            ],
+            "cat_vel": "A",
+            "wake": "L",
+            "Vi_aprox_kt": 80,
+            "TOPP_s": 60,
+            "TOPD_s": 70,
+            "estimado": true
+        },
+        {
+            "classe_operacional": "desconhecida",
+            "tipos": [
+                "EP55/"
+            ],
+            "cat_vel": "A",
+            "wake": "L",
+            "Vi_aprox_kt": 80,
+            "TOPP_s": 60,
+            "TOPD_s": 70,
+            "estimado": true
+        },
+        {
+            "classe_operacional": "desconhecida",
+            "tipos": [
+                "M20P/L"
+            ],
+            "cat_vel": "A",
+            "wake": "L",
+            "Vi_aprox_kt": 80,
+            "TOPP_s": 60,
+            "TOPD_s": 70,
+            "estimado": true
+        },
+        {
+            "classe_operacional": "desconhecida",
+            "tipos": [
+                "/L"
+            ],
+            "cat_vel": "A",
+            "wake": "L",
+            "Vi_aprox_kt": 80,
+            "TOPP_s": 60,
+            "TOPD_s": 70,
+            "estimado": true
+        },
+        {
+            "classe_operacional": "desconhecida",
+            "tipos": [
+                "VFR/L"
+            ],
+            "cat_vel": "A",
+            "wake": "L",
+            "Vi_aprox_kt": 80,
+            "TOPP_s": 60,
+            "TOPD_s": 70,
+            "estimado": true
+        },
+        {
+            "classe_operacional": "desconhecida",
+            "tipos": [
+                "BH29/L"
+            ],
+            "cat_vel": "A",
+            "wake": "L",
+            "Vi_aprox_kt": 80,
+            "TOPP_s": 60,
+            "TOPD_s": 70,
+            "estimado": true
+        },
+        {
+            "classe_operacional": "desconhecida",
+            "tipos": [
+                "A135/L"
+            ],
+            "cat_vel": "A",
+            "wake": "L",
+            "Vi_aprox_kt": 80,
+            "TOPP_s": 60,
+            "TOPD_s": 70,
+            "estimado": true
+        },
+        {
+            "classe_operacional": "desconhecida",
+            "tipos": [
+                "0109/"
+            ],
+            "cat_vel": "A",
+            "wake": "L",
+            "Vi_aprox_kt": 80,
+            "TOPP_s": 60,
+            "TOPD_s": 70,
+            "estimado": true
+        },
+        {
+            "classe_operacional": "desconhecida",
+            "tipos": [
+                "A139/M"
+            ],
+            "cat_vel": "A",
+            "wake": "L",
+            "Vi_aprox_kt": 80,
+            "TOPP_s": 60,
+            "TOPD_s": 70,
+            "estimado": true
+        },
+        {
+            "classe_operacional": "desconhecida",
+            "tipos": [
+                "CH07/"
+            ],
+            "cat_vel": "A",
+            "wake": "L",
+            "Vi_aprox_kt": 80,
+            "TOPP_s": 60,
+            "TOPD_s": 70,
+            "estimado": true
+        },
+        {
+            "classe_operacional": "desconhecida",
+            "tipos": [
+                "CH07/L"
+            ],
+            "cat_vel": "A",
+            "wake": "L",
+            "Vi_aprox_kt": 80,
+            "TOPP_s": 60,
+            "TOPD_s": 70,
+            "estimado": true
+        },
+        {
+            "classe_operacional": "desconhecida",
+            "tipos": [
+                "R44/"
+            ],
+            "cat_vel": "A",
+            "wake": "L",
+            "Vi_aprox_kt": 80,
+            "TOPP_s": 60,
+            "TOPD_s": 70,
+            "estimado": true
+        },
+        {
+            "classe_operacional": "desconhecida",
+            "tipos": [
+                "E110/L"
+            ],
+            "cat_vel": "A",
+            "wake": "L",
+            "Vi_aprox_kt": 80,
+            "TOPP_s": 60,
+            "TOPD_s": 70,
+            "estimado": true
+        },
+        {
+            "classe_operacional": "desconhecida",
+            "tipos": [
+                "PAT4/L"
+            ],
+            "cat_vel": "A",
+            "wake": "L",
+            "Vi_aprox_kt": 80,
+            "TOPP_s": 60,
+            "TOPD_s": 70,
+            "estimado": true
+        },
+        {
+            "classe_operacional": "desconhecida",
+            "tipos": [
+                "0100/"
+            ],
+            "cat_vel": "A",
+            "wake": "L",
+            "Vi_aprox_kt": 80,
+            "TOPP_s": 60,
+            "TOPD_s": 70,
+            "estimado": true
+        },
+        {
+            "classe_operacional": "desconhecida",
+            "tipos": [
+                "E9/L"
+            ],
+            "cat_vel": "A",
+            "wake": "L",
+            "Vi_aprox_kt": 80,
+            "TOPP_s": 60,
+            "TOPD_s": 70,
+            "estimado": true
+        },
+        {
+            "classe_operacional": "desconhecida",
+            "tipos": [
+                "A131/L"
+            ],
+            "cat_vel": "A",
+            "wake": "L",
+            "Vi_aprox_kt": 80,
+            "TOPP_s": 60,
+            "TOPD_s": 70,
+            "estimado": true
+        },
+        {
+            "classe_operacional": "desconhecida",
+            "tipos": [
+                "S925/M"
+            ],
+            "cat_vel": "A",
+            "wake": "L",
+            "Vi_aprox_kt": 80,
+            "TOPP_s": 60,
+            "TOPD_s": 70,
+            "estimado": true
+        },
+        {
+            "classe_operacional": "desconhecida",
+            "tipos": [
+                "ULAC/U"
+            ],
+            "cat_vel": "A",
+            "wake": "L",
+            "Vi_aprox_kt": 80,
+            "TOPP_s": 60,
+            "TOPD_s": 70,
+            "estimado": true
+        },
+        {
+            "classe_operacional": "desconhecida",
+            "tipos": [
+                "C560/L"
+            ],
+            "cat_vel": "A",
+            "wake": "L",
+            "Vi_aprox_kt": 80,
+            "TOPP_s": 60,
+            "TOPD_s": 70,
+            "estimado": true
+        },
+        {
+            "classe_operacional": "desconhecida",
+            "tipos": [
+                "B330/L"
+            ],
+            "cat_vel": "A",
+            "wake": "L",
+            "Vi_aprox_kt": 80,
+            "TOPP_s": 60,
+            "TOPD_s": 70,
+            "estimado": true
+        },
+        {
+            "classe_operacional": "desconhecida",
+            "tipos": [
+                "E550/L"
+            ],
+            "cat_vel": "A",
+            "wake": "L",
+            "Vi_aprox_kt": 80,
+            "TOPP_s": 60,
+            "TOPD_s": 70,
+            "estimado": true
+        },
+        {
+            "classe_operacional": "desconhecida",
+            "tipos": [
+                "SIRA/L"
+            ],
+            "cat_vel": "A",
+            "wake": "L",
+            "Vi_aprox_kt": 80,
+            "TOPP_s": 60,
+            "TOPD_s": 70,
+            "estimado": true
+        },
+        {
+            "classe_operacional": "desconhecida",
+            "tipos": [
+                "B60/L"
+            ],
+            "cat_vel": "A",
+            "wake": "L",
+            "Vi_aprox_kt": 80,
+            "TOPP_s": 60,
+            "TOPD_s": 70,
+            "estimado": true
+        },
+        {
+            "classe_operacional": "desconhecida",
+            "tipos": [
+                "C52A/L"
+            ],
+            "cat_vel": "A",
+            "wake": "L",
+            "Vi_aprox_kt": 80,
+            "TOPP_s": 60,
+            "TOPD_s": 70,
+            "estimado": true
+        },
+        {
+            "classe_operacional": "desconhecida",
+            "tipos": [
+                "DA42/M"
+            ],
+            "cat_vel": "A",
+            "wake": "L",
+            "Vi_aprox_kt": 80,
+            "TOPP_s": 60,
+            "TOPD_s": 70,
+            "estimado": true
+        },
+        {
+            "classe_operacional": "desconhecida",
+            "tipos": [
+                "S330/L"
+            ],
+            "cat_vel": "A",
+            "wake": "L",
+            "Vi_aprox_kt": 80,
+            "TOPP_s": 60,
+            "TOPD_s": 70,
+            "estimado": true
+        },
+        {
+            "classe_operacional": "desconhecida",
+            "tipos": [
+                "DA62/"
+            ],
+            "cat_vel": "A",
+            "wake": "L",
+            "Vi_aprox_kt": 80,
+            "TOPP_s": 60,
+            "TOPD_s": 70,
+            "estimado": true
+        },
+        {
+            "classe_operacional": "desconhecida",
+            "tipos": [
+                "B427/L"
+            ],
+            "cat_vel": "A",
+            "wake": "L",
+            "Vi_aprox_kt": 80,
+            "TOPP_s": 60,
+            "TOPD_s": 70,
+            "estimado": true
+        },
+        {
+            "classe_operacional": "desconhecida",
+            "tipos": [
+                "P68T/L"
+            ],
+            "cat_vel": "A",
+            "wake": "L",
+            "Vi_aprox_kt": 80,
+            "TOPP_s": 60,
+            "TOPD_s": 70,
+            "estimado": true
+        },
+        {
+            "classe_operacional": "desconhecida",
+            "tipos": [
+                "F900/M"
+            ],
+            "cat_vel": "A",
+            "wake": "L",
+            "Vi_aprox_kt": 80,
+            "TOPP_s": 60,
+            "TOPD_s": 70,
+            "estimado": true
+        },
+        {
+            "classe_operacional": "desconhecida",
+            "tipos": [
+                "B06L/L"
+            ],
+            "cat_vel": "A",
+            "wake": "L",
+            "Vi_aprox_kt": 80,
+            "TOPP_s": 60,
+            "TOPD_s": 70,
+            "estimado": true
+        },
+        {
+            "classe_operacional": "desconhecida",
+            "tipos": [
+                "RV9/L"
+            ],
+            "cat_vel": "A",
+            "wake": "L",
+            "Vi_aprox_kt": 80,
+            "TOPP_s": 60,
+            "TOPD_s": 70,
+            "estimado": true
+        },
+        {
+            "classe_operacional": "desconhecida",
+            "tipos": [
+                "LJ55/M"
+            ],
+            "cat_vel": "A",
+            "wake": "L",
+            "Vi_aprox_kt": 80,
+            "TOPP_s": 60,
+            "TOPD_s": 70,
+            "estimado": true
+        },
+        {
+            "classe_operacional": "desconhecida",
+            "tipos": [
+                "E300/L"
+            ],
+            "cat_vel": "A",
+            "wake": "L",
+            "Vi_aprox_kt": 80,
+            "TOPP_s": 60,
+            "TOPD_s": 70,
+            "estimado": true
+        },
+        {
+            "classe_operacional": "desconhecida",
+            "tipos": [
+                "P68/L"
+            ],
+            "cat_vel": "A",
+            "wake": "L",
+            "Vi_aprox_kt": 80,
+            "TOPP_s": 60,
+            "TOPD_s": 70,
+            "estimado": true
+        },
+        {
+            "classe_operacional": "desconhecida",
+            "tipos": [
+                "B737/M"
+            ],
+            "cat_vel": "A",
+            "wake": "L",
+            "Vi_aprox_kt": 80,
+            "TOPP_s": 60,
+            "TOPD_s": 70,
+            "estimado": true
+        },
+        {
+            "classe_operacional": "desconhecida",
+            "tipos": [
+                "H350/L"
+            ],
+            "cat_vel": "A",
+            "wake": "L",
+            "Vi_aprox_kt": 80,
+            "TOPP_s": 60,
+            "TOPD_s": 70,
+            "estimado": true
+        },
+        {
+            "classe_operacional": "desconhecida",
+            "tipos": [
+                "F900/L"
+            ],
+            "cat_vel": "A",
+            "wake": "L",
+            "Vi_aprox_kt": 80,
+            "TOPP_s": 60,
+            "TOPD_s": 70,
+            "estimado": true
+        },
+        {
+            "classe_operacional": "desconhecida",
+            "tipos": [
+                "HS25/L"
+            ],
+            "cat_vel": "A",
+            "wake": "L",
+            "Vi_aprox_kt": 80,
+            "TOPP_s": 60,
+            "TOPD_s": 70,
+            "estimado": true
+        },
+        {
+            "classe_operacional": "desconhecida",
+            "tipos": [
+                "C330/L"
+            ],
+            "cat_vel": "A",
+            "wake": "L",
+            "Vi_aprox_kt": 80,
+            "TOPP_s": 60,
+            "TOPD_s": 70,
+            "estimado": true
+        },
+        {
+            "classe_operacional": "desconhecida",
+            "tipos": [
+                "R666/L"
+            ],
+            "cat_vel": "A",
+            "wake": "L",
+            "Vi_aprox_kt": 80,
+            "TOPP_s": 60,
+            "TOPD_s": 70,
+            "estimado": true
+        },
+        {
+            "classe_operacional": "desconhecida",
+            "tipos": [
+                "E710/L"
+            ],
+            "cat_vel": "A",
+            "wake": "L",
+            "Vi_aprox_kt": 80,
+            "TOPP_s": 60,
+            "TOPD_s": 70,
+            "estimado": true
+        },
+        {
+            "classe_operacional": "desconhecida",
+            "tipos": [
+                "F92/L"
+            ],
+            "cat_vel": "A",
+            "wake": "L",
+            "Vi_aprox_kt": 80,
+            "TOPP_s": 60,
+            "TOPD_s": 70,
+            "estimado": true
+        },
+        {
+            "classe_operacional": "desconhecida",
+            "tipos": [
+                "C25C/L"
+            ],
+            "cat_vel": "A",
+            "wake": "L",
+            "Vi_aprox_kt": 80,
+            "TOPP_s": 60,
+            "TOPD_s": 70,
+            "estimado": true
+        },
+        {
+            "classe_operacional": "desconhecida",
+            "tipos": [
+                "MU2/L"
+            ],
+            "cat_vel": "A",
+            "wake": "L",
+            "Vi_aprox_kt": 80,
+            "TOPP_s": 60,
+            "TOPD_s": 70,
+            "estimado": true
+        },
+        {
+            "classe_operacional": "desconhecida",
+            "tipos": [
+                "1949/"
+            ],
+            "cat_vel": "A",
+            "wake": "L",
+            "Vi_aprox_kt": 80,
+            "TOPP_s": 60,
+            "TOPD_s": 70,
+            "estimado": true
+        },
+        {
+            "classe_operacional": "desconhecida",
+            "tipos": [
+                "E545/M"
+            ],
+            "cat_vel": "A",
+            "wake": "L",
+            "Vi_aprox_kt": 80,
+            "TOPP_s": 60,
+            "TOPD_s": 70,
+            "estimado": true
+        },
+        {
+            "classe_operacional": "desconhecida",
+            "tipos": [
+                "EC14/"
+            ],
+            "cat_vel": "A",
+            "wake": "L",
+            "Vi_aprox_kt": 80,
+            "TOPP_s": 60,
+            "TOPD_s": 70,
+            "estimado": true
+        },
+        {
+            "classe_operacional": "desconhecida",
+            "tipos": [
+                "S922/L"
+            ],
+            "cat_vel": "A",
+            "wake": "L",
+            "Vi_aprox_kt": 80,
+            "TOPP_s": 60,
+            "TOPD_s": 70,
+            "estimado": true
+        },
+        {
+            "classe_operacional": "desconhecida",
+            "tipos": [
+                "A19S/L"
+            ],
+            "cat_vel": "A",
+            "wake": "L",
+            "Vi_aprox_kt": 80,
+            "TOPP_s": 60,
+            "TOPD_s": 70,
+            "estimado": true
+        },
+        {
+            "classe_operacional": "desconhecida",
+            "tipos": [
+                "C56X/L"
+            ],
+            "cat_vel": "A",
+            "wake": "L",
+            "Vi_aprox_kt": 80,
+            "TOPP_s": 60,
+            "TOPD_s": 70,
+            "estimado": true
+        },
+        {
+            "classe_operacional": "desconhecida",
+            "tipos": [
+                "AC90/L"
+            ],
+            "cat_vel": "A",
+            "wake": "L",
+            "Vi_aprox_kt": 80,
+            "TOPP_s": 60,
+            "TOPD_s": 70,
+            "estimado": true
+        },
+        {
+            "classe_operacional": "desconhecida",
+            "tipos": [
+                "B06/"
+            ],
+            "cat_vel": "A",
+            "wake": "L",
+            "Vi_aprox_kt": 80,
+            "TOPP_s": 60,
+            "TOPD_s": 70,
+            "estimado": true
+        },
+        {
+            "classe_operacional": "desconhecida",
+            "tipos": [
+                "VFR/"
+            ],
+            "cat_vel": "A",
+            "wake": "L",
+            "Vi_aprox_kt": 80,
+            "TOPP_s": 60,
+            "TOPD_s": 70,
+            "estimado": true
+        },
+        {
+            "classe_operacional": "desconhecida",
+            "tipos": [
+                "B335/L"
+            ],
+            "cat_vel": "A",
+            "wake": "L",
+            "Vi_aprox_kt": 80,
+            "TOPP_s": 60,
+            "TOPD_s": 70,
+            "estimado": true
+        },
+        {
+            "classe_operacional": "desconhecida",
+            "tipos": [
+                "SBJR/L"
+            ],
+            "cat_vel": "A",
+            "wake": "L",
+            "Vi_aprox_kt": 80,
+            "TOPP_s": 60,
+            "TOPD_s": 70,
+            "estimado": true
+        },
+        {
+            "classe_operacional": "desconhecida",
+            "tipos": [
+                "R22/"
+            ],
+            "cat_vel": "A",
+            "wake": "L",
+            "Vi_aprox_kt": 80,
+            "TOPP_s": 60,
+            "TOPD_s": 70,
+            "estimado": true
+        },
+        {
+            "classe_operacional": "desconhecida",
+            "tipos": [
+                "M20T/L"
+            ],
+            "cat_vel": "A",
+            "wake": "L",
+            "Vi_aprox_kt": 80,
+            "TOPP_s": 60,
+            "TOPD_s": 70,
+            "estimado": true
+        },
+        {
+            "classe_operacional": "desconhecida",
+            "tipos": [
+                "H60/L"
+            ],
+            "cat_vel": "A",
+            "wake": "L",
+            "Vi_aprox_kt": 80,
+            "TOPP_s": 60,
+            "TOPD_s": 70,
+            "estimado": true
+        },
+        {
+            "classe_operacional": "desconhecida",
+            "tipos": [
+                "H60L/M"
+            ],
+            "cat_vel": "A",
+            "wake": "L",
+            "Vi_aprox_kt": 80,
+            "TOPP_s": 60,
+            "TOPD_s": 70,
+            "estimado": true
+        },
+        {
+            "classe_operacional": "desconhecida",
+            "tipos": [
+                "BE99/L"
+            ],
+            "cat_vel": "A",
+            "wake": "L",
+            "Vi_aprox_kt": 80,
+            "TOPP_s": 60,
+            "TOPD_s": 70,
+            "estimado": true
+        },
+        {
+            "classe_operacional": "desconhecida",
+            "tipos": [
+                "A13/L"
+            ],
+            "cat_vel": "A",
+            "wake": "L",
+            "Vi_aprox_kt": 80,
+            "TOPP_s": 60,
+            "TOPD_s": 70,
+            "estimado": true
+        },
+        {
+            "classe_operacional": "desconhecida",
+            "tipos": [
+                "A166/L"
+            ],
+            "cat_vel": "A",
+            "wake": "L",
+            "Vi_aprox_kt": 80,
+            "TOPP_s": 60,
+            "TOPD_s": 70,
+            "estimado": true
+        },
+        {
+            "classe_operacional": "desconhecida",
+            "tipos": [
+                "A182/L"
+            ],
+            "cat_vel": "A",
+            "wake": "L",
+            "Vi_aprox_kt": 80,
+            "TOPP_s": 60,
+            "TOPD_s": 70,
+            "estimado": true
+        }
+    ]
+}

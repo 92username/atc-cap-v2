@@ -17,7 +17,7 @@ services:
       - ./outputs:/app/outputs
       - ./.streamlit:/app/.streamlit
     restart: unless-stopped
-    cpus: 1.6
+    cpus: 1.0
     cpuset: "0,1"
     mem_limit: 1g
     memswap_limit: 2g
