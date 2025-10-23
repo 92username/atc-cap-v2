@@ -24,6 +24,9 @@ st.set_page_config(
 # Configuração de barra lateral
 def add_sidebar():
     with st.sidebar:
+        st.warning(
+            "⚠️ **Dica:** Exporte os dados diretamente do TATIC em formato bruto, sem aplicar filtros ou fórmulas personalizadas. O aplicativo foi otimizado para processar dados não modificados, garantindo resultados conforme a MCA 100-26."
+        )
         st.header("Como usar este app")
 
         with st.expander("📋 Instruções"):
@@ -45,7 +48,6 @@ def add_sidebar():
         """)
 
         st.markdown("---")
-        st.info("O aplicativo foi otimizado para processar dados não modificados, garantindo resultados conforme a MCA 100-26.")
 
 
 add_sidebar()
