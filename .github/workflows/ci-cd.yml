@@ -105,7 +105,7 @@ jobs:
               --restart unless-stopped \
               --cpus=1.6 \
               --memory=4g \
-              --memory-swap=2g \
+              --memory-swap=5g \
               -p ${{ env.APP_PORT }}:${{ env.APP_PORT }} \
               -v /root/atc-cap-v2/uploads:/app/uploads \
               -v /root/atc-cap-v2/outputs:/app/outputs \
