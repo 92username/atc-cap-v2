@@ -17,6 +17,11 @@ services:
       - ./outputs:/app/outputs
       - ./.streamlit:/app/.streamlit
     restart: unless-stopped
+    deploy:
+      resources:
+        limits:
+          cpus: '1.6'
+          memory: 1G
 
 volumes:
   uploads:
