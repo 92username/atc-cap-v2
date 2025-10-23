@@ -16,6 +16,8 @@ from typing import Any
 import numpy as np
 import pandas as pd
 
+from paths import ensure_output_dir
+
 # ============================================================================
 # PARALELISMO COM PANDARALLEL
 # ============================================================================
@@ -39,8 +41,7 @@ class TATICProcessor:
         self.usar_categoria_H = usar_categoria_h
         self.incluir_finais_de_semana = incluir_finais_de_semana
         self.log_callback = log_callback or (lambda msg: None)
-        self.output_dir = Path("outputs")
-        self.output_dir.mkdir(exist_ok=True)
+        self.output_dir = ensure_output_dir()
         self.categorias_df = self._load_categorias()
 
         # Configurações do processador
@@ -177,12 +178,10 @@ class TATICProcessor:
         data = datetime.now().strftime("%d%m%Y")
         pattern = re.compile(r"relatorio_(\d+)_\d{8}_(H|STD)\.zip")
 
-        os.makedirs("outputs", exist_ok=True)
-        existing_files = os.listdir("outputs")
-
-        nums = []
-        for f in existing_files:
-            if match := pattern.match(f):
+        base_dir = ensure_output_dir()
+        nums: list[int] = []
+        for zip_path in base_dir.rglob("relatorio_*.zip"):
+            if match := pattern.match(zip_path.name):
                 nums.append(int(match.group(1)))
 
         next_num = max(nums) + 1 if nums else 1

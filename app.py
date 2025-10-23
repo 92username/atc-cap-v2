@@ -1,12 +1,13 @@
+import io
 import os
 import time
-import uuid
-import zipfile
 from datetime import datetime
 from pathlib import Path
+from zipfile import ZipFile
 
 import streamlit as st
 
+from paths import OUTPUT_DIR, ensure_output_dir
 from tatic_processor import TATICProcessor
 
 # Configuração de página (DEVE SER PRIMEIRO)
@@ -160,179 +161,110 @@ incluir_finais_de_semana = (
 uploaded_file = st.file_uploader("Envie o arquivo TATIC (.xlsx)", type=["xlsx"])
 
 
-# Função para gerar o arquivo ZIP
-def gerar_zip_de_relatorio(job_output_dir: str, nome_arquivo: str):
-    """
-    Gera ZIP com todos os arquivos do job_output_dir
-    
-    Args:
-        job_output_dir: Caminho ABSOLUTO para o diretório de saída
-        nome_arquivo: Nome do arquivo ZIP (ex: relatorio_0001_15102025_STD.zip)
-    
-    Returns:
-        Caminho ABSOLUTO para o arquivo ZIP criado
-    """
-    # 🔧 CRÍTICO: Garantir que job_output_dir é um caminho válido
-    job_output_dir = str(job_output_dir).strip()
-    
-    # Criar ZIP no mesmo diretório que os arquivos de saída
-    # Pegar o parent dir (remover job_id) para colocar ZIP em outputs/
-    parent_dir = str(Path(job_output_dir).parent)
-    zip_path = os.path.join(parent_dir, nome_arquivo)
-    
-    print(f"[DEBUG ZIP] job_output_dir: {job_output_dir}")
-    print(f"[DEBUG ZIP] zip_path: {zip_path}")
-    print(f"[DEBUG ZIP] job_output_dir existe? {os.path.exists(job_output_dir)}")
-    print(f"[DEBUG ZIP] job_output_dir é absoluto? {os.path.isabs(job_output_dir)}")
+def gerar_zip_de_relatorio(job_output_dir: Path, nome_arquivo: str, persist_path: Path | None = None) -> bytes:
+    """Generate an in-memory ZIP archive for the given job directory."""
+    job_output_dir = Path(job_output_dir)
 
-    # DEBUG: Verificar arquivos disponíveis antes de zipar
-    print("[DEBUG ZIP] Arquivos antes de zipar:")
-    arquivos_encontrados = 0
-    if os.path.exists(job_output_dir):
-        for root, _dirs, files in os.walk(job_output_dir):
-            for file in files:
-                full_path = os.path.join(root, file)
-                size = os.path.getsize(full_path)
-                print(f"[DEBUG ZIP] - {file} ({size} bytes)")
-                arquivos_encontrados += 1
-    else:
-        print(f"[DEBUG ZIP] ❌ ERRO: Diretório {job_output_dir} não existe!")
-        return zip_path
+    if not job_output_dir.exists():
+        raise FileNotFoundError(f"Diretório de saída não encontrado: {job_output_dir}")
 
-    if arquivos_encontrados == 0:
-        print("[DEBUG ZIP] ⚠️ AVISO: Nenhum arquivo encontrado no diretório!")
+    buffer = io.BytesIO()
+    with ZipFile(buffer, "w") as zip_buffer:
+        for file_path in sorted(job_output_dir.rglob("*")):
+            if not file_path.is_file():
+                continue
+            if file_path.suffix.lower() == ".zip":
+                # Evita incluir ZIPs previamente gerados
+                continue
+            rel_path = file_path.relative_to(job_output_dir)
+            zip_buffer.writestr(str(rel_path), file_path.read_bytes())
 
-    # Criar o ZIP com todos os arquivos
-    files_added = 0
-    with zipfile.ZipFile(zip_path, "w", zipfile.ZIP_DEFLATED) as zipf:
-        for root, _dirs, files in os.walk(job_output_dir):
-            for file in files:
-                if not file.endswith(".zip"):  # Evita incluir outros ZIPs
-                    abs_path = os.path.join(root, file)
-                    rel_path = os.path.relpath(abs_path, job_output_dir)
-                    zipf.write(abs_path, arcname=rel_path)
-                    print(f"[DEBUG ZIP] ✅ Adicionado ao ZIP: {rel_path}")
-                    files_added += 1
+    buffer.seek(0)
+    zip_bytes = buffer.getvalue()
 
-    # DEBUG: Verificar conteúdo do ZIP
-    print(f"\n[DEBUG ZIP] Verificando ZIP {zip_path}:")
-    if os.path.exists(zip_path):
-        try:
-            with zipfile.ZipFile(zip_path, "r") as zipf:
-                items = zipf.namelist()
-                print(f"[DEBUG ZIP] Total de arquivos no ZIP: {len(items)}")
-                for item in items:
-                    info = zipf.getinfo(item)
-                    print(f"[DEBUG ZIP] - {item} ({info.file_size} bytes)")
-            
-            file_size = os.path.getsize(zip_path)
-            print(f"[DEBUG ZIP] Tamanho total do ZIP: {file_size} bytes")
+    default_path = job_output_dir.parent / nome_arquivo
 
-            # ⚠️ AVISO: Se ZIP tem menos de 100 bytes, está praticamente vazio
-            if file_size < 100:
-                print(f"[DEBUG ZIP] ⚠️ AVISO: ZIP vazio ou quase vazio!")
-                print(f"[DEBUG ZIP]    Arquivos adicionados: {files_added}")
-                print(f"[DEBUG ZIP]    Arquivos encontrados no diretório: {arquivos_encontrados}")
-        except zipfile.BadZipFile:
-            print("[DEBUG ZIP] ❌ ERRO: ZIP vazio ou corrompido!")
-    else:
-        print("[DEBUG ZIP] ❌ ERRO: Arquivo ZIP não foi criado!")
+    persist_targets = [default_path]
+    if persist_path is not None:
+        persist_targets.append(persist_path)
 
-    print(f"[DEBUG ZIP] Retornando: {zip_path}\n")
-    return zip_path
+    for target in persist_targets:
+        target.parent.mkdir(parents=True, exist_ok=True)
+        target.write_bytes(zip_bytes)
+
+    return zip_bytes
 
 
 # Inicializar estado da sessão
 if "relatorio_gerado" not in st.session_state:
     st.session_state.relatorio_gerado = False
     st.session_state.nome_arquivo = ""
-    st.session_state.relatorio_zip_path = ""
+    st.session_state.relatorio_zip_bytes = b""
     st.session_state.output_dir = ""
+    st.session_state.job_id = ""
+    st.session_state.zip_persist_path = ""
 
 if uploaded_file is not None:
     st.success(f"✅ Arquivo carregado: {uploaded_file.name}")
 
     # 🚀 Botão para iniciar processamento
     if st.button("🚀 Gerar Relatório"):
-        # ⏱️ Iniciar cronômetro do clique do usuário
         tempo_inicio = time.time()
-
         st.session_state.relatorio_gerado = False
 
-        # Criar pasta temporária para o upload
-        job_id = f"job_{datetime.now().strftime('%Y%m%d%H%M%S')}_{uuid.uuid4().hex[:8]}"
-        
-        # 🔧 CRÍTICO: Usar caminhos ABSOLUTOS para evitar problemas em Docker
-        base_dir = Path.cwd()  # Diretório de trabalho do app
-        upload_dir_rel = os.path.join("uploads", job_id)
-        upload_dir = base_dir / upload_dir_rel
+        base_dir = ensure_output_dir()
+        job_id = time.strftime("job_%Y%m%d%H%M%S")
+        job_dir = base_dir / job_id
+        upload_dir = job_dir / "inputs"
+        output_dir = job_dir / "outputs"
         upload_dir.mkdir(parents=True, exist_ok=True)
-        
-        st.write(f"[DEBUG] Base dir: {base_dir}")
-        st.write(f"[DEBUG] Upload dir: {upload_dir}")
+        output_dir.mkdir(parents=True, exist_ok=True)
 
-        # Salvar o arquivo para processamento
-        file_path = upload_dir / uploaded_file.name
-        with open(file_path, "wb") as f:
-            f.write(uploaded_file.getbuffer())
+        st.write(f"[DEBUG] OUTPUT_DIR configurado: {os.getenv('OUTPUT_DIR', str(OUTPUT_DIR))}")
+        st.write(f"[DEBUG] OUTPUT_DIR efetivo: {base_dir}")
+        st.write(f"[DEBUG] Job dir: {job_dir}")
 
-        # Inicializar processador
+        upload_path = upload_dir / uploaded_file.name
+        with open(upload_path, "wb") as uploaded_dest:
+            uploaded_dest.write(uploaded_file.getbuffer())
+
         processor = TATICProcessor(
-            usar_categoria_h=usar_categoria_h,  # Corrected argument name
+            usar_categoria_h=usar_categoria_h,
             incluir_finais_de_semana=incluir_finais_de_semana,
             log_callback=st.write,
         )
 
-        # Criar diretório de saída com caminho ABSOLUTO
-        output_dir_rel = os.path.join("outputs", job_id)
-        output_dir = base_dir / output_dir_rel
-        output_dir.mkdir(parents=True, exist_ok=True)
-        
-        st.write(f"[DEBUG] Output dir: {output_dir}")
-
-        # Substituir o método de processamento para usar `process_tatic_data`
         try:
             with st.spinner("Processando os dados... pode demorar até 3 minutos."):
                 import asyncio
 
-                resultado = asyncio.run(processor.process_tatic_data(file_path, output_dir))
+                asyncio.run(processor.process_tatic_data(upload_path, output_dir))
 
             st.success("Processamento concluído!")
 
-            # ⏱️ Calcular tempo total desde o clique do usuário
             tempo_total = time.time() - tempo_inicio
             st.info(f"⏳ Tempo decorrido: {tempo_total:.2f} segundos")
 
-            # 🔧 CRÍTICO: Pequeno delay para garantir que todos os arquivos foram
-            # sincronizados com o disco pelo sistema operacional
             time.sleep(1)
 
-            # 🔍 DEBUG: Verificar se os arquivos foram realmente criados
-            output_dir_str = str(output_dir)
-            st.write(f"\n[DEBUG APP] Verificando arquivos em: {output_dir_str}")
-            if os.path.exists(output_dir_str):
-                files_in_dir = list(os.listdir(output_dir_str))
-                st.write(f"[DEBUG APP] Arquivos encontrados: {len(files_in_dir)}")
-                for f in files_in_dir:
-                    file_path_check = os.path.join(output_dir_str, f)
-                    file_size = os.path.getsize(file_path_check)
-                    st.write(f"[DEBUG APP]   - {f}: {file_size} bytes")
-            else:
-                st.write(f"[DEBUG APP] ERRO: Diretório não existe: {output_dir_str}")
+            st.write(f"\n[DEBUG APP] Arquivos gerados em: {output_dir}")
+            generated_files = list(output_dir.glob("*"))
+            st.write(f"[DEBUG APP] Arquivos encontrados: {len(generated_files)}")
+            for generated in generated_files:
+                if generated.is_file():
+                    st.write(f"[DEBUG APP]   - {generated.name}: {generated.stat().st_size} bytes")
 
-            # Gerar nome do relatório e arquivo ZIP
             nome_arquivo = processor.gerar_nome_relatorio(usar_categoria_h)
-            st.write(f"[DEBUG] Chamando gerar_zip_de_relatorio com: {output_dir_str}")
-            relatorio_zip_path = gerar_zip_de_relatorio(str(output_dir), nome_arquivo)
-            st.write(f"[DEBUG] ZIP criado em: {relatorio_zip_path}")
+            persist_path = job_dir / f"{job_id}.zip"
+            zip_bytes = gerar_zip_de_relatorio(output_dir, nome_arquivo, persist_path=persist_path)
 
-            # Salvar no estado da sessão
             st.session_state.relatorio_gerado = True
             st.session_state.nome_arquivo = nome_arquivo
-            st.session_state.relatorio_zip_path = relatorio_zip_path
+            st.session_state.relatorio_zip_bytes = zip_bytes
             st.session_state.output_dir = str(output_dir)
+            st.session_state.job_id = job_id
+            st.session_state.zip_persist_path = str(persist_path)
 
-            # Exibir mensagem de sucesso com o nome do arquivo
             st.success(f"✅ Relatório gerado: {nome_arquivo}")
 
         except Exception as e:
@@ -341,17 +273,15 @@ if uploaded_file is not None:
 
 # Botão de download se o relatório estiver pronto
 if st.session_state.relatorio_gerado:
-    # Verificar se o arquivo ainda existe
-    if os.path.exists(st.session_state.relatorio_zip_path):
-        with open(st.session_state.relatorio_zip_path, "rb") as file:
-            st.download_button(
-                label="📥 Baixar Relatório",
-                data=file,
-                file_name=st.session_state.nome_arquivo,
-                mime="application/zip",
-            )
+    zip_bytes = st.session_state.get("relatorio_zip_bytes", b"")
+    if zip_bytes:
+        st.download_button(
+            label="📥 Baixar Relatório",
+            data=zip_bytes,
+            file_name=f"{st.session_state.job_id}.zip",
+            mime="application/zip",
+        )
 
-        # Adicionar informações sobre o relatório
         st.info(
             f"""
         **💾 Relatório**: {st.session_state.nome_arquivo}
@@ -362,4 +292,4 @@ if st.session_state.relatorio_gerado:
         """
         )
     else:
-        st.error("⚠️ Arquivo de relatório não encontrado. Por favor, gere novamente.")
+        st.error("⚠️ Dados do relatório não encontrados. Por favor, gere novamente.")

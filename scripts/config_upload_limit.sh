@@ -41,12 +41,12 @@ docker run -d \
   --name tatic-processor \
   --restart unless-stopped \
   -p 8506:8506 \
-  -v /root/atc-cap-v2/uploads:/app/uploads \
-  -v /root/atc-cap-v2/outputs:/app/outputs \
+  -v /root/atc-cap-v2/data/uploads:/data/uploads \
   -e STREAMLIT_BROWSER_GATHER_USAGE_STATS=false \
   -e STREAMLIT_SERVER_ENABLECORS=false \
   -e STREAMLIT_SERVER_PORT=8506 \
   -e STREAMLIT_SERVER_HEADLESS=true \
+  -e OUTPUT_DIR=/data/uploads \
   -e STREAMLIT_SERVER_MAXUPLOADSIZE=${UPLOAD_LIMIT} \
   ghcr.io/92username/tatic-processor:10
 

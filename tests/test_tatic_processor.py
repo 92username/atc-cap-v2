@@ -5,6 +5,7 @@ Basic tests for TATIC Processor
 import os
 import shutil
 import tempfile
+from pathlib import Path
 
 import pandas as pd
 import pytest
@@ -19,20 +20,15 @@ TEST_JOB_ID = "test_job_123456"
 @pytest.fixture
 def temp_job_dir():
     """Create a temporary job directory for testing"""
-    base_dir = tempfile.mkdtemp()
-    job_dir = os.path.join(base_dir, TEST_JOB_ID)
-    os.makedirs(job_dir, exist_ok=True)
+    base_dir = Path(tempfile.mkdtemp())
+    output_dir = base_dir / "data" / "uploads"
+    os.environ["OUTPUT_DIR"] = str(output_dir)
 
-    # Also create outputs and uploads directories within the temp dir
-    uploads_dir = os.path.join(base_dir, "uploads", TEST_JOB_ID)
-    outputs_dir = os.path.join(base_dir, "outputs", TEST_JOB_ID)
-    os.makedirs(uploads_dir, exist_ok=True)
-    os.makedirs(outputs_dir, exist_ok=True)
-
-    yield base_dir
+    yield output_dir
 
     # Clean up after the test
     shutil.rmtree(base_dir)
+    os.environ.pop("OUTPUT_DIR", None)
 
 
 @pytest.fixture
@@ -64,7 +60,7 @@ def test_tatic_processor_initialization(temp_job_dir):
     assert processor.output_dir.exists()
 
 
-def test_process_weekday_filtering(sample_tatic_df):
+def test_process_weekday_filtering(sample_tatic_df, temp_job_dir):
     """Test that weekday filtering works correctly"""
     # Create a processor with weekends excluded
     processor = TATICProcessor(incluir_finais_de_semana=False)

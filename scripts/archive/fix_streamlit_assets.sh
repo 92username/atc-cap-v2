@@ -19,7 +19,7 @@ docker run -d \
   --name tatic-processor \
   --restart unless-stopped \
   -p 8506:8506 \
-  -v $APP_DIR/uploads:/app/uploads \
+  -v $APP_DIR/data/uploads:/data/uploads \
   -v $APP_DIR/outputs:/app/outputs \
   -e STREAMLIT_BROWSER_GATHER_USAGE_STATS=false \
   -e STREAMLIT_SERVER_ENABLECORS=false \
