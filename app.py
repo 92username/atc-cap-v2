@@ -24,31 +24,28 @@ st.set_page_config(
 # Configuração de barra lateral
 def add_sidebar():
     with st.sidebar:
-        st.title("📊 TATIC - MCA 100-26")
-        st.warning(
-            "⚠️ **Dica:** Exporte os dados diretamente do TATIC em formato bruto, sem aplicar filtros ou fórmulas personalizadas. O aplicativo foi otimizado para processar dados não modificados, garantindo resultados conforme a MCA 100-26."
-        )
-        st.subheader("Como usar este app")
+        st.header("Como usar este app")
 
-        st.markdown(
-            """
-        ### 📋 Instruções:
-        1. **Selecione** se helicópteros devem ser classificados como categoria H
-        2. **Faça upload** do arquivo TATIC (.xlsx)
-        3. **Clique em "Gerar Relatório"** para processar os dados
+        with st.expander("📋 Instruções"):
+            st.markdown("""
+        1. **Selecione** se helicópteros devem ser classificados como categoria H  
+        2. **Faça upload** do arquivo **TATIC (.xlsx)**  
+        3. **Clique em "Gerar Relatório"** para processar os dados  
         4. **Baixe o relatório** gerado em formato ZIP
+        """)
 
-        ### 📊 Formato MCA 100-26
-        O relatório segue as especificações do **Anexo II da MCA 100-26** com as tabelas:
-        - Tabela 1: Movimento percentual por categoria
-        - Tabela 2: Resultado do mix
-        - Tabela 3: Movimento mensal por pista
-        - Tabela 4: Percentual de utilização de pistas
-        """
-        )
+        with st.expander("� Formato MCA 100-26"):
+            st.markdown("""
+        O relatório segue as especificações do **Anexo II da MCA 100-26**, com as tabelas:
 
-        st.divider()
-        st.caption("© 2025 Tamanduas.dev")
+        - **Tabela 1:** Movimento percentual por categoria  
+        - **Tabela 2:** Resultado do mix  
+        - **Tabela 3:** Movimento mensal por pista  
+        - **Tabela 4:** Percentual de utilização de pistas
+        """)
+
+        st.markdown("---")
+        st.info("O aplicativo foi otimizado para processar dados não modificados, garantindo resultados conforme a MCA 100-26.")
 
 
 add_sidebar()
