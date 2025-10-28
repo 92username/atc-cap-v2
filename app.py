@@ -24,8 +24,21 @@ st.set_page_config(
 # Configuração de barra lateral
 def add_sidebar():
     with st.sidebar:
-        st.warning(
-            "⚠️ **Dica:** Exporte os dados diretamente do TATIC em formato bruto, sem aplicar filtros ou fórmulas personalizadas. O aplicativo foi otimizado para processar dados não modificados, garantindo resultados conforme a MCA 100-26."
+        # Ajuda: Como exportar do TATIC para o tatic-processor
+        st.markdown(
+            """
+        <div style="background-color: #4B729A; padding: 10px; border-radius: 8px; margin-top: 8px;">
+            <p style="margin:0 0 8px 0; font-weight:600;">❓ Como exportar do TATIC para o tatic-processor</p>
+            <ol style="margin:0 0 0 18px; padding:0;">
+                <li><strong>Login</strong> no TATIC</li>
+                <li><strong>Consultas → Pesquisa Operacional → Movimentos</strong></li>
+                <li><strong>Escolha o período</strong> (recomendado: 12 meses contíguos para estudos MCA 100-26; para testes, 30 dias)</li>
+                <li>Clique em <strong>Executar</strong></li>
+                <li><strong>Exportar para Excel</strong> (.xlsx)</li>
+            </ol>
+        </div>
+        """,
+            unsafe_allow_html=True,
         )
         st.header("Como usar este app")
 
@@ -49,6 +62,11 @@ def add_sidebar():
 
         st.markdown("---")
 
+        # Dica amarela colocada ao final da sidebar
+        st.warning(
+            "⚠️ **Dica:** Exporte os dados diretamente do TATIC em formato bruto, sem aplicar filtros ou fórmulas personalizadas. O aplicativo foi otimizado para processar dados não modificados, garantindo resultados conforme a MCA 100-26."
+        )
+
 
 add_sidebar()
 
@@ -58,7 +76,7 @@ st.markdown(
     """
     <div style="display: flex; justify-content: center; align-items: center; gap: 12px; flex-wrap: wrap;">
         <h1 style="margin: 0; text-align: center;">🛫 Análise de Dados TATIC</h1>
-        <span style="background-color: #fbdd41; color: #000; padding: 4px 10px; border-radius: 6px; font-weight: 600; font-size: 14px;">
+        <span style="background-color: #D7D70A; color: #000; padding: 4px 10px; border-radius: 6px; font-weight: 600; font-size: 14px;">
             Experimental
         </span>
     </div>
