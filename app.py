@@ -1,16 +1,16 @@
+import logging
 import os
+import threading
 import uuid
 import zipfile
-import logging
-import threading
 from datetime import datetime
 from pathlib import Path
 
 import pandas as pd
 import streamlit as st
 
-from tatic_processor import TATICProcessor
 from aeronaves_dict import atualizar_dicionario
+from tatic_processor import TATICProcessor
 
 # Configuração de página
 st.set_page_config(
@@ -43,22 +43,26 @@ def add_sidebar():
         st.header("Como usar este app")
 
         with st.expander("📋 Instruções"):
-            st.markdown("""
-        1. **Selecione** se helicópteros devem ser classificados como categoria H  
-        2. **Faça upload** do arquivo **TATIC (.xlsx)**  
-        3. **Clique em "Gerar Relatório"** para processar os dados  
+            st.markdown(
+                """
+        1. **Selecione** se helicópteros devem ser classificados como categoria H
+        2. **Faça upload** do arquivo **TATIC (.xlsx)**
+        3. **Clique em "Gerar Relatório"** para processar os dados
         4. **Baixe o relatório** gerado em formato ZIP
-        """)
+        """
+            )
 
         with st.expander("� Formato MCA 100-26"):
-            st.markdown("""
+            st.markdown(
+                """
         O relatório segue as especificações do **Anexo II da MCA 100-26**, com as tabelas:
 
-        - **Tabela 1:** Movimento percentual por categoria  
-        - **Tabela 2:** Resultado do mix  
-        - **Tabela 3:** Movimento mensal por pista  
+        - **Tabela 1:** Movimento percentual por categoria
+        - **Tabela 2:** Resultado do mix
+        - **Tabela 3:** Movimento mensal por pista
         - **Tabela 4:** Percentual de utilização de pistas
-        """)
+        """
+            )
 
         st.markdown("---")
 
@@ -178,7 +182,17 @@ if uploaded_file is not None:
     st.success(f"✅ Arquivo carregado: {uploaded_file.name}")
 
     # 🚀 Botão para iniciar processamento
-    if st.button("🚀 Gerar Relatório"):
+    # Mostrar mensagem logo acima do botão, em vermelho e centralizada dentro da coluna do botão
+    col_btn, _col_spacer = st.columns([0.18, 0.82])
+    with col_btn:
+        # Ajuste de alinhamento: usar margin-left em rem para manter responsividade
+        st.markdown(
+            "<div style='color:#b22222; font-weight:700; font-size:14px; text-align:left; margin-bottom:6px; margin-left:0.6rem;'>Clique apenas uma vez</div>",
+            unsafe_allow_html=True,
+        )
+        gerar_clicked = st.button("🚀 Gerar Relatório")
+
+    if gerar_clicked:
         st.session_state.relatorio_gerado = False
 
         # Criar pasta temporária para o upload

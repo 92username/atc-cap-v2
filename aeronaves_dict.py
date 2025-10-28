@@ -1,8 +1,9 @@
 import json
-import os
 import logging
+import os
 import threading
 from logging.handlers import RotatingFileHandler
+
 import pandas as pd
 
 # Configurar logging rotativo (substituir se >1MB)
@@ -39,7 +40,7 @@ def carregar_config():
     """Carrega o arquivo aeronaves_config.json."""
     config_path = "aeronaves_config.json"
     if os.path.exists(config_path):
-        with open(config_path, "r", encoding="utf-8") as f:
+        with open(config_path, encoding="utf-8") as f:
             return json.load(f)
     else:
         # Criar estrutura inicial se não existir

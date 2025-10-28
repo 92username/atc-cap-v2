@@ -34,23 +34,21 @@ Aplicação web para processamento e análise de dados TATIC  com interface Stre
 
 
 ### 📋 Relatórios Gerados
-1. **Tabela 1 - Movimentos ATC Total** - Estatísticas gerais de tráfego
-2. **Tabela 2 - Movimentos por Pista** - Distribuição por cabeceiras
-3. **Tabela 3 - Percentual por Pista** - Análise de utilização
-4. **Tabela 4 - Mix de Aeronaves** - Classificação por esteira de turbulência
-5. **Tabela 5 - Categoria por Dia da Semana** - Padrões semanais
-6. **Tabela 6 - Mix por Categoria** - Resumo com percentuais
+1. **Tabela 1** - Movimento percentual por categoria de aeronaves
+2. **Tabela 2** - Resultado do mix por categoria de aeronaves
+3. **Tabela 3** - Movimento mensal de aeronaves por pista
+4. **Tabela 4** - Percentuais de utilização de pistas
 
 ### 🧭 Interface do Usuário
 - ✅ **Menu lateral expansível** com guia de uso
 - ✅ **Seletor de modo** (Padrão/Helicóptero)
-- ✅ **Visualização de dados**
 - ✅ **Download de relatórios** em formato ZIP
 
 ### 📦 Sistema de Relatórios
 - ✅ **Nomes incrementais** - `relatorio_NNNN_DDMMYYYY_MODO.zip`
 - ✅ **Identificação por modo** - STD (padrão) ou H (helicóptero)
 - ✅ **Numeração sequencial** automática por dia
+- 
 ## 🚀 Início Rápido
 
 ### Desenvolvimento Local
