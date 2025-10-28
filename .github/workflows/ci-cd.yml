@@ -1,4 +1,4 @@
-name: CI/CD - TATIC Processor
+name: CI/CD
 
 # Trigger: Executa em push para main e pull requests
 on:
