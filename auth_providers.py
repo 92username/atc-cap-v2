@@ -1,17 +1,17 @@
 import os
-import secrets
-import time
-import json
-from typing import Tuple
 
-import requests
 import msal
+import requests
 from authlib.integrations.requests_client import OAuth2Session
 
-MICROSOFT_AUTHORITY = os.getenv("MICROSOFT_AUTHORITY", "https://login.microsoftonline.com/common")
+MICROSOFT_AUTHORITY = os.getenv(
+    "MICROSOFT_AUTHORITY", "https://login.microsoftonline.com/common"
+)
 MICROSOFT_CLIENT_ID = os.getenv("MICROSOFT_CLIENT_ID")
 MICROSOFT_CLIENT_SECRET = os.getenv("MICROSOFT_CLIENT_SECRET")
-MICROSOFT_SCOPES = (os.getenv("MICROSOFT_SCOPES") or "openid email profile offline_access User.Read").split()
+MICROSOFT_SCOPES = (
+    os.getenv("MICROSOFT_SCOPES") or "openid email profile offline_access User.Read"
+).split()
 MICROSOFT_REDIRECT_URI = os.getenv("MICROSOFT_REDIRECT_URI")
 
 GOOGLE_CLIENT_ID = os.getenv("GOOGLE_CLIENT_ID")
@@ -66,7 +66,7 @@ def ms_userinfo(access_token: str) -> dict:
     }
 
 
-def google_build_auth_url(state: str) -> Tuple[str, str]:
+def google_build_auth_url(state: str) -> tuple[str, str]:
     oauth = OAuth2Session(
         GOOGLE_CLIENT_ID,
         GOOGLE_CLIENT_SECRET,

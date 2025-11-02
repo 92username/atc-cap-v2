@@ -1,5 +1,6 @@
 import logging
 import os
+import secrets
 import threading
 import uuid
 import zipfile
@@ -8,23 +9,20 @@ from pathlib import Path
 
 import pandas as pd
 import streamlit as st
-import secrets
-from typing import Optional
 from dotenv import load_dotenv
 
-load_dotenv()
-
+from aeronaves_dict import atualizar_dicionario
 from auth_providers import (
-    ms_build_auth_url,
-    ms_exchange_code_for_token,
-    ms_userinfo,
     google_build_auth_url,
     google_exchange_code_for_token,
     google_userinfo,
+    ms_build_auth_url,
+    ms_exchange_code_for_token,
+    ms_userinfo,
 )
-
-from aeronaves_dict import atualizar_dicionario
 from tatic_processor import TATICProcessor
+
+load_dotenv()
 
 # Configuração de página
 st.set_page_config(
@@ -80,7 +78,9 @@ def handle_auth_callback():
                 token = ms_exchange_code_for_token(code)
                 access_token = token.get("access_token")
                 if not access_token:
-                    raise RuntimeError(f"No access_token returned from Microsoft: {token}")
+                    raise RuntimeError(
+                        f"No access_token returned from Microsoft: {token}"
+                    )
                 user = ms_userinfo(access_token)
                 provider_name = "microsoft"
 
@@ -211,7 +211,9 @@ def add_sidebar():
                 provider = user.get("provider")
                 st.session_state.pop("user", None)
                 if provider and provider.lower() == "microsoft":
-                    ms_logout = "https://login.microsoftonline.com/common/oauth2/v2.0/logout"
+                    ms_logout = (
+                        "https://login.microsoftonline.com/common/oauth2/v2.0/logout"
+                    )
                     # Clear query params and navigate to login by reloading
                     try:
                         st.experimental_set_query_params()
@@ -226,18 +228,22 @@ def add_sidebar():
 
 
 add_sidebar()
+
+
 # If not authenticated, show a centered login screen and stop the app
 def debug_oauth_settings():
     """Função de diagnóstico para verificar configurações OAuth."""
     st.subheader("🔧 Diagnóstico OAuth")
     st.write("Variáveis de ambiente (sem segredos):")
-    st.json({
-        "GOOGLE_CLIENT_ID": bool(os.getenv("GOOGLE_CLIENT_ID")),
-        "GOOGLE_REDIRECT_URI": os.getenv("GOOGLE_REDIRECT_URI"),
-        "MICROSOFT_CLIENT_ID": bool(os.getenv("MICROSOFT_CLIENT_ID")),
-        "MICROSOFT_REDIRECT_URI": os.getenv("MICROSOFT_REDIRECT_URI"),
-    })
-    
+    st.json(
+        {
+            "GOOGLE_CLIENT_ID": bool(os.getenv("GOOGLE_CLIENT_ID")),
+            "GOOGLE_REDIRECT_URI": os.getenv("GOOGLE_REDIRECT_URI"),
+            "MICROSOFT_CLIENT_ID": bool(os.getenv("MICROSOFT_CLIENT_ID")),
+            "MICROSOFT_REDIRECT_URI": os.getenv("MICROSOFT_REDIRECT_URI"),
+        }
+    )
+
     # Testar construção de URLs
     state = "test_state"
     try:
@@ -245,15 +251,17 @@ def debug_oauth_settings():
         st.write(f"Google URL exemplo: {google_uri}")
     except Exception as e:
         st.error(f"Erro no Google: {e}")
-    
+
     try:
         ms_uri = ms_build_auth_url(state)
         st.write(f"Microsoft URL exemplo: {ms_uri}")
     except Exception as e:
         st.error(f"Erro no Microsoft: {e}")
 
+
 # Chame debug_oauth_settings() se quiser testar, mas por enquanto comentado
 debug_oauth_settings()
+
 
 def render_login_screen():
     # Small helper to start OAuth flows and redirect
@@ -264,7 +272,9 @@ def render_login_screen():
         if provider == "google":
             # Check if GOOGLE_REDIRECT_URI is set
             if not os.getenv("GOOGLE_REDIRECT_URI"):
-                st.error("GOOGLE_REDIRECT_URI não está definido no .env. Defina como http://localhost:8506/")
+                st.error(
+                    "GOOGLE_REDIRECT_URI não está definido no .env. Defina como http://localhost:8506/"
+                )
                 return
             try:
                 # google_build_auth_url returns (uri, state)
@@ -275,7 +285,10 @@ def render_login_screen():
                 # Debug: show the URL
                 st.write(f"Redirecionando para Google: {uri}")
                 # redirect the browser to the provider
-                st.markdown(f'<script>window.location.href = "{uri}"</script>', unsafe_allow_html=True)
+                st.markdown(
+                    f'<script>window.location.href = "{uri}"</script>',
+                    unsafe_allow_html=True,
+                )
                 st.stop()
             except Exception as e:
                 st.error(f"Erro ao construir URL do Google: {e}")
@@ -291,7 +304,10 @@ def render_login_screen():
                 st.session_state["oauth_state_map"] = state_map
                 # Debug: show the URL
                 st.write(f"Redirecionando para Microsoft: {uri}")
-                st.markdown(f'<script>window.location.href = "{uri}"</script>', unsafe_allow_html=True)
+                st.markdown(
+                    f'<script>window.location.href = "{uri}"</script>',
+                    unsafe_allow_html=True,
+                )
                 st.stop()
             except Exception as e:
                 st.error(f"Erro ao construir URL do Microsoft: {e}")
@@ -301,13 +317,21 @@ def render_login_screen():
     cols = st.columns([1, 0.8, 1])
     with cols[1]:
         st.markdown("<div style='text-align:center'>", unsafe_allow_html=True)
-        st.markdown("<h1>🚀 TATIC Processor – Acesso Restrito</h1>", unsafe_allow_html=True)
-        st.markdown("<p style='color:#333; font-size:16px;'>Faça login para continuar.</p>", unsafe_allow_html=True)
+        st.markdown(
+            "<h1>🚀 TATIC Processor – Acesso Restrito</h1>", unsafe_allow_html=True
+        )
+        st.markdown(
+            "<p style='color:#333; font-size:16px;'>Faça login para continuar.</p>",
+            unsafe_allow_html=True,
+        )
         if st.button("🔵 Entrar com Google"):
             start_oauth_flow("google")
         if st.button("🟢 Entrar com Microsoft"):
             start_oauth_flow("microsoft")
-        st.markdown("<div style='color:#666; font-size:12px; margin-top:12px;'>© 2025 Jacaré.cloud</div>", unsafe_allow_html=True)
+        st.markdown(
+            "<div style='color:#666; font-size:12px; margin-top:12px;'>© 2025 Jacaré.cloud</div>",
+            unsafe_allow_html=True,
+        )
         st.markdown("</div>", unsafe_allow_html=True)
 
 
