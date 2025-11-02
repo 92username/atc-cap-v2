@@ -100,7 +100,7 @@ atc-cap-v2/
 
 ## 🎯 URLs de Acesso
 
-- **Aplicação**: http://localhost:8502 (desenvolvimento)
+- **Aplicação**: http://localhost:8506 (desenvolvimento)
 - **Produção**: http://localhost (Docker)
 
 ## 🔧 Desenvolvimento
@@ -130,3 +130,28 @@ O projeto utiliza GitHub Actions para automação de CI/CD com os seguintes stag
 - **Docker**
 - **GHCR**
 ---
+
+## 🔐 Login (OAuth) — Google & Microsoft
+
+This app requires users to authenticate via Google or Microsoft before accessing the processing UI.
+
+Configuration:
+
+- Provide these environment variables (for local dev you can use a `.env` loader):
+	- GOOGLE_CLIENT_ID, GOOGLE_CLIENT_SECRET, GOOGLE_REDIRECT_URI
+	- MICROSOFT_CLIENT_ID, MICROSOFT_CLIENT_SECRET, MICROSOFT_REDIRECT_URI
+
+Login flow summary:
+
+1. User opens the app and sees a login screen with two buttons: "Entrar com Google" and "Entrar com Microsoft".
+2. Clicking a button redirects the user to your OAuth endpoint (e.g. `/auth/google/login` or `/auth/microsoft/login`).
+3. After the provider authenticates the user it should redirect back to the Streamlit app with a query string such as:
+	 `?auth_callback=1&provider=google&name=Fulano&email=fulano@example.com`
+4. The app extracts `name` and `email` from the query params and stores them in `st.session_state['user']`. The main UI then becomes available.
+
+Notes:
+
+- Ensure your OAuth redirect URIs point to the Streamlit host where the app is served. For local development `http://localhost:8501` is common; update port as needed.
+- If you have an external OAuth server that handles tokens, make it redirect back to the app with at least `provider`, `name` and `email` in the query string.
+- Use the `auth_guard.require_login()` helper in `auth_guard.py` at the top of restricted pages if you use Streamlit Multi-Page.
+

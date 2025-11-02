@@ -8,6 +8,20 @@ from pathlib import Path
 
 import pandas as pd
 import streamlit as st
+import secrets
+from typing import Optional
+from dotenv import load_dotenv
+
+load_dotenv()
+
+from auth_providers import (
+    ms_build_auth_url,
+    ms_exchange_code_for_token,
+    ms_userinfo,
+    google_build_auth_url,
+    google_exchange_code_for_token,
+    google_userinfo,
+)
 
 from aeronaves_dict import atualizar_dicionario
 from tatic_processor import TATICProcessor
@@ -19,6 +33,122 @@ st.set_page_config(
     layout="wide",
     initial_sidebar_state="expanded",
 )
+
+
+def handle_auth_callback():
+    """
+    Handle OAuth callback delivered as query params to the Streamlit app.
+    Expected query params (examples):
+      ?auth_callback=1&provider=google&name=Fulano&email=fulano@example.com
+      ?auth_callback=1&provider=microsoft&displayName=Fulano&mail=fulano@example.com
+
+    When present, save a minimal `st.session_state['user']` and clear the query.
+    """
+    try:
+        params = st.experimental_get_query_params()
+    except Exception:
+        # If query params API isn't available, skip
+        return
+
+    # If there's no query params, nothing to do
+    if not params:
+        return
+
+    # If provider returned an authorization code (`code`), handle full OAuth exchange
+    code = params.get("code", [None])[0]
+    state_received = params.get("state", [None])[0]
+
+    if code and state_received:
+        # Determine provider from stored map
+        state_map = st.session_state.get("oauth_state_map", {})
+        provider = state_map.pop(state_received, None)
+
+        # Fallback to explicit provider param if present
+        if not provider:
+            provider = params.get("provider", [None])[0]
+
+        try:
+            if provider == "google":
+                token = google_exchange_code_for_token(code)
+                access_token = token.get("access_token")
+                if not access_token:
+                    raise RuntimeError(f"No access_token returned from Google: {token}")
+                user = google_userinfo(access_token)
+                provider_name = "google"
+
+            elif provider == "microsoft":
+                token = ms_exchange_code_for_token(code)
+                access_token = token.get("access_token")
+                if not access_token:
+                    raise RuntimeError(f"No access_token returned from Microsoft: {token}")
+                user = ms_userinfo(access_token)
+                provider_name = "microsoft"
+
+            else:
+                st.error("Provedor OAuth desconhecido ou estado expirado.")
+                return
+
+            # Persist minimal user in session
+            st.session_state["user"] = {
+                "name": user.get("name") or (user.get("email") or ""),
+                "email": user.get("email"),
+                "provider": provider_name,
+                "raw_user": user.get("raw"),
+            }
+
+            # cleanup state_map
+            st.session_state["oauth_state_map"] = state_map
+
+            # Clear query params and reload to show protected UI
+            try:
+                st.experimental_set_query_params()
+            except Exception:
+                pass
+            try:
+                st.experimental_rerun()
+            except Exception:
+                pass
+
+        except Exception as e:
+            st.error(f"Erro durante troca de código OAuth: {e}")
+            return
+
+    # Older/testing flow: support `auth_callback` with name/email in query params
+    if "auth_callback" in params:
+        provider = params.get("provider", [None])[0]
+        # try multiple common fields
+        name = (
+            params.get("name", [None])[0]
+            or params.get("displayName", [None])[0]
+            or params.get("given_name", [None])[0]
+        )
+        email = (
+            params.get("email", [None])[0]
+            or params.get("mail", [None])[0]
+            or params.get("userPrincipalName", [None])[0]
+        )
+
+        if not email:
+            return
+
+        st.session_state["user"] = {
+            "name": name or email.split("@")[0],
+            "email": email,
+            "provider": provider or "unknown",
+        }
+
+        try:
+            st.experimental_set_query_params()
+        except Exception:
+            pass
+        try:
+            st.experimental_rerun()
+        except Exception:
+            pass
+
+
+# process any auth callback before anything else
+handle_auth_callback()
 
 
 # Configuração de barra lateral
@@ -71,8 +201,120 @@ def add_sidebar():
             "⚠️ **Dica:** Exporte os dados diretamente do TATIC em formato bruto, sem aplicar filtros ou fórmulas personalizadas. O aplicativo foi otimizado para processar dados não modificados, garantindo resultados conforme a MCA 100-26."
         )
 
+        # Logout block (shows only when logged)
+        if "user" in st.session_state:
+            user = st.session_state.get("user") or {}
+            st.markdown("---")
+            st.info(f"Conectado como: {user.get('name')} ({user.get('email')})")
+            if st.button("Sair"):
+                # Optionally direct Microsoft users to the global logout endpoint
+                provider = user.get("provider")
+                st.session_state.pop("user", None)
+                if provider and provider.lower() == "microsoft":
+                    ms_logout = "https://login.microsoftonline.com/common/oauth2/v2.0/logout"
+                    # Clear query params and navigate to login by reloading
+                    try:
+                        st.experimental_set_query_params()
+                    except Exception:
+                        pass
+                    # Open Microsoft logout in a new tab and then reload app to login screen
+                    st.markdown(f"[Encerrar sessão no Microsoft]({ms_logout})")
+                try:
+                    st.experimental_rerun()
+                except Exception:
+                    pass
+
 
 add_sidebar()
+# If not authenticated, show a centered login screen and stop the app
+def debug_oauth_settings():
+    """Função de diagnóstico para verificar configurações OAuth."""
+    st.subheader("🔧 Diagnóstico OAuth")
+    st.write("Variáveis de ambiente (sem segredos):")
+    st.json({
+        "GOOGLE_CLIENT_ID": bool(os.getenv("GOOGLE_CLIENT_ID")),
+        "GOOGLE_REDIRECT_URI": os.getenv("GOOGLE_REDIRECT_URI"),
+        "MICROSOFT_CLIENT_ID": bool(os.getenv("MICROSOFT_CLIENT_ID")),
+        "MICROSOFT_REDIRECT_URI": os.getenv("MICROSOFT_REDIRECT_URI"),
+    })
+    
+    # Testar construção de URLs
+    state = "test_state"
+    try:
+        google_uri, _ = google_build_auth_url(state)
+        st.write(f"Google URL exemplo: {google_uri}")
+    except Exception as e:
+        st.error(f"Erro no Google: {e}")
+    
+    try:
+        ms_uri = ms_build_auth_url(state)
+        st.write(f"Microsoft URL exemplo: {ms_uri}")
+    except Exception as e:
+        st.error(f"Erro no Microsoft: {e}")
+
+# Chame debug_oauth_settings() se quiser testar, mas por enquanto comentado
+debug_oauth_settings()
+
+def render_login_screen():
+    # Small helper to start OAuth flows and redirect
+    def start_oauth_flow(provider: str):
+        state = secrets.token_urlsafe(24)
+        state_map = st.session_state.get("oauth_state_map", {})
+
+        if provider == "google":
+            # Check if GOOGLE_REDIRECT_URI is set
+            if not os.getenv("GOOGLE_REDIRECT_URI"):
+                st.error("GOOGLE_REDIRECT_URI não está definido no .env. Defina como http://localhost:8506/")
+                return
+            try:
+                # google_build_auth_url returns (uri, state)
+                uri, returned_state = google_build_auth_url(state)
+                used_state = returned_state or state
+                state_map[used_state] = "google"
+                st.session_state["oauth_state_map"] = state_map
+                # Debug: show the URL
+                st.write(f"Redirecionando para Google: {uri}")
+                # redirect the browser to the provider
+                st.markdown(f'<script>window.location.href = "{uri}"</script>', unsafe_allow_html=True)
+                st.stop()
+            except Exception as e:
+                st.error(f"Erro ao construir URL do Google: {e}")
+
+        if provider == "microsoft":
+            # Check if MICROSOFT_REDIRECT_URI is set
+            if not os.getenv("MICROSOFT_REDIRECT_URI"):
+                st.error("MICROSOFT_REDIRECT_URI não está definido no .env.")
+                return
+            try:
+                uri = ms_build_auth_url(state)
+                state_map[state] = "microsoft"
+                st.session_state["oauth_state_map"] = state_map
+                # Debug: show the URL
+                st.write(f"Redirecionando para Microsoft: {uri}")
+                st.markdown(f'<script>window.location.href = "{uri}"</script>', unsafe_allow_html=True)
+                st.stop()
+            except Exception as e:
+                st.error(f"Erro ao construir URL do Microsoft: {e}")
+
+    # Render a simple, centered UI with Streamlit buttons (keeps accessibility)
+    st.write("\n")
+    cols = st.columns([1, 0.8, 1])
+    with cols[1]:
+        st.markdown("<div style='text-align:center'>", unsafe_allow_html=True)
+        st.markdown("<h1>🚀 TATIC Processor – Acesso Restrito</h1>", unsafe_allow_html=True)
+        st.markdown("<p style='color:#333; font-size:16px;'>Faça login para continuar.</p>", unsafe_allow_html=True)
+        if st.button("🔵 Entrar com Google"):
+            start_oauth_flow("google")
+        if st.button("🟢 Entrar com Microsoft"):
+            start_oauth_flow("microsoft")
+        st.markdown("<div style='color:#666; font-size:12px; margin-top:12px;'>© 2025 Jacaré.cloud</div>", unsafe_allow_html=True)
+        st.markdown("</div>", unsafe_allow_html=True)
+
+
+# If user not present in session, render the login screen and stop
+if "user" not in st.session_state:
+    render_login_screen()
+    st.stop()
 
 # Interface principal
 # Título com tag "Experimental" e tooltip
