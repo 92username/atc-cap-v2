@@ -16,6 +16,8 @@ env:
   APP_NAME: tatic-processor
   APP_PORT: 8506
   REGISTRY_USER: 92username
+  ADMIN_EMAILS: ${{ secrets.ADMIN_EMAILS }}
+  ALLOWED_EMAILS: ${{ secrets.ALLOWED_EMAILS }}
 
 jobs:
   # Job de CI: Build e testes locais

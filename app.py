@@ -5,8 +5,17 @@ from datetime import datetime
 from pathlib import Path
 
 import streamlit as st
+from dotenv import load_dotenv
 
 from tatic_processor import TATICProcessor
+
+# Carregar variáveis de ambiente
+load_dotenv()
+
+# Ler variáveis de ambiente para autenticação
+ADMIN_EMAILS = os.getenv("ADMIN_EMAILS", "").split(",")
+ALLOWED_EMAILS = os.getenv("ALLOWED_EMAILS", "").split(",")
+AUTHORIZED_USERS = [email.strip().lower() for email in ADMIN_EMAILS + ALLOWED_EMAILS if email.strip()]
 
 # Configuração de página
 st.set_page_config(
@@ -15,6 +24,22 @@ st.set_page_config(
     layout="wide",
     initial_sidebar_state="expanded",
 )
+
+# 🔐 Sistema de autenticação
+if "authenticated" not in st.session_state:
+    st.session_state.authenticated = False
+
+if not st.session_state.authenticated:
+    st.title("🔐 Acesso Restrito")
+    user_email = st.text_input("Digite seu e-mail autorizado:")
+    if st.button("Entrar"):
+        if user_email.strip().lower() in AUTHORIZED_USERS:
+            st.session_state.authenticated = True
+            st.success("Acesso permitido. Bem-vindo!")
+            st.rerun()
+        else:
+            st.error("Acesso negado. E-mail não autorizado.")
+    st.stop()
 
 
 # Configuração de barra lateral
