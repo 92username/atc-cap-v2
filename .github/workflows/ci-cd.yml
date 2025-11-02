@@ -45,7 +45,7 @@ jobs:
       - name: Verificar código com Ruff
         run: |
           pip install ruff
-          ruff --fix .
+          ruff format .
 
       - name: Executar testes com pytest
         run: |

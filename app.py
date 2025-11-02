@@ -15,7 +15,9 @@ load_dotenv()
 # Ler variáveis de ambiente para autenticação
 ADMIN_EMAILS = os.getenv("ADMIN_EMAILS", "").split(",")
 ALLOWED_EMAILS = os.getenv("ALLOWED_EMAILS", "").split(",")
-AUTHORIZED_USERS = [email.strip().lower() for email in ADMIN_EMAILS + ALLOWED_EMAILS if email.strip()]
+AUTHORIZED_USERS = [
+    email.strip().lower() for email in ADMIN_EMAILS + ALLOWED_EMAILS if email.strip()
+]
 
 # Configuração de página
 st.set_page_config(
