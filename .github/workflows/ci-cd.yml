@@ -55,6 +55,13 @@ jobs:
     needs: ci  # Depende do job ci passar
     if: github.ref == 'refs/heads/main'  # Só roda na branch main
     runs-on: ubuntu-latest
+    env:
+      GOOGLE_CLIENT_ID: ${{ secrets.GOOGLE_CLIENT_ID }}
+      GOOGLE_CLIENT_SECRET: ${{ secrets.GOOGLE_CLIENT_SECRET }}
+      MICROSOFT_CLIENT_ID: ${{ secrets.MICROSOFT_CLIENT_ID }}
+      MICROSOFT_CLIENT_SECRET: ${{ secrets.MICROSOFT_CLIENT_SECRET }}
+      OAUTH_REDIRECT_BASE_URL: ${{ secrets.OAUTH_REDIRECT_BASE_URL }}
+      SECRET_KEY: ${{ secrets.SECRET_KEY }}
     steps:
       - name: Checkout do código
         uses: actions/checkout@v4
@@ -115,6 +122,12 @@ jobs:
               -e STREAMLIT_SERVER_PORT=8506 \
               -e STREAMLIT_SERVER_HEADLESS=true \
               -e STREAMLIT_SERVER_MAXUPLOADSIZE=200 \
+              -e GOOGLE_CLIENT_ID="${GOOGLE_CLIENT_ID}" \
+              -e GOOGLE_CLIENT_SECRET="${GOOGLE_CLIENT_SECRET}" \
+              -e MICROSOFT_CLIENT_ID="${MICROSOFT_CLIENT_ID}" \
+              -e MICROSOFT_CLIENT_SECRET="${MICROSOFT_CLIENT_SECRET}" \
+              -e OAUTH_REDIRECT_BASE_URL="${OAUTH_REDIRECT_BASE_URL}" \
+              -e SECRET_KEY="${SECRET_KEY}" \
               ghcr.io/${{ env.REGISTRY_USER }}/tatic-processor:${{ github.run_number }}
 
             sleep 5
