@@ -10,14 +10,28 @@ from dotenv import load_dotenv
 from tatic_processor import TATICProcessor
 
 # Carregar variáveis de ambiente
-load_dotenv()
+# Prioridade 1: Tenta carregar do .env na raiz do projeto (desenvolvimento local)
+env_path = Path(__file__).parent / ".env"
+if env_path.exists():
+    load_dotenv(dotenv_path=env_path, override=True)
+    print(f"✅ Arquivo .env carregado de: {env_path}")
+else:
+    # Prioridade 2: Usa variáveis de ambiente do sistema (GitHub Secrets via CI/CD)
+    print(f"⚠️ Arquivo .env não encontrado. Usando variáveis de ambiente do sistema (GitHub Secrets).")
 
 # Ler variáveis de ambiente para autenticação
+# Origem: GitHub Secrets (via CI/CD) ou .env (desenvolvimento local)
 ADMIN_EMAILS = os.getenv("ADMIN_EMAILS", "").split(",")
 ALLOWED_EMAILS = os.getenv("ALLOWED_EMAILS", "").split(",")
 AUTHORIZED_USERS = [
     email.strip().lower() for email in ADMIN_EMAILS + ALLOWED_EMAILS if email.strip()
 ]
+
+# Debug: Mostrar valores carregados (sem expor e-mails completos por segurança)
+print(f"📋 Variáveis de autenticação carregadas:")
+print(f"   • ADMIN_EMAILS: {len(ADMIN_EMAILS)} item(ns)")
+print(f"   • ALLOWED_EMAILS: {len(ALLOWED_EMAILS)} item(ns)")
+print(f"   • AUTHORIZED_USERS total: {len(AUTHORIZED_USERS)} usuário(s) autorizado(s)")
 
 # Configuração de página
 st.set_page_config(

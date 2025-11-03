@@ -1,0 +1,179 @@
+╔════════════════════════════════════════════════════════════════════════════════╗
+║                                                                                ║
+║         🔐 FLUXO DE CARREGAMENTO DE E-MAILS - ATC-CAP-V2                     ║
+║                                                                                ║
+╚════════════════════════════════════════════════════════════════════════════════╝
+
+
+┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓
+┃                     DESENVOLVIMENTO LOCAL (LOCAL)                           ┃
+┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
+
+  1. Arquivo .env na raiz do projeto
+     ┌─────────────────────────────────────────┐
+     │ ADMIN_EMAILS=lvsr9663@gmail.com         │
+     │ ALLOWED_EMAILS=leandror1@gmail.com,...  │
+     └─────────────────────────────────────────┘
+                         ↓
+  2. Você executa: streamlit run app.py
+                         ↓
+  3. app.py (linhas 13-20)
+     ┌─────────────────────────────────────────┐
+     │ env_path = Path(__file__).parent / ".env"
+     │ if env_path.exists():                   │
+     │     load_dotenv(dotenv_path=env_path)   │
+     │                                         │
+     │ ADMIN_EMAILS = os.getenv(...)           │
+     │ ALLOWED_EMAILS = os.getenv(...)         │
+     └─────────────────────────────────────────┘
+                         ↓
+  4. Resultado
+     ┌─────────────────────────────────────────┐
+     │ ✅ ADMIN_EMAILS: lvsr9663@gmail.com     │
+     │ ✅ ALLOWED_EMAILS: 4 mais e-mails       │
+     │ ✅ AUTHORIZED_USERS: 5 usuários         │
+     └─────────────────────────────────────────┘
+                         ↓
+  5. Tela de Login
+     ┌─────────────────────────────────────────┐
+     │   🔐 Acesso Restrito                   │
+     │   Digite seu e-mail autorizado:        │
+     │   [___________________________]        │
+     │             [Entrar]                   │
+     └─────────────────────────────────────────┘
+                         ↓
+  6. Validação
+     ┌─────────────────────────────────────────┐
+     │ user_email in AUTHORIZED_USERS?         │
+     │                                         │
+     │ ✅ SIM → Acesso permitido               │
+     │ ❌ NÃO → Acesso negado                  │
+     └─────────────────────────────────────────┘
+
+
+┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓
+┃                 PRODUÇÃO: GitHub → VPS (CI/CD)                             ┃
+┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
+
+  1. GitHub Secrets (no repositório)
+     ┌──────────────────────────────────────────────┐
+     │ ADMIN_EMAILS: lvsr9663@gmail.com             │
+     │ ALLOWED_EMAILS: leandror1@gmail.com,octavio..│
+     └──────────────────────────────────────────────┘
+                         ↓
+  2. GitHub Actions Workflow (.github/workflows/ci-cd.yml)
+     ┌──────────────────────────────────────────────┐
+     │ env:                                         │
+     │   APP_NAME: tatic-processor                  │
+     │   ADMIN_EMAILS: ${{ secrets.ADMIN_EMAILS }}  │
+     │   ALLOWED_EMAILS: ${{ secrets.ALLOWED_EMAILS }}
+     └──────────────────────────────────────────────┘
+                         ↓
+  3. GitHub Actions executa
+     ┌──────────────────────────────────────────────┐
+     │ • black .  (linting)                         │
+     │ • ruff .   (style check)                     │
+     │ • pytest   (testes)                          │
+     │ • docker build + push                        │
+     └──────────────────────────────────────────────┘
+                         ↓
+  4. Deploy na VPS
+     ┌──────────────────────────────────────────────┐
+     │ docker run -d \                              │
+     │   --name tatic-processor \                   │
+     │   -e ADMIN_EMAILS="lvsr9663@..." \           │
+     │   -e ALLOWED_EMAILS="leandror1@..." \        │
+     │   ghcr.io/.../tatic-processor:123            │
+     └──────────────────────────────────────────────┘
+                         ↓
+  5. Container Docker (na VPS)
+     ┌──────────────────────────────────────────────┐
+     │ Variáveis de Ambiente:                       │
+     │ • ADMIN_EMAILS: lvsr9663@gmail.com           │
+     │ • ALLOWED_EMAILS: leandror1@gmail.com,...    │
+     │ • (outras variáveis)                         │
+     └──────────────────────────────────────────────┘
+                         ↓
+  6. app.py inicia
+     ┌──────────────────────────────────────────────┐
+     │ env_path = Path(__file__).parent / ".env"    │
+     │ if env_path.exists():    # ❌ Não existe     │
+     │     load_dotenv()                            │
+     │ else:                    # ✅ Vem daqui       │
+     │     # Usa variáveis do sistema               │
+     │                                              │
+     │ ADMIN_EMAILS = os.getenv(...)  # Docker ✅   │
+     │ ALLOWED_EMAILS = os.getenv(...) # Docker ✅  │
+     └──────────────────────────────────────────────┘
+                         ↓
+  7. Resultado
+     ┌──────────────────────────────────────────────┐
+     │ ✅ ADMIN_EMAILS: lvsr9663@gmail.com          │
+     │ ✅ ALLOWED_EMAILS: leandror1, octavio,...     │
+     │ ✅ AUTHORIZED_USERS: 5 usuários              │
+     └──────────────────────────────────────────────┘
+                         ↓
+  8. Tela de Login em http://seu-vps-ip:8506
+     ┌──────────────────────────────────────────────┐
+     │   🔐 Acesso Restrito                        │
+     │   Digite seu e-mail autorizado:             │
+     │   [___________________________]             │
+     │             [Entrar]                        │
+     └──────────────────────────────────────────────┘
+                         ↓
+  9. Validação (mesmo código em ambos os cenários)
+     ┌──────────────────────────────────────────────┐
+     │ if user_email.strip().lower() in AUTHORIZED_USERS:
+     │     st.session_state.authenticated = True    │
+     │     st.success("Acesso permitido!")          │
+     │ else:                                        │
+     │     st.error("Acesso negado!")               │
+     └──────────────────────────────────────────────┘
+
+
+┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓
+┃                         ORIGEM DOS E-MAILS                                 ┃
+┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
+
+  LOCAL:      .env (arquivo) → load_dotenv() → os.getenv()
+  PRODUÇÃO:   GitHub Secrets → docker -e → container → os.getenv()
+  
+  ✅ Em ambos os casos: os.getenv("ADMIN_EMAILS") e os.getenv("ALLOWED_EMAILS")
+  
+  💡 O app NÃO precisa saber de onde vêm - só lê as variáveis!
+
+
+┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓
+┃                        E-MAILS AUTORIZADOS                                  ┃
+┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
+
+  ✅ lvsr9663@gmail.com                (ADMIN)
+  ✅ leandror1@gmail.com               (ALLOWED)
+  ✅ octavioferreirinha@gmail.com      (ALLOWED)
+  ✅ rochajacondino@gmail.com          (ALLOWED)
+  ✅ simone.guimaraes@navbrasil.gov.br (ALLOWED)
+  
+  ❌ Qualquer outro e-mail → Acesso negado
+
+
+┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓
+┃                        COMO VERIFICAR TUDO                                  ┃
+┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
+
+  LOCAL:
+    $ cd /home/nbx/Projects/jacare/atc-cap-v2
+    $ cat .env | grep -E "ADMIN|ALLOWED"
+    $ streamlit run app.py
+    $ Digite um e-mail autorizado
+
+  PRODUÇÃO (VPS):
+    $ ssh root@seu-vps-ip
+    $ docker exec tatic-processor env | grep -i email
+    $ http://seu-vps-ip:8506
+    $ Digite um e-mail autorizado
+
+
+╔════════════════════════════════════════════════════════════════════════════════╗
+║                           ✨ TUDO FUNCIONANDO! ✨                            ║
+╚════════════════════════════════════════════════════════════════════════════════╝
+
