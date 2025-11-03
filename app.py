@@ -10,28 +10,26 @@ from dotenv import load_dotenv
 from tatic_processor import TATICProcessor
 
 # Carregar variáveis de ambiente
-# Prioridade 1: Tenta carregar do .env na raiz do projeto (desenvolvimento local)
-env_path = Path(__file__).parent / ".env"
-if env_path.exists():
-    load_dotenv(dotenv_path=env_path, override=True)
-    print(f"✅ Arquivo .env carregado de: {env_path}")
-else:
-    # Prioridade 2: Usa variáveis de ambiente do sistema (GitHub Secrets via CI/CD)
-    print(f"⚠️ Arquivo .env não encontrado. Usando variáveis de ambiente do sistema (GitHub Secrets).")
+load_dotenv()
 
-# Ler variáveis de ambiente para autenticação
-# Origem: GitHub Secrets (via CI/CD) ou .env (desenvolvimento local)
-ADMIN_EMAILS = os.getenv("ADMIN_EMAILS", "").split(",")
-ALLOWED_EMAILS = os.getenv("ALLOWED_EMAILS", "").split(",")
-AUTHORIZED_USERS = [
-    email.strip().lower() for email in ADMIN_EMAILS + ALLOWED_EMAILS if email.strip()
-]
+def parse_emails(raw_env):
+    """
+    Função robusta para parsear e-mails de variáveis de ambiente.
+    - Remove espaços indevidos
+    - Faz split com segurança
+    - Normaliza (lowercase + strip)
+    - Retorna lista limpa
+    """
+    if not raw_env:
+        return []
+    # Garante separação correta mesmo que GitHub secrets inclua espaços
+    parts = [email.strip().lower() for email in raw_env.replace(" ", "").split(",") if email]
+    return parts
 
-# Debug: Mostrar valores carregados (sem expor e-mails completos por segurança)
-print(f"📋 Variáveis de autenticação carregadas:")
-print(f"   • ADMIN_EMAILS: {len(ADMIN_EMAILS)} item(ns)")
-print(f"   • ALLOWED_EMAILS: {len(ALLOWED_EMAILS)} item(ns)")
-print(f"   • AUTHORIZED_USERS total: {len(AUTHORIZED_USERS)} usuário(s) autorizado(s)")
+ADMIN_EMAILS = parse_emails(os.getenv("ADMIN_EMAILS"))
+ALLOWED_EMAILS = parse_emails(os.getenv("ALLOWED_EMAILS"))
+
+AUTHORIZED_USERS = list(set(ADMIN_EMAILS + ALLOWED_EMAILS))
 
 # Configuração de página
 st.set_page_config(
@@ -62,6 +60,18 @@ if not st.session_state.authenticated:
 def add_sidebar():
     with st.sidebar:
         st.title("📊 TATIC - MCA 100-26")
+        
+        # 🔍 DEBUG: Mostrar usuários autorizados
+        st.subheader("🔍 DEBUG - Autenticação")
+        st.write(f"**Total de usuários autorizados:** {len(AUTHORIZED_USERS)}")
+        with st.expander("Ver lista completa"):
+            if AUTHORIZED_USERS:
+                for i, email in enumerate(AUTHORIZED_USERS, 1):
+                    st.write(f"{i}. {email}")
+            else:
+                st.warning("⚠️ Nenhum usuário autorizado carregado!")
+        st.divider()
+        
         st.warning(
             "⚠️ **Dica:** Exporte os dados diretamente do TATIC em formato bruto, sem aplicar filtros ou fórmulas personalizadas. O aplicativo foi otimizado para processar dados não modificados, garantindo resultados conforme a MCA 100-26."
         )
