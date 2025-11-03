@@ -1,6 +1,6 @@
 name: CI/CD - TATIC Processor
 
-# Trigger: Executa em push para main e pull requests 
+# Trigger: Executa em push para main e pull requests / fake commit
 on:
   push:
     branches:
