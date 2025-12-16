@@ -31,6 +31,59 @@ ALLOWED_EMAILS = parse_emails(os.getenv("ALLOWED_EMAILS"))
 
 AUTHORIZED_USERS = list(set(ADMIN_EMAILS + ALLOWED_EMAILS))
 
+class GlobalLock:
+    """Implementação simples de lock global baseada em arquivo"""
+    LOCK_FILE = "tatic_processing.lock"
+    TIMEOUT_SECONDS = 3600  # 1 hora de timeout para locks órfãos
+
+    @classmethod
+    def acquire(cls) -> bool:
+        """Tenta adquirir o lock. Retorna True se sucesso, False se já existe."""
+        if os.path.exists(cls.LOCK_FILE):
+            # Verificar se é um lock antigo (stale)
+            try:
+                creation_time = os.path.getctime(cls.LOCK_FILE)
+                if (datetime.now().timestamp() - creation_time) > cls.TIMEOUT_SECONDS:
+                    # Lock expirado, remover e tentar adquirir novamente
+                    os.remove(cls.LOCK_FILE)
+                else:
+                    return False
+            except OSError:
+                # Arquivo pode ter sido removido concorrentemente
+                pass
+        
+        # Criar arquivo de lock
+        try:
+            with open(cls.LOCK_FILE, 'w') as f:
+                f.write(str(datetime.now().timestamp()))
+            return True
+        except OSError:
+            return False
+
+    @classmethod
+    def release(cls):
+        """Libera o lock removendo o arquivo."""
+        try:
+            if os.path.exists(cls.LOCK_FILE):
+                os.remove(cls.LOCK_FILE)
+        except OSError:
+            pass
+
+    @classmethod
+    def is_locked(cls) -> bool:
+        """Verifica se existe lock ativo (não expirado)"""
+        if not os.path.exists(cls.LOCK_FILE):
+            return False
+            
+        try:
+            creation_time = os.path.getctime(cls.LOCK_FILE)
+            if (datetime.now().timestamp() - creation_time) > cls.TIMEOUT_SECONDS:
+                return False
+            return True
+        except OSError:
+            return False
+
+
 # Configuração de página
 st.set_page_config(
     page_title="TATIC Análise de Dados",
@@ -40,6 +93,7 @@ st.set_page_config(
 )
 
 # 🔐 Sistema de autenticação
+
 if "authenticated" not in st.session_state:
     st.session_state.authenticated = False
 
@@ -148,8 +202,16 @@ incluir_finais_de_semana = (
     == "Listar Segunda a Domingo (incluir Sábado e Domingo)"
 )
 
-# �📤 Upload do arquivo
-uploaded_file = st.file_uploader("Envie o arquivo TATIC (.xlsx)", type=["xlsx"])
+# State para chave do uploader (para permitir reset)
+if "uploader_key" not in st.session_state:
+    st.session_state.uploader_key = 0
+
+# 📤 Upload do arquivo
+uploaded_file = st.file_uploader(
+    "Envie o arquivo TATIC (.xlsx)", 
+    type=["xlsx"],
+    key=f"uploader_{st.session_state.uploader_key}"
+)
 
 
 # Função para gerar o arquivo ZIP
@@ -207,81 +269,97 @@ if "relatorio_gerado" not in st.session_state:
 if uploaded_file is not None:
     st.success(f"✅ Arquivo carregado: {uploaded_file.name}")
 
-    # 🚀 Botão para iniciar processamento
-    if st.button("🚀 Gerar Relatório"):
-        st.session_state.relatorio_gerado = False
+    # Verificar lock global
+    is_system_busy = GlobalLock.is_locked()
+    if is_system_busy:
+        st.warning("⚠️ O sistema está processando outro relatório. Aguarde...")
 
-        # Criar pasta temporária para o upload
-        job_id = f"job_{datetime.now().strftime('%Y%m%d%H%M%S')}_{uuid.uuid4().hex[:8]}"
-        upload_dir = os.path.join("uploads", job_id)
-        os.makedirs(upload_dir, exist_ok=True)
+    # State para controlar o botão via callback
+    if "processing" not in st.session_state:
+        st.session_state.processing = False
 
-        # Salvar o arquivo para processamento
-        file_path = os.path.join(upload_dir, uploaded_file.name)
-        with open(file_path, "wb") as f:
-            f.write(uploaded_file.getbuffer())
+    def start_processing():
+        st.session_state.processing = True
 
-        # Inicializar processador
-        processor = TATICProcessor(
-            usar_categoria_h=usar_categoria_h,  # Corrected argument name
-            incluir_finais_de_semana=incluir_finais_de_semana,
-            log_callback=st.write,
-        )
+    # Botão desabilitado se já estiver processando ou sistema ocupado
+    button_disabled = st.session_state.processing or is_system_busy
 
-        # Criar diretório de saída
-        output_dir = os.path.join("outputs", job_id)
-        os.makedirs(output_dir, exist_ok=True)
+    if st.button("🚀 Gerar Relatório", disabled=button_disabled, on_click=start_processing):
+        # O processamento real acontece APÓS o rerun desencadeado pelo callback
+        pass
 
-        # Converter output_dir para Path
-        output_dir = Path(output_dir)
+    # Se estiver marcado como processando, executa a lógica
+    if st.session_state.processing:
+        if not GlobalLock.acquire():
+             st.error("⚠️ O sistema está ocupado por outro usuário.")
+             st.session_state.processing = False
+        else:
+            try:
+                # Criar container para feedback visual enquanto processa
+                status_container = st.empty()
+                with status_container.container():
+                     with st.spinner("Processando os dados..."):
+                        # Criar job
+                        job_id = f"job_{datetime.now().strftime('%Y%m%d%H%M%S')}_{uuid.uuid4().hex[:8]}"
+                        upload_dir = os.path.join("uploads", job_id)
+                        os.makedirs(upload_dir, exist_ok=True)
 
-        # Substituir o método de processamento para usar `process_tatic_data`
-        try:
-            with st.spinner("Processando os dados..."):
-                import asyncio
+                        # Salvar arquivo
+                        file_path = os.path.join(upload_dir, uploaded_file.name)
+                        with open(file_path, "wb") as f:
+                            f.write(uploaded_file.getbuffer())
 
-                asyncio.run(processor.process_tatic_data(file_path, output_dir))
+                        # Inicializar e rodar processador
+                        processor = TATICProcessor(
+                            usar_categoria_h=usar_categoria_h,
+                            incluir_finais_de_semana=incluir_finais_de_semana,
+                            log_callback=st.write
+                        )
+                        
+                        output_dir = Path(os.path.join("outputs", job_id))
+                        import asyncio
+                        asyncio.run(processor.process_tatic_data(file_path, output_dir))
 
-            st.success("Processamento concluído!")
+                        # Gerar ZIP
+                        nome_arquivo = processor.gerar_nome_relatorio(usar_categoria_h)
+                        relatorio_zip_path = gerar_zip_de_relatorio(str(output_dir), nome_arquivo)
 
-            # Gerar nome do relatório e arquivo ZIP
-            nome_arquivo = processor.gerar_nome_relatorio(usar_categoria_h)
-            relatorio_zip_path = gerar_zip_de_relatorio(str(output_dir), nome_arquivo)
+                        # Atualizar state com resultados
+                        st.session_state.relatorio_gerado = True
+                        st.session_state.nome_arquivo = nome_arquivo
+                        st.session_state.relatorio_zip_path = relatorio_zip_path
+                        st.session_state.output_dir = str(output_dir)
 
-            # Salvar no estado da sessão
-            st.session_state.relatorio_gerado = True
-            st.session_state.nome_arquivo = nome_arquivo
-            st.session_state.relatorio_zip_path = relatorio_zip_path
-            st.session_state.output_dir = str(output_dir)
+                st.success(f"✅ Relatório gerado: {st.session_state.nome_arquivo}")
+                
+                # Resetar para estado inicial (Step 0) forçando limpeza do uploader
+                st.session_state.uploader_key += 1
+                st.session_state.processing = False
+                
+                # Rerun para atualizar a tela (uploader vai sumir/resetar)
+                st.rerun()
 
-            # Exibir mensagem de sucesso com o nome do arquivo
-            st.success(f"✅ Relatório gerado: {nome_arquivo}")
+            except Exception as e:
+                st.error(f"Erro: {e}")
+                st.session_state.processing = False
+            finally:
+                GlobalLock.release()
 
-        except Exception as e:
-            st.error(f"Erro durante o processamento: {e}")
-            st.session_state.relatorio_gerado = False
+# Botão de download (exibido fora do fluxo principal se existir relatório)
+if st.session_state.relatorio_gerado and os.path.exists(st.session_state.relatorio_zip_path):
+    st.divider()
+    st.subheader("📥 Download Disponível")
+    # DEBUG: Mostrar o nome do arquivo que será baixado (removido para prod)
+    # st.write(f"**Arquivo pronto:** `{st.session_state.nome_arquivo}`")
+    
+    with open(st.session_state.relatorio_zip_path, "rb") as file:
+        file_bytes = file.read()
+        
+    st.download_button(
+        label="Baixar Relatório ZIP",
+        data=file_bytes,
+        file_name=st.session_state.nome_arquivo,
+        mime="application/zip",
+    )
+    st.info("Para gerar um novo relatório, envie uma nova planilha acima.")
 
-# Botão de download se o relatório estiver pronto
-if st.session_state.relatorio_gerado:
-    # Verificar se o arquivo ainda existe
-    if os.path.exists(st.session_state.relatorio_zip_path):
-        with open(st.session_state.relatorio_zip_path, "rb") as file:
-            st.download_button(
-                label="📥 Baixar Relatório",
-                data=file,
-                file_name=st.session_state.nome_arquivo,
-                mime="application/zip",
-            )
-
-        # Adicionar informações sobre o relatório
-        st.info(
-            f"""
-        **💾 Relatório**: {st.session_state.nome_arquivo}
-
-        📊 Conforme especificações MCA 100-26
-        🚁 Categoria H para helicópteros: {"Ativada" if usar_categoria_h else "Desativada"}
-        📅 Dias analisados na Tabela 1: {"Segunda a Domingo (incluindo finais de semana)" if incluir_finais_de_semana else "Segunda a Sexta (padrão MCA 100-26)"}
-        """
-        )
-    else:
-        st.error("⚠️ Arquivo de relatório não encontrado. Por favor, gere novamente.")
