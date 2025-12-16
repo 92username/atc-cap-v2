@@ -52,3 +52,7 @@ logs/
 
 # Docker
 .dockerignore
+# Documentation with sensitive info
+EMAIL_LOADING_*.md
+EMAIL_LOADING_*.txt
+GITHUB_SECRETS_*.md
