@@ -20,12 +20,12 @@ Essas são as primeiras tarefas práticas para retomar o projeto e confirmar que
 
 Essas tarefas otimizam o fluxo de CI/CD após o primeiro deploy bem-sucedido.
 
-* [ ] **Revisar o arquivo `.github/workflows/ci-cd.yml`**
+* [x] **Revisar o arquivo `.github/workflows/ci-cd.yml`**
   → Garantir que todas as variáveis estão com `92username`.
   → Confirmar dependência `needs: ci` e condição `if: github.ref == 'refs/heads/main'`.
-* [ ] **Adicionar tag dinâmica no build (opcional)**:
+* [x] **Adicionar tag dinâmica no build (opcional)**:
   `${{ github.sha }}` ou `latest` para facilitar versionamento no GHCR.
-* [ ] **Testar rollback manual**: recriar o container com uma imagem anterior para garantir reversão segura.
+* [x] **Testar rollback manual**: recriar o container com uma imagem anterior para garantir reversão segura.
 
 ---
 
@@ -33,9 +33,9 @@ Essas tarefas otimizam o fluxo de CI/CD após o primeiro deploy bem-sucedido.
 
 Após o pipeline estar rodando com sucesso, essas tarefas formalizam e registram o processo.
 
-* [ ] Criar `README_DEPLOY.md` descrevendo setup, secrets e CI/CD.
-* [ ] Adicionar seção **“Como atualizar a imagem”** (para orientar futuros devs).
-* [ ] Tirar print do Actions rodando com sucesso (para registro interno e histórico de release).
+* [x] Criar `README_DEPLOY.md` descrevendo setup, secrets e CI/CD.
+* [x] Adicionar seção **“Como atualizar a imagem”** (para orientar futuros devs).
+* [x] Tirar print do Actions rodando com sucesso (para registro interno e histórico de release).
 
 ---
 
@@ -58,9 +58,5 @@ Essas são as features e melhorias planejadas para fases seguintes do projeto.
 | Definição de porta      | ✅      | Porta **8506** reservada na VPS           |
 | `.env.example`          | ✅      | Atualizado com `APP_NAME=tatic-processor` |
 | Secrets e GHCR Token    | ✅      | Testado com sucesso (**Login succeeded**) |
-| Deploy automático       | 🕓     | Aguardando primeiro push de teste         |
 
 ---
-
-**Autor:** 92username
-**Próxima ação:** Etapa 1️⃣ — Testar o pipeline e validar container na VPS.
