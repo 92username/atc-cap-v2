@@ -11,6 +11,10 @@ on:
     paths-ignore:
       - '**/*.md'
 
+permissions:
+  contents: read
+  packages: write
+
 # Variáveis de ambiente globais
 env:
   APP_NAME: tatic-processor
@@ -39,13 +43,11 @@ jobs:
 
       - name: Verificar formatação com Black
         run: |
-          pip install black
-          black --verbose .
+          black --check .
 
       - name: Verificar código com Ruff
         run: |
-          pip install ruff
-          ruff format .
+          ruff check .
 
       - name: Executar testes com pytest
         run: |
@@ -72,11 +74,14 @@ jobs:
         run: |
           # --pull força atualização da imagem base
           # --no-cache força rebuild completo de todas as camadas
-          docker build --pull --no-cache -t ghcr.io/${{ env.REGISTRY_USER }}/tatic-processor:${{ github.run_number }} .
+          docker build --pull --no-cache \
+            -t ghcr.io/${{ env.REGISTRY_USER }}/tatic-processor:${{ github.run_number }} \
+            -t ghcr.io/${{ env.REGISTRY_USER }}/tatic-processor:latest .
 
       - name: Push da imagem para GHCR
         run: |
           docker push ghcr.io/${{ env.REGISTRY_USER }}/tatic-processor:${{ github.run_number }}
+          docker push ghcr.io/${{ env.REGISTRY_USER }}/tatic-processor:latest
 
       - name: Deploy via SSH na VPS Hostinger
         uses: appleboy/ssh-action@v1.1.0
@@ -85,6 +90,9 @@ jobs:
           username: ${{ secrets.VPS_USER }}
           key: ${{ secrets.VPS_KEY }}
           script: |
+            set -e
+
+            mkdir -p /root/atc-cap-v2/uploads /root/atc-cap-v2/outputs
             mkdir -p /root/.streamlit
             cat > /root/.streamlit/config.toml << CONFIGEOF
             [theme]
@@ -98,9 +106,9 @@ jobs:
             showErrorDetails=true
             CONFIGEOF
 
-            docker stop ${{ env.APP_NAME }} || true
-            docker commit ${{ env.APP_NAME }} ${{ env.APP_NAME }}:backup.$(date +%s) || true
-            docker rm ${{ env.APP_NAME }} || true
+            docker rm -f ${{ env.APP_NAME }} || true
+            docker rm -f atc-cap-v2-streamlit-app-1 || true
+            docker pull ghcr.io/${{ env.REGISTRY_USER }}/tatic-processor:${{ github.run_number }}
 
             docker run -d \
               --name ${{ env.APP_NAME }} \
@@ -120,7 +128,7 @@ jobs:
 
             sleep 5
 
-            if docker ps | grep -q ${{ env.APP_NAME }}; then
+            if docker ps --format '{{.Names}}' | grep -qx ${{ env.APP_NAME }}; then
               echo "✅ Deploy realizado com sucesso!"
               docker logs --tail 10 ${{ env.APP_NAME }}
             else
