@@ -35,7 +35,7 @@ def test_empty_emails_filtered():
 
     assert len(authorized_users) == 2
     assert "" not in authorized_users
-    assert "   " not in [email for email in authorized_users]
+    assert "   " not in list(authorized_users)
 
 
 def test_email_parsing_from_string():

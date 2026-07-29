@@ -7,6 +7,7 @@ Simula exatamente o que o app.py faz ao carregar os e-mails
 
 import os
 from pathlib import Path
+
 from dotenv import load_dotenv
 
 print("=" * 60)
@@ -23,11 +24,11 @@ print(f"Procurando em: {env_path}")
 print(f"Diretório atual: {Path(__file__).parent}")
 
 if env_path.exists():
-    print(f"✅ Arquivo .env ENCONTRADO!")
+    print("✅ Arquivo .env ENCONTRADO!")
     print(f"   Tamanho: {env_path.stat().st_size} bytes")
     print(f"   Caminho absoluto: {env_path.absolute()}")
 else:
-    print(f"❌ Arquivo .env NÃO ENCONTRADO!")
+    print("❌ Arquivo .env NÃO ENCONTRADO!")
     print(f"   Procurando em: {env_path.absolute()}")
 
 print()
@@ -35,7 +36,7 @@ print("📍 PASSO 2: Carregar variáveis de ambiente")
 print("-" * 60)
 
 # Antes de carregar
-print(f"Antes de load_dotenv():")
+print("Antes de load_dotenv():")
 print(f"  ADMIN_EMAILS    = '{os.getenv('ADMIN_EMAILS', 'NÃO ENCONTRADO')}'")
 print(f"  ALLOWED_EMAILS  = '{os.getenv('ALLOWED_EMAILS', 'NÃO ENCONTRADO')}'")
 print()
@@ -45,7 +46,7 @@ if env_path.exists():
     print(f"Executando: load_dotenv(dotenv_path='{env_path}', override=True)")
     load_dotenv(dotenv_path=env_path, override=True)
 else:
-    print(f"Executando: load_dotenv(override=True)")
+    print("Executando: load_dotenv(override=True)")
     load_dotenv(override=True)
 
 print()
@@ -63,7 +64,7 @@ print("-" * 60)
 admin_list = admin_raw.split(",")
 allowed_list = allowed_raw.split(",")
 
-print(f"Após split(','):")
+print("Após split(','):")
 print(f"  ADMIN_EMAILS    = {admin_list}")
 print(f"  ALLOWED_EMAILS  = {allowed_list}")
 print()
@@ -73,7 +74,7 @@ authorized_users = [
     email.strip().lower() for email in admin_list + allowed_list if email.strip()
 ]
 
-print(f"Após normalização (strip + lower + filter):")
+print("Após normalização (strip + lower + filter):")
 print(f"  AUTHORIZED_USERS = {authorized_users}")
 print()
 
