@@ -106,6 +106,8 @@ jobs:
             showErrorDetails=true
             CONFIGEOF
 
+            echo "${{ secrets.GHCR_TOKEN }}" | docker login ghcr.io -u "${{ env.REGISTRY_USER }}" --password-stdin
+
             docker rm -f ${{ env.APP_NAME }} || true
             docker rm -f atc-cap-v2-streamlit-app-1 || true
             docker pull ghcr.io/${{ env.REGISTRY_USER }}/tatic-processor:${{ github.run_number }}
