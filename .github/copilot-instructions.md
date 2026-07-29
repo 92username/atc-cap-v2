@@ -24,7 +24,7 @@ This project is a web application for processing and analyzing TATIC (air traffi
 ```bash
 git clone https://github.com/92username/atc-cap-v2
 cd atc-cap-v2
-python -m venv venv && source venv/bin/activate  # Linux/Mac
+python3 -m venv venv && source venv/bin/activate  # Linux/Mac
 pip install -r requirements.txt
 streamlit run app.py  # Runs on http://localhost:8506
 ```

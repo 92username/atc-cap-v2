@@ -12,6 +12,7 @@ from tatic_processor import TATICProcessor
 # Carregar variáveis de ambiente
 load_dotenv()
 
+
 def parse_emails(raw_env):
     """
     Função robusta para parsear e-mails de variáveis de ambiente.
@@ -23,16 +24,21 @@ def parse_emails(raw_env):
     if not raw_env:
         return []
     # Garante separação correta mesmo que GitHub secrets inclua espaços
-    parts = [email.strip().lower() for email in raw_env.replace(" ", "").split(",") if email]
+    parts = [
+        email.strip().lower() for email in raw_env.replace(" ", "").split(",") if email
+    ]
     return parts
+
 
 ADMIN_EMAILS = parse_emails(os.getenv("ADMIN_EMAILS"))
 ALLOWED_EMAILS = parse_emails(os.getenv("ALLOWED_EMAILS"))
 
 AUTHORIZED_USERS = list(set(ADMIN_EMAILS + ALLOWED_EMAILS))
 
+
 class GlobalLock:
     """Implementação simples de lock global baseada em arquivo"""
+
     LOCK_FILE = "tatic_processing.lock"
     TIMEOUT_SECONDS = 3600  # 1 hora de timeout para locks órfãos
 
@@ -51,10 +57,10 @@ class GlobalLock:
             except OSError:
                 # Arquivo pode ter sido removido concorrentemente
                 pass
-        
+
         # Criar arquivo de lock
         try:
-            with open(cls.LOCK_FILE, 'w') as f:
+            with open(cls.LOCK_FILE, "w") as f:
                 f.write(str(datetime.now().timestamp()))
             return True
         except OSError:
@@ -74,7 +80,7 @@ class GlobalLock:
         """Verifica se existe lock ativo (não expirado)"""
         if not os.path.exists(cls.LOCK_FILE):
             return False
-            
+
         try:
             creation_time = os.path.getctime(cls.LOCK_FILE)
             if (datetime.now().timestamp() - creation_time) > cls.TIMEOUT_SECONDS:
@@ -114,7 +120,7 @@ if not st.session_state.authenticated:
 def add_sidebar():
     with st.sidebar:
         st.title("📊 TATIC - MCA 100-26")
-        
+
         # 🔍 DEBUG: Mostrar usuários autorizados
         st.subheader("🔍 DEBUG - Autenticação")
         st.write(f"**Total de usuários autorizados:** {len(AUTHORIZED_USERS)}")
@@ -125,7 +131,7 @@ def add_sidebar():
             else:
                 st.warning("⚠️ Nenhum usuário autorizado carregado!")
         st.divider()
-        
+
         st.warning(
             "⚠️ **Dica:** Exporte os dados diretamente do TATIC em formato bruto, sem aplicar filtros ou fórmulas personalizadas. O aplicativo foi otimizado para processar dados não modificados, garantindo resultados conforme a MCA 100-26."
         )
@@ -208,9 +214,9 @@ if "uploader_key" not in st.session_state:
 
 # 📤 Upload do arquivo
 uploaded_file = st.file_uploader(
-    "Envie o arquivo TATIC (.xlsx)", 
+    "Envie o arquivo TATIC (.xlsx)",
     type=["xlsx"],
-    key=f"uploader_{st.session_state.uploader_key}"
+    key=f"uploader_{st.session_state.uploader_key}",
 )
 
 
@@ -284,21 +290,23 @@ if uploaded_file is not None:
     # Botão desabilitado se já estiver processando ou sistema ocupado
     button_disabled = st.session_state.processing or is_system_busy
 
-    if st.button("🚀 Gerar Relatório", disabled=button_disabled, on_click=start_processing):
+    if st.button(
+        "🚀 Gerar Relatório", disabled=button_disabled, on_click=start_processing
+    ):
         # O processamento real acontece APÓS o rerun desencadeado pelo callback
         pass
 
     # Se estiver marcado como processando, executa a lógica
     if st.session_state.processing:
         if not GlobalLock.acquire():
-             st.error("⚠️ O sistema está ocupado por outro usuário.")
-             st.session_state.processing = False
+            st.error("⚠️ O sistema está ocupado por outro usuário.")
+            st.session_state.processing = False
         else:
             try:
                 # Criar container para feedback visual enquanto processa
                 status_container = st.empty()
                 with status_container.container():
-                     with st.spinner("Processando os dados..."):
+                    with st.spinner("Processando os dados..."):
                         # Criar job
                         job_id = f"job_{datetime.now().strftime('%Y%m%d%H%M%S')}_{uuid.uuid4().hex[:8]}"
                         upload_dir = os.path.join("uploads", job_id)
@@ -313,16 +321,19 @@ if uploaded_file is not None:
                         processor = TATICProcessor(
                             usar_categoria_h=usar_categoria_h,
                             incluir_finais_de_semana=incluir_finais_de_semana,
-                            log_callback=st.write
+                            log_callback=st.write,
                         )
-                        
+
                         output_dir = Path(os.path.join("outputs", job_id))
                         import asyncio
+
                         asyncio.run(processor.process_tatic_data(file_path, output_dir))
 
                         # Gerar ZIP
                         nome_arquivo = processor.gerar_nome_relatorio(usar_categoria_h)
-                        relatorio_zip_path = gerar_zip_de_relatorio(str(output_dir), nome_arquivo)
+                        relatorio_zip_path = gerar_zip_de_relatorio(
+                            str(output_dir), nome_arquivo
+                        )
 
                         # Atualizar state com resultados
                         st.session_state.relatorio_gerado = True
@@ -331,11 +342,11 @@ if uploaded_file is not None:
                         st.session_state.output_dir = str(output_dir)
 
                 st.success(f"✅ Relatório gerado: {st.session_state.nome_arquivo}")
-                
+
                 # Resetar para estado inicial (Step 0) forçando limpeza do uploader
                 st.session_state.uploader_key += 1
                 st.session_state.processing = False
-                
+
                 # Rerun para atualizar a tela (uploader vai sumir/resetar)
                 st.rerun()
 
@@ -346,15 +357,17 @@ if uploaded_file is not None:
                 GlobalLock.release()
 
 # Botão de download (exibido fora do fluxo principal se existir relatório)
-if st.session_state.relatorio_gerado and os.path.exists(st.session_state.relatorio_zip_path):
+if st.session_state.relatorio_gerado and os.path.exists(
+    st.session_state.relatorio_zip_path
+):
     st.divider()
     st.subheader("📥 Download Disponível")
     # DEBUG: Mostrar o nome do arquivo que será baixado (removido para prod)
     # st.write(f"**Arquivo pronto:** `{st.session_state.nome_arquivo}`")
-    
+
     with open(st.session_state.relatorio_zip_path, "rb") as file:
         file_bytes = file.read()
-        
+
     st.download_button(
         label="Baixar Relatório ZIP",
         data=file_bytes,
@@ -362,4 +375,3 @@ if st.session_state.relatorio_gerado and os.path.exists(st.session_state.relator
         mime="application/zip",
     )
     st.info("Para gerar um novo relatório, envie uma nova planilha acima.")
-

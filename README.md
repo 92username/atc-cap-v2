@@ -52,7 +52,7 @@ git clone https://github.com/92username/atc-cap-v2
 cd atc-cap-v2
 
 # Criar ambiente virtual
-python -m venv venv
+python3 -m venv venv
 source venv/bin/activate  # Linux/Mac
 
 # Instalar dependências

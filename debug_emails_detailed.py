@@ -70,9 +70,7 @@ print()
 
 # Normalizar
 authorized_users = [
-    email.strip().lower() 
-    for email in admin_list + allowed_list 
-    if email.strip()
+    email.strip().lower() for email in admin_list + allowed_list if email.strip()
 ]
 
 print(f"Após normalização (strip + lower + filter):")

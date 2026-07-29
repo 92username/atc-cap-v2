@@ -11,7 +11,9 @@ def test_email_normalization():
     allowed_emails = ["User2@EXAMPLE.COM"]
 
     authorized_users = [
-        email.strip().lower() for email in admin_emails + allowed_emails if email.strip()
+        email.strip().lower()
+        for email in admin_emails + allowed_emails
+        if email.strip()
     ]
 
     assert "admin@example.com" in authorized_users
@@ -26,7 +28,9 @@ def test_empty_emails_filtered():
     allowed_emails = ["", "user@example.com", "   "]
 
     authorized_users = [
-        email.strip().lower() for email in admin_emails + allowed_emails if email.strip()
+        email.strip().lower()
+        for email in admin_emails + allowed_emails
+        if email.strip()
     ]
 
     assert len(authorized_users) == 2
@@ -57,7 +61,9 @@ def test_duplicate_emails():
     allowed_emails = ["admin@example.com"]
 
     authorized_users = [
-        email.strip().lower() for email in admin_emails + allowed_emails if email.strip()
+        email.strip().lower()
+        for email in admin_emails + allowed_emails
+        if email.strip()
     ]
 
     # Lista com duplicatas

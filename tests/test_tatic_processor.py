@@ -80,7 +80,9 @@ def test_process_weekday_filtering(sample_tatic_df):
 
     # Test the filtering logic from generate_table1_mca (without actually calling the method)
     if not processor.incluir_finais_de_semana:
-        filtered_df = sample_tatic_df[~sample_tatic_df["weekday"].isin(["Saturday", "Sunday"])]
+        filtered_df = sample_tatic_df[
+            ~sample_tatic_df["weekday"].isin(["Saturday", "Sunday"])
+        ]
     else:
         filtered_df = sample_tatic_df
 
@@ -93,7 +95,9 @@ def test_process_weekday_filtering(sample_tatic_df):
     processor.incluir_finais_de_semana = True
 
     if not processor.incluir_finais_de_semana:
-        filtered_df = sample_tatic_df[~sample_tatic_df["weekday"].isin(["Saturday", "Sunday"])]
+        filtered_df = sample_tatic_df[
+            ~sample_tatic_df["weekday"].isin(["Saturday", "Sunday"])
+        ]
     else:
         filtered_df = sample_tatic_df
 
