@@ -34,6 +34,7 @@ ADMIN_EMAILS = parse_emails(os.getenv("ADMIN_EMAILS"))
 ALLOWED_EMAILS = parse_emails(os.getenv("ALLOWED_EMAILS"))
 
 AUTHORIZED_USERS = list(set(ADMIN_EMAILS + ALLOWED_EMAILS))
+DEFAULT_INTERNAL_SPREADSHEET_PATH = os.getenv("INTERNAL_TATIC_FILE", "").strip()
 
 
 class GlobalLock:
@@ -141,9 +142,10 @@ def add_sidebar():
             """
         ### 📋 Instruções:
         1. **Selecione** se helicópteros devem ser classificados como categoria H
-        2. **Faça upload** do arquivo TATIC (.xlsx)
-        3. **Clique em "Gerar Relatório"** para processar os dados
-        4. **Baixe o relatório** gerado em formato ZIP
+        2. **Escolha a origem** dos dados (base interna ou upload)
+        3. **Se necessário, faça upload** do arquivo TATIC (.xlsx)
+        4. **Clique em "Gerar Relatório"** para processar os dados
+        5. **Baixe o relatório** gerado em formato ZIP
 
         ### 📊 Formato MCA 100-26
         O relatório segue as especificações do **Anexo II da MCA 100-26** com as tabelas:
@@ -179,7 +181,7 @@ st.subheader("Processador de Dados de Movimento Aéreo")
 st.info(
     """
 Este aplicativo processa dados TATIC conforme as especificações do **Anexo II da MCA 100-26**.
-Faça upload do arquivo Excel exportado do TATIC e obtenha as tabelas de análise.
+Escolha entre usar a base interna do servidor ou enviar um novo arquivo Excel exportado do TATIC.
 """
 )
 
@@ -208,16 +210,57 @@ incluir_finais_de_semana = (
     == "Listar Segunda a Domingo (incluir Sábado e Domingo)"
 )
 
+# Fonte de dados
+st.subheader("Fonte de dados")
+data_source = st.radio(
+    "Escolha como deseja iniciar o processamento:",
+    (
+        "Usar dados internos da VPS",
+        "Enviar nova planilha (.xlsx)",
+    ),
+    help="A base interna fica disponível apenas no backend; o upload permite sobrescrever a entrada para este processamento.",
+)
+
+
+def get_internal_spreadsheet_path() -> Path | None:
+    if not DEFAULT_INTERNAL_SPREADSHEET_PATH:
+        return None
+    return Path(DEFAULT_INTERNAL_SPREADSHEET_PATH).expanduser()
+
+
+internal_spreadsheet_path = get_internal_spreadsheet_path()
+internal_spreadsheet_available = bool(
+    internal_spreadsheet_path and internal_spreadsheet_path.is_file()
+)
+using_internal_data = data_source == "Usar dados internos da VPS"
+
+if using_internal_data:
+    if internal_spreadsheet_available:
+        st.success(
+            f"✅ Base interna disponível no servidor: `{internal_spreadsheet_path.name}`"
+        )
+    elif DEFAULT_INTERNAL_SPREADSHEET_PATH:
+        st.error(
+            "⚠️ A base interna foi configurada, mas o arquivo não foi encontrado no caminho informado."
+        )
+        st.caption(f"Caminho configurado: `{DEFAULT_INTERNAL_SPREADSHEET_PATH}`")
+    else:
+        st.error(
+            "⚠️ Nenhuma base interna foi configurada. Defina `INTERNAL_TATIC_FILE` no ambiente da VPS."
+        )
+
 # State para chave do uploader (para permitir reset)
 if "uploader_key" not in st.session_state:
     st.session_state.uploader_key = 0
 
 # 📤 Upload do arquivo
-uploaded_file = st.file_uploader(
-    "Envie o arquivo TATIC (.xlsx)",
-    type=["xlsx"],
-    key=f"uploader_{st.session_state.uploader_key}",
-)
+uploaded_file = None
+if not using_internal_data:
+    uploaded_file = st.file_uploader(
+        "Envie o arquivo TATIC (.xlsx)",
+        type=["xlsx"],
+        key=f"uploader_{st.session_state.uploader_key}",
+    )
 
 
 # Função para gerar o arquivo ZIP
@@ -272,89 +315,95 @@ if "relatorio_gerado" not in st.session_state:
     st.session_state.relatorio_zip_path = ""
     st.session_state.output_dir = ""
 
-if uploaded_file is not None:
+selected_input_name = None
+selected_input_path = None
+
+if using_internal_data and internal_spreadsheet_available:
+    selected_input_name = internal_spreadsheet_path.name
+    selected_input_path = internal_spreadsheet_path
+elif uploaded_file is not None:
+    selected_input_name = uploaded_file.name
     st.success(f"✅ Arquivo carregado: {uploaded_file.name}")
 
-    # Verificar lock global
-    is_system_busy = GlobalLock.is_locked()
-    if is_system_busy:
-        st.warning("⚠️ O sistema está processando outro relatório. Aguarde...")
+input_ready = (using_internal_data and internal_spreadsheet_available) or (
+    not using_internal_data and uploaded_file is not None
+)
 
-    # State para controlar o botão via callback
-    if "processing" not in st.session_state:
+# Verificar lock global
+is_system_busy = GlobalLock.is_locked()
+if is_system_busy:
+    st.warning("⚠️ O sistema está processando outro relatório. Aguarde...")
+
+# State para controlar o botão via callback
+if "processing" not in st.session_state:
+    st.session_state.processing = False
+
+
+def start_processing():
+    st.session_state.processing = True
+
+
+button_disabled = st.session_state.processing or is_system_busy or not input_ready
+
+if st.button("🚀 Gerar Relatório", disabled=button_disabled, on_click=start_processing):
+    pass
+
+if st.session_state.processing:
+    if not GlobalLock.acquire():
+        st.error("⚠️ O sistema está ocupado por outro usuário.")
         st.session_state.processing = False
+    else:
+        try:
+            status_container = st.empty()
+            with status_container.container():
+                with st.spinner("Processando os dados..."):
+                    job_id = (
+                        f"job_{datetime.now().strftime('%Y%m%d%H%M%S')}_{uuid.uuid4().hex[:8]}"
+                    )
+                    upload_dir = os.path.join("uploads", job_id)
+                    os.makedirs(upload_dir, exist_ok=True)
 
-    def start_processing():
-        st.session_state.processing = True
-
-    # Botão desabilitado se já estiver processando ou sistema ocupado
-    button_disabled = st.session_state.processing or is_system_busy
-
-    if st.button(
-        "🚀 Gerar Relatório", disabled=button_disabled, on_click=start_processing
-    ):
-        # O processamento real acontece APÓS o rerun desencadeado pelo callback
-        pass
-
-    # Se estiver marcado como processando, executa a lógica
-    if st.session_state.processing:
-        if not GlobalLock.acquire():
-            st.error("⚠️ O sistema está ocupado por outro usuário.")
-            st.session_state.processing = False
-        else:
-            try:
-                # Criar container para feedback visual enquanto processa
-                status_container = st.empty()
-                with status_container.container():
-                    with st.spinner("Processando os dados..."):
-                        # Criar job
-                        job_id = f"job_{datetime.now().strftime('%Y%m%d%H%M%S')}_{uuid.uuid4().hex[:8]}"
-                        upload_dir = os.path.join("uploads", job_id)
-                        os.makedirs(upload_dir, exist_ok=True)
-
-                        # Salvar arquivo
+                    if using_internal_data:
+                        file_path = str(selected_input_path)
+                    else:
                         file_path = os.path.join(upload_dir, uploaded_file.name)
                         with open(file_path, "wb") as f:
                             f.write(uploaded_file.getbuffer())
 
-                        # Inicializar e rodar processador
-                        processor = TATICProcessor(
-                            usar_categoria_h=usar_categoria_h,
-                            incluir_finais_de_semana=incluir_finais_de_semana,
-                            log_callback=st.write,
-                        )
+                    processor = TATICProcessor(
+                        usar_categoria_h=usar_categoria_h,
+                        incluir_finais_de_semana=incluir_finais_de_semana,
+                        log_callback=st.write,
+                    )
 
-                        output_dir = Path(os.path.join("outputs", job_id))
-                        import asyncio
+                    output_dir = Path(os.path.join("outputs", job_id))
+                    import asyncio
 
-                        asyncio.run(processor.process_tatic_data(file_path, output_dir))
+                    asyncio.run(processor.process_tatic_data(file_path, output_dir))
 
-                        # Gerar ZIP
-                        nome_arquivo = processor.gerar_nome_relatorio(usar_categoria_h)
-                        relatorio_zip_path = gerar_zip_de_relatorio(
-                            str(output_dir), nome_arquivo
-                        )
+                    nome_arquivo = processor.gerar_nome_relatorio(usar_categoria_h)
+                    relatorio_zip_path = gerar_zip_de_relatorio(
+                        str(output_dir), nome_arquivo
+                    )
 
-                        # Atualizar state com resultados
-                        st.session_state.relatorio_gerado = True
-                        st.session_state.nome_arquivo = nome_arquivo
-                        st.session_state.relatorio_zip_path = relatorio_zip_path
-                        st.session_state.output_dir = str(output_dir)
+                    st.session_state.relatorio_gerado = True
+                    st.session_state.nome_arquivo = nome_arquivo
+                    st.session_state.relatorio_zip_path = relatorio_zip_path
+                    st.session_state.output_dir = str(output_dir)
 
-                st.success(f"✅ Relatório gerado: {st.session_state.nome_arquivo}")
+            st.success(
+                f"✅ Relatório gerado a partir de `{selected_input_name}`: {st.session_state.nome_arquivo}"
+            )
 
-                # Resetar para estado inicial (Step 0) forçando limpeza do uploader
-                st.session_state.uploader_key += 1
-                st.session_state.processing = False
+            st.session_state.uploader_key += 1
+            st.session_state.processing = False
+            st.rerun()
 
-                # Rerun para atualizar a tela (uploader vai sumir/resetar)
-                st.rerun()
-
-            except Exception as e:
-                st.error(f"Erro: {e}")
-                st.session_state.processing = False
-            finally:
-                GlobalLock.release()
+        except Exception as e:
+            st.error(f"Erro: {e}")
+            st.session_state.processing = False
+        finally:
+            GlobalLock.release()
 
 # Botão de download (exibido fora do fluxo principal se existir relatório)
 if st.session_state.relatorio_gerado and os.path.exists(
@@ -374,4 +423,4 @@ if st.session_state.relatorio_gerado and os.path.exists(
         file_name=st.session_state.nome_arquivo,
         mime="application/zip",
     )
-    st.info("Para gerar um novo relatório, envie uma nova planilha acima.")
+    st.info("Para gerar um novo relatório, escolha a fonte de dados e processe novamente.")
