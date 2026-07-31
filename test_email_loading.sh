@@ -64,8 +64,8 @@ echo "Simulando: docker run -e ADMIN_EMAILS=... -e ALLOWED_EMAILS=..."
 echo ""
 
 # Exportar como se viessem do Docker (GitHub Secrets)
-export ADMIN_EMAILS="xxxxx9663@gmail.com"
-export ALLOWED_EMAILS="xxxxxr1@gmail.com,xxxxxferreirinha@gmail.com,xxxxxjacondino@gmail.com"
+export ADMIN_EMAILS="xxxxxxxx3@gmail.com"
+export ALLOWED_EMAILS="xxxxxr1@gmail.com,xxxxxxxxxxxxinha@gmail.com,xxxxxxxxxxdino@gmail.com"
 
 cat > /tmp/test_production.py << 'PYTHON_EOF'
 import os
