@@ -112,19 +112,6 @@ Quando fizer push para `main`:
 
 ## Troubleshooting
 
-### ❓ **Estou digitando meu e-mail correto, mas recebo "Acesso negado"**
-
-**Causas possíveis:**
-- E-mail contém espaços extras
-- Maiúsculas diferentes (e.g., `User@Example.com` vs `user@example.com`)
-- Variáveis de ambiente não foram carregadas (verifique `.env` ou secrets do GitHub)
-
-**Solução:**
-```python
-# Debug: adicione temporariamente no app.py
-st.write(f"Debug - AUTHORIZED_USERS: {AUTHORIZED_USERS}")
-```
-
 ### ❓ **Vejo "E-mail não autorizado" mesmo com e-mail correto no .env**
 
 **Verificar:**

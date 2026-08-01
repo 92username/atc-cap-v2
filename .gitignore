@@ -34,6 +34,7 @@ data/uploads/*
 !data/uploads/.gitkeep
 data/outputs/*
 !data/outputs/.gitkeep
+data/internal/*
 outputs/
 
 # IDE

@@ -1,3 +1,7 @@
+[![CI/CD - TATIC Processor](https://github.com/92username/atc-cap-v2/actions/workflows/ci-cd.yml/badge.svg)](https://github.com/92username/atc-cap-v2/actions/workflows/ci-cd.yml)
+
+![GitHub Actions](https://img.shields.io/badge/github%20actions-%232671E5.svg?style=for-the-badge&logo=githubactions&logoColor=white)
+
 # 🛫 TATIC Análise de Dados - Aplicação Web
 
 ## 🚀 Visão Geral
@@ -15,6 +19,7 @@ Aplicação web para processamento e análise de dados TATIC  com interface Stre
 
 ### 📊 Processamento de Dados
 - ✅ **Upload drag-and-drop** de arquivos Excel (.xlsx)
+- ✅ **Base interna opcional na VPS** para iniciar o app sem planilha local
 - ✅ **Processamento rápido** de 155k+ registros em 70 segundos
 - ✅ **Validação automática** de estrutura e cabeçalhos TATIC
 - ✅ **Logs em tempo real** durante o processamento
@@ -36,6 +41,7 @@ Aplicação web para processamento e análise de dados TATIC  com interface Stre
 ### 🧭 Interface do Usuário
 - ✅ **Menu lateral expansível** com guia de uso
 - ✅ **Seletor de modo** (Padrão/Helicóptero)
+- ✅ **Seletor de fonte de dados** (base interna ou upload)
 - ✅ **Visualização de dados**
 - ✅ **Download de relatórios** em formato ZIP
 
@@ -58,9 +64,35 @@ source venv/bin/activate  # Linux/Mac
 # Instalar dependências
 pip install -r requirements.txt
 
+# Exportar e-mails autorizados para teste local
+# Essas variáveis são injetadas em produção via GitHub Actions / container
+export ADMIN_EMAILS="seu-email@exemplo.com"
+export ALLOWED_EMAILS="seu-email@exemplo.com"
+
 # Executar aplicação
 streamlit run app.py
 ```
+
+Se você não exportar `ADMIN_EMAILS` e `ALLOWED_EMAILS` localmente, o login do app vai negar acesso, porque em produção esses valores chegam ao container via variáveis de ambiente injetadas pelo GitHub Actions.
+
+### Base interna na VPS
+Se quiser que o app suba já com uma planilha "embutida" no backend:
+
+```bash
+mkdir -p data/internal
+cp /caminho/da/sua/base_tatic.xlsx data/internal/base_tatic.xlsx
+export INTERNAL_TATIC_FILE=/app/data/internal/base_tatic.xlsx
+docker compose up -d
+```
+
+Na interface, o usuário poderá escolher:
+- `Usar dados internos da VPS`
+- `Enviar nova planilha (.xlsx)`
+
+Importante:
+- a planilha interna não deve ficar em pasta pública;
+- ela não precisa entrar no Git;
+- o container só precisa de leitura nesse volume.
 
 ## 📋 Formato de Dados TATIC
 
@@ -87,6 +119,7 @@ atc-cap-v2/
 ├── assets/
 │   ├── categorias-A-E.csv   # Tabela de categorias
 │   └── DataGrid-sbjr.xlsx   # Arquivo de exemplo
+├── data/internal/            # Base interna opcional montada na VPS
 ├── uploads/                  # Arquivos enviados
 ├── outputs/                  # Relatórios gerados
 └── docker-compose.yml       # Configuração Docker
