@@ -357,9 +357,7 @@ if st.session_state.processing:
             status_container = st.empty()
             with status_container.container():
                 with st.spinner("Processando os dados..."):
-                    job_id = (
-                        f"job_{datetime.now().strftime('%Y%m%d%H%M%S')}_{uuid.uuid4().hex[:8]}"
-                    )
+                    job_id = f"job_{datetime.now().strftime('%Y%m%d%H%M%S')}_{uuid.uuid4().hex[:8]}"
                     upload_dir = os.path.join("uploads", job_id)
                     os.makedirs(upload_dir, exist_ok=True)
 
@@ -423,4 +421,6 @@ if st.session_state.relatorio_gerado and os.path.exists(
         file_name=st.session_state.nome_arquivo,
         mime="application/zip",
     )
-    st.info("Para gerar um novo relatório, escolha a fonte de dados e processe novamente.")
+    st.info(
+        "Para gerar um novo relatório, escolha a fonte de dados e processe novamente."
+    )
