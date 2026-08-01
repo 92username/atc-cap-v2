@@ -64,9 +64,16 @@ source venv/bin/activate  # Linux/Mac
 # Instalar dependências
 pip install -r requirements.txt
 
+# Exportar e-mails autorizados para teste local
+# Essas variáveis são injetadas em produção via GitHub Actions / container
+export ADMIN_EMAILS="seu-email@exemplo.com"
+export ALLOWED_EMAILS="seu-email@exemplo.com"
+
 # Executar aplicação
 streamlit run app.py
 ```
+
+Se você não exportar `ADMIN_EMAILS` e `ALLOWED_EMAILS` localmente, o login do app vai negar acesso, porque em produção esses valores chegam ao container via variáveis de ambiente injetadas pelo GitHub Actions.
 
 ### Base interna na VPS
 Se quiser que o app suba já com uma planilha "embutida" no backend:
