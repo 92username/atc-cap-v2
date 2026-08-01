@@ -92,7 +92,7 @@ jobs:
           script: |
             set -e
 
-            mkdir -p /root/atc-cap-v2/uploads /root/atc-cap-v2/outputs
+            mkdir -p /root/atc-cap-v2/uploads /root/atc-cap-v2/outputs /root/atc-cap-v2/data/internal
             mkdir -p /root/.streamlit
             cat > /root/.streamlit/config.toml << CONFIGEOF
             [theme]
@@ -118,7 +118,9 @@ jobs:
               -p ${{ env.APP_PORT }}:${{ env.APP_PORT }} \
               -v /root/atc-cap-v2/uploads:/app/uploads \
               -v /root/atc-cap-v2/outputs:/app/outputs \
+              -v /root/atc-cap-v2/data/internal:/app/data/internal:ro \
               -v /root/.streamlit:/app/.streamlit \
+              -e INTERNAL_TATIC_FILE=/app/data/internal/base_tatic.xlsx \
               -e STREAMLIT_BROWSER_GATHER_USAGE_STATS=false \
               -e STREAMLIT_SERVER_ENABLECORS=false \
               -e STREAMLIT_SERVER_PORT=8506 \
