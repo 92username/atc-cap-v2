@@ -1,6 +1,6 @@
 [![CI/CD - TATIC Processor](https://github.com/92username/atc-cap-v2/actions/workflows/ci-cd.yml/badge.svg)](https://github.com/92username/atc-cap-v2/actions/workflows/ci-cd.yml)
 
-![GitHub Actions](https://img.shields.io/badge/github%20actions-%232671E5.svg?style=for-the-badge&logo=githubactions&logoColor=white)
+![GitHub Actions](https://img.shields.io/badge/github%20actions-%232671E5.svg?style=for-the-badge&logo=githubactions&logoColor=white) ![Streamlit](https://img.shields.io/badge/Streamlit-%23FE4B4B.svg?style=for-the-badge&logo=streamlit&logoColor=white) ![Pandas](https://img.shields.io/badge/Pandas-150458.svg?style=for-the-badge&logo=pandas&logoColor=white) ![Python](https://img.shields.io/badge/python-3670A0?style=for-the-badge&logo=python&logoColor=ffdd54) ![Docker](https://img.shields.io/badge/docker-%230db7ed.svg?style=for-the-badge&logo=docker&logoColor=white) ![Nginx](https://img.shields.io/badge/nginx-%23009639.svg?style=for-the-badge&logo=nginx&logoColor=white)
 
 # 🛫 TATIC Análise de Dados - Aplicação Web
 
@@ -35,14 +35,10 @@ Aplicação web para processamento e análise de dados TATIC  com interface Stre
 2. **Tabela 2 - Movimentos por Pista** - Distribuição por cabeceiras
 3. **Tabela 3 - Percentual por Pista** - Análise de utilização
 4. **Tabela 4 - Mix de Aeronaves** - Classificação por esteira de turbulência
-5. **Tabela 5 - Categoria por Dia da Semana** - Padrões semanais
-6. **Tabela 6 - Mix por Categoria** - Resumo com percentuais
 
 ### 🧭 Interface do Usuário
-- ✅ **Menu lateral expansível** com guia de uso
 - ✅ **Seletor de modo** (Padrão/Helicóptero)
 - ✅ **Seletor de fonte de dados** (base interna ou upload)
-- ✅ **Visualização de dados**
 - ✅ **Download de relatórios** em formato ZIP
 
 ### 📦 Sistema de Relatórios
@@ -128,14 +124,14 @@ atc-cap-v2/
 ## 🎯 URLs de Acesso
 
 - **Aplicação**: http://localhost:8502 (desenvolvimento)
-- **Produção**: http://localhost (Docker)
+- **Produção**: https://tatic.jacare.cloud (Produção)
 
 ## 🔧 Desenvolvimento
 
 ### Stack Tecnológico
-- **Streamlit 1.24+** - Interface web
+- **Streamlit 1.28.0** - Interface web
 - **Pandas 2.0+** - Processamento de dados
-- **OpenPyXL 3.1+** - Leitura de Excel
+- **OpenPyXL 3.1.2** - Leitura de Excel
 - **Docker** - Containerização
 - **Nginx** - Proxy reverso (produção)
 
