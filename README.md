@@ -129,9 +129,9 @@ atc-cap-v2/
 ## 🔧 Desenvolvimento
 
 ### Stack Tecnológico
-- **Streamlit 1.24** - Interface web
-- **Pandas 2.0** - Processamento de dados
-- **OpenPyXL 3.1** - Leitura de Excel
+- **Streamlit 1.28.0** - Interface web
+- **Pandas 2.0+** - Processamento de dados
+- **OpenPyXL 3.1.2** - Leitura de Excel
 - **Docker** - Containerização
 - **Nginx** - Proxy reverso (produção)
 
