@@ -185,6 +185,21 @@ Escolha entre usar a base interna do servidor ou enviar um novo arquivo Excel ex
 """
 )
 
+st.markdown(
+    """
+<div style="background-color: #6b5f1a; color: #f5f1d6; padding: 18px 20px; border-radius: 10px; margin: 12px 0 20px 0;">
+    <p style="margin: 0 0 10px 0; font-weight: 700;">Como exportar a planilha correta no Saipher - TATIC (Módulo Supervisor)</p>
+    <ol style="margin: 0; padding-left: 20px;">
+        <li style="margin-bottom: 8px;"><strong>Abra o menu principal</strong>: Consultas → Pesquisa Operacional → Movimentos</li>
+        <li style="margin-bottom: 8px;"><strong>Selecione o período de análise</strong>: escolha o intervalo que cubra 12 meses, conforme a MCA 100-26.</li>
+        <li style="margin-bottom: 8px;"><strong>Execute a consulta</strong>: clique em EXECUTAR e aguarde o processamento do relatório.</li>
+        <li><strong>Exporte o resultado</strong>: no canto superior direito, clique nos três pontinhos (⋮) e escolha Exportar para Excel.</li>
+    </ol>
+</div>
+""",
+    unsafe_allow_html=True,
+)
+
 # 📊 Configurações
 st.subheader("Configurações")
 categoria_helicoptero = st.radio(
