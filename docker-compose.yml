@@ -3,7 +3,9 @@ version: '3.8'
 services:
   streamlit-app:
     build: .
-    image: atc-cap-v2:0.0.1
+    image: ghcr.io/92username/tatic-processor:${IMAGE_TAG:-local}
+    env_file:
+      - .env
     ports:
       - "${APP_PORT:-8506}:${APP_PORT:-8506}"
     environment:

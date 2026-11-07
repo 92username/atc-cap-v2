@@ -84,59 +84,37 @@ jobs:
           docker push ghcr.io/${{ env.REGISTRY_USER }}/tatic-processor:${{ github.run_number }}
           docker push ghcr.io/${{ env.REGISTRY_USER }}/tatic-processor:latest
 
-      - name: Deploy via SSH na VPS Hostinger
+      - name: Deploy via SSH na VPS
         uses: appleboy/ssh-action@v1.1.0
+        env:
+          IMAGE_TAG: ${{ github.run_number }}
+          GHCR_TOKEN: ${{ secrets.GHCR_TOKEN }}
+          REGISTRY_USER: ${{ env.REGISTRY_USER }}
         with:
           host: ${{ secrets.VPS_HOST }}
           username: ${{ secrets.VPS_USER }}
           key: ${{ secrets.VPS_KEY }}
+          port: ${{ secrets.VPS_PORT }}
+          envs: IMAGE_TAG,GHCR_TOKEN,REGISTRY_USER
           script: |
-            set -e
+            set -euo pipefail
+            APP_DIR=/opt/atc-cap-v2
+            cd "$APP_DIR"
 
-            mkdir -p /root/atc-cap-v2/uploads /root/atc-cap-v2/outputs /root/atc-cap-v2/data/internal
-            mkdir -p /root/.streamlit
-            cat > /root/.streamlit/config.toml << CONFIGEOF
-            [theme]
-            primaryColor="#00D9FF"
-            backgroundColor="#000000"
-            secondaryBackgroundColor="#1A1A1A"
-            textColor="#FFFFFF"
-            font="sans serif"
+            git fetch origin main --prune
+            git checkout -B main origin/main
+            git reset --hard origin/main
 
-            [client]
-            showErrorDetails=true
-            CONFIGEOF
+            echo "$GHCR_TOKEN" | docker login ghcr.io -u "$REGISTRY_USER" --password-stdin
+            IMAGE_TAG="$IMAGE_TAG" docker compose pull streamlit-app
+            IMAGE_TAG="$IMAGE_TAG" docker compose up -d --no-build
+            docker logout ghcr.io || true
 
-            echo "${{ secrets.GHCR_TOKEN }}" | docker login ghcr.io -u "${{ env.REGISTRY_USER }}" --password-stdin
-
-            docker rm -f ${{ env.APP_NAME }} || true
-            docker rm -f atc-cap-v2-streamlit-app-1 || true
-            docker pull ghcr.io/${{ env.REGISTRY_USER }}/tatic-processor:${{ github.run_number }}
-
-            docker run -d \
-              --name ${{ env.APP_NAME }} \
-              --restart unless-stopped \
-              -p ${{ env.APP_PORT }}:${{ env.APP_PORT }} \
-              -v /root/atc-cap-v2/uploads:/app/uploads \
-              -v /root/atc-cap-v2/outputs:/app/outputs \
-              -v /root/atc-cap-v2/data/internal:/app/data/internal:ro \
-              -v /root/.streamlit:/app/.streamlit \
-              -e INTERNAL_TATIC_FILE=/app/data/internal/base_tatic.xlsx \
-              -e STREAMLIT_BROWSER_GATHER_USAGE_STATS=false \
-              -e STREAMLIT_SERVER_ENABLECORS=false \
-              -e STREAMLIT_SERVER_PORT=8506 \
-              -e STREAMLIT_SERVER_HEADLESS=true \
-              -e STREAMLIT_SERVER_MAXUPLOADSIZE=200 \
-              -e ADMIN_EMAILS="${{ env.ADMIN_EMAILS }}" \
-              -e ALLOWED_EMAILS="${{ env.ALLOWED_EMAILS }}" \
-              ghcr.io/${{ env.REGISTRY_USER }}/tatic-processor:${{ github.run_number }}
-
-            sleep 5
-
-            if docker ps --format '{{.Names}}' | grep -qx ${{ env.APP_NAME }}; then
-              echo "✅ Deploy realizado com sucesso!"
-              docker logs --tail 10 ${{ env.APP_NAME }}
-            else
-              echo "❌ Erro no deploy!"
+            sleep 6
+            docker compose ps
+            code=$(curl -s -o /dev/null -w '%{http_code}' http://127.0.0.1:8506/ || true)
+            echo "health=$code"
+            if [ "$code" != "200" ]; then
+              docker compose logs --tail 30
               exit 1
             fi
